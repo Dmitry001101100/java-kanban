@@ -192,7 +192,9 @@ public class Main {
                 idTes(taskManager, command);
                 int commandTES = Integer.parseInt(scanner.nextLine());
 
-                for (SubTask sub1 : taskManager.getSubTasksId(commandTES)) {
+                ArrayList<SubTask> subTasksId = taskManager.getSubTasksId(commandTES);
+
+                for (SubTask sub1 : subTasksId) {
                     System.out.println(sub1);
                 }
 
@@ -251,7 +253,7 @@ public class Main {
         if (taskManager.keySearch(commandTES)) {
             if (command == 1) {// вывод задачи по id
                 if (taskManager.keySearchTask(commandTES)) {// проверка на наличие id в списке задач
-                    System.out.println(taskManager.outIdTaskHis(commandTES));
+                    System.out.println(taskManager.outIdTask(commandTES));
                 } else {
                     System.out.println("Выбранной задачи нет в списке.");
                 }
@@ -259,10 +261,10 @@ public class Main {
             } else if (command == 2) {// вывод эпика по id
 
                 if (taskManager.keySearchEpic(commandTES)) {// проверка на наличие id в списке задач
-                    System.out.println(taskManager.outIdEpicHis(commandTES));// почему-то не работает
+                    System.out.println(taskManager.outIdEpic(commandTES));// почему-то не работает
 
                     for (int numberId : taskManager.outIdEpic(commandTES).subtaskIds) {
-                        System.out.println("   " + taskManager.outIdSubTaskHis(numberId));
+                        System.out.println("   " + taskManager.outIdSubTask(numberId));
                     }
 
                 } else {
@@ -272,7 +274,7 @@ public class Main {
             } else if (command == 3) {// вывод подзадачи по id
 
                 if (taskManager.keySearchSubTask(commandTES)) {// проверка на наличие id в списке задач
-                    System.out.println("   " + taskManager.outIdSubTaskHis(commandTES));
+                    System.out.println("   " + taskManager.outIdSubTask(commandTES));
 
                 } else {
                     System.out.println("Выбранной подзадачи нет в списке.");

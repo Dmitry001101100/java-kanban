@@ -23,8 +23,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int getIdUp() {// герерирует id
-
-        return idUp++;
+        idUp++;
+        return idUp;
     }
 
     @Override
@@ -217,16 +217,19 @@ public class InMemoryTaskManager implements TaskManager {
     //-------------------------------------- 3 - Вывод по id -----------------------------------------------------------
     @Override
     public Task outIdTask(int numberId) {//вывод задачи по id
+        managerHis.addTaskHis(taskMap.get(numberId));
         return taskMap.get(numberId);
     }
 
     @Override
     public SubTask outIdSubTask(int numberId) {//вывод подзадачи по id
+        managerHis.addTaskHis(subTaskMap.get(numberId));
         return subTaskMap.get(numberId);
     }
 
     @Override
     public Epic outIdEpic(int numberId) {//вывод эпика по id
+        managerHis.addTaskHis(epicMap.get(numberId));
         return epicMap.get(numberId);
     }
 
@@ -258,7 +261,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearEpics() {// удалить все эпики и подзадачи к ним относящиеся
-
+// снова из 4 ФЗ
         subTaskMap.clear();
         epicMap.clear();
         System.out.println("Эпики и подзадачи к ним относящиеся полностью удалены.");
@@ -268,15 +271,15 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void clearSubtasks() {
 
-        for (Integer name : subTaskMap.keySet()) {
+        for (Integer id : subTaskMap.keySet()) {
 
-            SubTask subTask1 = subTaskMap.get(name);// делаем кейс с выбраными нами значениями
+            SubTask subTask1 = subTaskMap.get(id);// делаем кейс с выбраными нами значениями
 
             int epicId = subTask1.getEpicId();// забиваем данные для id эпика у которого из таблицы id подзадач будем удалять задачу
-            int indexSub = epicMap.get(epicId).subtaskIds.indexOf(name);// ищем индекс нахождения id задачи которую хотим удалить
+            int indexSub = epicMap.get(epicId).subtaskIds.indexOf(id);// ищем индекс нахождения id задачи которую хотим удалить
 
-            epicMap.get(epicId).subtaskIds.remove(indexSub);// удаляем подзадачу из списка подзадач который находится в эпике
-
+            epicMap.get(epicId).removeSubtaskIds(indexSub);// удаляем подзадачу из списка подзадач который находится в эпике
+            updateEpicStatus(epicId);//проверка и если требуется изменение статуса эпика
         }
 
         subTaskMap.clear();// очищаем таблицу подзадач
@@ -316,25 +319,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     //------------------------------------------------------------------------------------------------------------------
+//outIdTaskHis что тут в имени увы совсем не понимаю..  и зачем выводить.
 
-
-    @Override
-    public Task outIdTaskHis(int numberId) {//вывод задачи по id
-        managerHis.addTaskHis(taskMap.get(numberId));
-        return taskMap.get(numberId);
-    }
-
-    @Override
-    public SubTask outIdSubTaskHis(int numberId) {//вывод подзадачи по id
-        managerHis.addTaskHis(subTaskMap.get(numberId));
-        return subTaskMap.get(numberId);
-    }
-
-    @Override
-    public Epic outIdEpicHis(int numberId) {//вывод эпика по id
-        managerHis.addTaskHis(epicMap.get(numberId));
-        return epicMap.get(numberId);
-    }
+    // обьясняю по ТЗ добавление в историю просмотров идет через вывод по id, изначально мой метод истории в классе main работал по другому
+    // и требовал чтобы небыло зациклисности методы с записью в историю и без
+    // но замечание верное 2 метода я сейчас уберу
 
     @Override
     public ArrayList<Task> inPutOutPutHistory() {

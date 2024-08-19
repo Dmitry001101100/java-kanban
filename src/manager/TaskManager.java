@@ -71,11 +71,6 @@ public interface TaskManager {
 
     void deleteEpicId(int numberId);
 
-    Task outIdTaskHis(int numberId);
-
-    SubTask outIdSubTaskHis(int numberId);
-
-    Epic outIdEpicHis(int numberId);
 
     ArrayList<Task> inPutOutPutHistory();
 }

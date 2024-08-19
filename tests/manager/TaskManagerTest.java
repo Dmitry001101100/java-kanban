@@ -24,7 +24,7 @@ public class TaskManagerTest {
 
         final int taskId = task1.id;
 
-        final Task savedTask = taskManager.outIdTaskHis(taskId);
+        final Task savedTask = taskManager.outIdTask(taskId);
         //  System.out.println(savedTask);
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task1.toString(), savedTask.toString(), "toString() эпиков не совпадает");// в этом месте
@@ -128,7 +128,7 @@ public class TaskManagerTest {
 
         taskManager.deleteTaskId(taskId);// удаляем задачу из мапы Таск
 
-        assertNull(taskManager.outIdTaskHis(taskId), "Задача успешно удалена.");// проверка на удаление задачи
+        assertNull(taskManager.outIdTask(taskId), "Задача успешно удалена.");// проверка на удаление задачи
 
         final ArrayList<Task> tasks = taskManager.getTasks();
         System.out.println("Список Task после удаления задачи под id: " + taskId);
@@ -146,11 +146,11 @@ public class TaskManagerTest {
         Task task1 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW);//id1
         taskManager.saveTask(task1);
         final int taskId = task1.id;// выбрали id который хотим изменить
-        System.out.println(taskManager.outIdTaskHis(taskId));// проверяем задачу перед изменением
+        System.out.println(taskManager.outIdTask(taskId));// проверяем задачу перед изменением
         Task taskNew1 = new Task("New title", "New description", taskId, Status.IN_PROGRESS);//id1
         taskManager.saveTask(taskNew1);
 
-        Task outTask = taskManager.outIdTaskHis(taskId);
+        Task outTask = taskManager.outIdTask(taskId);
 
         System.out.println(outTask);// проверяем задачу после изменения
         final ArrayList<Task> tasks = taskManager.getTasks();
@@ -232,7 +232,7 @@ public class TaskManagerTest {
 
         ArrayList<SubTask> subs = taskManager.getSubTasksId(epic3.id);
 
-        assertEquals(2, taskManager.outIdEpicHis(epic3.id).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
+        assertEquals(2, taskManager.outIdEpic(epic3.id).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
         assertEquals(2, subs.size(), "Неверное количество подзадач.");//проверяем длину списка подзадач по id эпика перед удалением
 
         taskManager.deleteSubTaskId(sub5.id);// удаляем одну подзадачу по id
@@ -240,9 +240,9 @@ public class TaskManagerTest {
         ArrayList<SubTask> subs1 = taskManager.getSubTasksId(epic3.id);
 
 
-        assertEquals(1, taskManager.outIdEpicHis(epic3.id).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
+        assertEquals(1, taskManager.outIdEpic(epic3.id).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
         assertEquals(1, subs1.size(), "Неверное количество подзадач.");//проверяем длину списка подзадач по id эпика перед удалением
-        assertEquals(sub6.toString(),taskManager.outIdSubTaskHis(sub6.id).toString(),"toString() подзадачи не совпадает");
+        assertEquals(sub6.toString(),taskManager.outIdSubTask(sub6.id).toString(),"toString() подзадачи не совпадает");
         // проверяем что осталась та подзадача из 2 которая должна остаться
 
     }
@@ -259,7 +259,7 @@ public class TaskManagerTest {
 
         ArrayList<SubTask> subs = taskManager.getSubTasksId(epic3.id);
 
-        assertEquals(2, taskManager.outIdEpicHis(epic3.id).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
+        assertEquals(2, taskManager.outIdEpic(epic3.id).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
         assertEquals(2, subs.size(), "Неверное количество подзадач.");//проверяем длину списка подзадач по id эпика перед удалением
 
         taskManager.clearSubTasksOfEpic(epic3.id);// удаляем одну подзадачу по id
@@ -267,7 +267,7 @@ public class TaskManagerTest {
         ArrayList<SubTask> subs1 = taskManager.getSubTasksId(epic3.id);
 
 
-        assertEquals(0, taskManager.outIdEpicHis(epic3.id).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
+        assertEquals(0, taskManager.outIdEpic(epic3.id).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
         assertEquals(0, subs1.size(), "Неверное количество подзадач.");//проверяем длину списка подзадач по id эпика перед удалением
 
     }
