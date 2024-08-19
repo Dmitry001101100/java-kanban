@@ -77,7 +77,7 @@ public class InMemoryTaskManager implements TaskManager {
         return false;
     }
 
-    public void epicStatus(int id) {// определение статуса эпика
+    public void updateEpicStatus(int id) {// определение статуса эпика
 
         Epic epic1 = epicMap.get(id);
 
@@ -125,6 +125,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     //---------------------------- keySeach ----------------------------------------------------------------------------
+  /*  метод возвращает список ids задач, т.е. дай мне идентификаторы задач getTasksIds
+    я честно не понимаю профита от получения списка идентификаторов, кроме тестов ради тестов.*/
+
+    /*отвечаю,эти методы у меня связаны с классом маин где у меня реализована работа с этими методами.
+    (ты мог это заметить по фин 4 спринту)
+    * если в дальнейшем потребуется их убрать я их уберу*/
     @Override
     public ArrayList<Integer> keySetTask() {
         return new ArrayList<>(taskMap.keySet());
@@ -142,27 +148,31 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     //---------------------------------- 1 - Сохранение ----------------------------------------------------------------
-    @Override
-    public void saveTask(Task savetheTask) {// сохранение и перезапись задач
+    //просто (SubTask task)
+    // что то странно придираться к мелким ошибкам выполненым еще в прошлом спринте
+    // ну хозяин Барин)
 
-        taskMap.put(savetheTask.id, savetheTask);
+    @Override
+    public void saveTask(Task task) {// сохранение и перезапись задач
+
+        taskMap.put(task.id, task);
         System.out.println("Задача успешно сохранена!");
 
     }
 
     @Override
-    public void saveEpic(Epic savetheEpic) {// сохранение и перезапись эпиков
+    public void saveEpic(Epic epic) {// сохранение и перезапись эпиков
 
-        epicMap.put(savetheEpic.id, savetheEpic);
+        epicMap.put(epic.id, epic);
         System.out.println("Эпик успешно сохранен!");
 
     }
 
     @Override
-    public void saveSubTask(SubTask saveSubTask) {// сохранение и перезапись подзадач
+    public void saveSubTask(SubTask subTask) {// сохранение и перезапись подзадач
 
-        int idEpic = saveSubTask.epicId;// записали id эпика к которому принадлежит подзадача
-        int idSub = saveSubTask.id;//записали id подзадачи
+        int idEpic = subTask.epicId;// записали id эпика к которому принадлежит подзадача
+        int idSub = subTask.id;//записали id подзадачи
 
         Epic epic1 = epicMap.get(idEpic);// вызываем нужный элемент хеш таблицы
 
@@ -170,8 +180,8 @@ public class InMemoryTaskManager implements TaskManager {
             epic1.addSubtaskIds(idSub);// записываем в список id подзадач новое значение
         }
 
-        subTaskMap.put(saveSubTask.id, saveSubTask);
-        epicStatus(idEpic);//проверка и если требуется изменение статуса эпика
+        subTaskMap.put(subTask.id, subTask);
+        updateEpicStatus(idEpic);//проверка и если требуется изменение статуса эпика
         System.out.println("Подзадача успешно сохранена!");
 
     }
@@ -223,14 +233,14 @@ public class InMemoryTaskManager implements TaskManager {
     //--------------------------------------------- 5 - Полное удаление ------------------------------------------------
     @Override
     public void deleteContent() {// удалить всё
-        deleteTask();
+        deleteTasks();
         deleteEpic();
         idUp = 0;// обнуляем переменную для id
         System.out.println("Все содержимое полностью очищено.");
     }
 
     @Override
-    public void deleteTask() {// удалить все задачи
+    public void deleteTasks() {// удалить все задачи
         taskMap.clear();
         System.out.println("Задачи полностью удалены.");
     }
@@ -243,7 +253,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         }
         epicMap.get(epicId).subtaskIds.clear();
-        epicStatus(epicId);
+        updateEpicStatus(epicId);
     }
 
     @Override
@@ -296,7 +306,7 @@ public class InMemoryTaskManager implements TaskManager {
         // подзадачи в списке который хранится в эпике
         epicMap.get(epicId).subtaskIds.remove(indexSub);// удаляем подзадачу из списка подзадач который находится в эпике
         subTaskMap.remove(numberId);
-        epicStatus(epicId);
+        updateEpicStatus(epicId);
         System.out.println("Подзадача под номером " + numberId + " была удалена!");
 
     }

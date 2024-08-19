@@ -172,7 +172,7 @@ public class TaskManagerTest {
         final ArrayList<Task> tasks = taskManager.getTasks();// Вызываем Task для проверки перед удалением
 
         assertEquals(2, tasks.size(), "Неверное количество задач.");//проверяем длину перед удалением
-        taskManager.deleteTask();
+        taskManager.deleteTasks();
         final ArrayList<Task> tasks1 = taskManager.getTasks();// Вызываем Task для проверки перед удалением
         assertEquals(0, tasks1.size(), "Неверное количество задач.");// и после
     }

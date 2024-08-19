@@ -463,7 +463,7 @@ public class Main {
 
         if (command == 1) {// удалить все задачи
             if (!taskManager.isEmptyTask()) {
-                taskManager.deleteTask();
+                taskManager.deleteTasks();
             } else {
                 System.out.println("Список задач пуст.");
             }
