@@ -61,9 +61,9 @@ public interface TaskManager {
 
     void deleteSubTaskOfEpic(int epicId);
 
-    void deleteEpic();
+    void deleteEpics();
 
-    void deleteSubtask();
+    void deleteSubtasks();
 
     void deleteTaskId(int numberId);
 

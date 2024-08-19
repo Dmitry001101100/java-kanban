@@ -481,10 +481,10 @@ public class Main {
 
         } else if (command == 3) {// все подзадачи
 
-            taskManager.deleteSubtask();
+            taskManager.deleteSubtasks();
 
         } else if (command == 4) {// удалить все эпики
-            taskManager.deleteEpic();
+            taskManager.deleteEpics();
 
         } else if (command == 5) {// удалить всё
             taskManager.deleteContent();

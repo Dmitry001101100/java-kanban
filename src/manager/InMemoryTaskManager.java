@@ -234,7 +234,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteContent() {// удалить всё
         deleteTasks();
-        deleteEpic();
+        deleteEpics();
         idUp = 0;// обнуляем переменную для id
         System.out.println("Все содержимое полностью очищено.");
     }
@@ -257,7 +257,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteEpic() {// удалить все эпики и подзадачи к ним относящиеся
+    public void deleteEpics() {// удалить все эпики и подзадачи к ним относящиеся
 
         for (Integer name : epicMap.keySet()) {// перебираем значение для вывода
 
@@ -273,7 +273,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteSubtask() {
+    public void deleteSubtasks() {
 
         for (Integer name : subTaskMap.keySet()) {
 
