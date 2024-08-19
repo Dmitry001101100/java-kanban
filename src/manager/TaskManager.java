@@ -72,5 +72,5 @@ public interface TaskManager {
     void deleteEpicId(int numberId);
 
 
-    ArrayList<Task> inPutOutPutHistory();
+    ArrayList<Task> getHistory();
 }

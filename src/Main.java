@@ -261,9 +261,10 @@ public class Main {
             } else if (command == 2) {// вывод эпика по id
 
                 if (taskManager.keySearchEpic(commandTES)) {// проверка на наличие id в списке задач
-                    System.out.println(taskManager.outIdEpic(commandTES));// почему-то не работает
+                    Epic epic = taskManager.outIdEpic(commandTES);
+                    System.out.println(epic);// почему-то не работает
 
-                    for (int numberId : taskManager.outIdEpic(commandTES).subtaskIds) {
+                    for (int numberId : epic.subtaskIds) {
                         System.out.println("   " + taskManager.outIdSubTask(numberId));
                     }
 
@@ -538,7 +539,7 @@ public class Main {
     //---------------------------------------------- вывод истории -----------------------------------------------------
     public static void historyTask(TaskManager taskManager) {// вывод id истории просмотра задач
 
-        ArrayList<Task> hisId = taskManager.inPutOutPutHistory();
+        ArrayList<Task> hisId = taskManager.getHistory();
         ArrayList<Task> nullList = new ArrayList<>();
 
         System.out.println("Ваша история просмотров:");
