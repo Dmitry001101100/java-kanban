@@ -18,17 +18,17 @@ public interface TaskManager {
     boolean keySearchSubTask(int numberId);
 
 
-    boolean isEmptyTask();
+    boolean isEmptyTaskMap();
 
-    boolean isEmptyEpic();
+    boolean isEmptyEpicMap();
 
-    boolean isEmptySubTask();
+    boolean isEmptySubTaskMap();
 
-    ArrayList<Integer> keySetTask();
+    ArrayList<Integer> keySetTaskMap();
 
-    ArrayList<Integer> keySetEpic();
+    ArrayList<Integer> keySetEpicMap();
 
-    ArrayList<Integer> keySetSubTask();
+    ArrayList<Integer> keySetSubTaskMap();
 
     void saveTask(Task savetheTask);
 
@@ -38,13 +38,13 @@ public interface TaskManager {
 
 
 
-    ArrayList<Epic> getEpic();
+    ArrayList<Epic> getEpics();
 
     ArrayList<Task> getTasks();
 
     ArrayList<SubTask> getSubTasksId(int epicId);
 
-    ArrayList<SubTask> getSubTask();
+    ArrayList<SubTask> getSubTasks();
 
 
     Task outIdTask(int numberId);
@@ -54,16 +54,16 @@ public interface TaskManager {
     Epic outIdEpic(int numberId);
 
 
-    void deleteContent();
+    void clearContent();
 
 
-    void deleteTasks();
+    void clearTasks();
 
-    void deleteSubTaskOfEpic(int epicId);
+    void clearSubTasksOfEpic(int epicId);
 
-    void deleteEpics();
+    void clearEpics();
 
-    void deleteSubtasks();
+    void clearSubtasks();
 
     void deleteTaskId(int numberId);
 

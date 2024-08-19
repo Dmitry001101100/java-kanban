@@ -110,17 +110,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     //------------------------------------ проверка не пуст ли список --------------------------------------------------
     @Override
-    public boolean isEmptyTask() {
+    public boolean isEmptyTaskMap() {
         return taskMap.isEmpty();
     }
 
     @Override
-    public boolean isEmptyEpic() {
+    public boolean isEmptyEpicMap() {
         return epicMap.isEmpty();
     }
 
     @Override
-    public boolean isEmptySubTask() {
+    public boolean isEmptySubTaskMap() {
         return subTaskMap.isEmpty();
     }
 
@@ -132,17 +132,17 @@ public class InMemoryTaskManager implements TaskManager {
     (ты мог это заметить по фин 4 спринту)
     * если в дальнейшем потребуется их убрать я их уберу*/
     @Override
-    public ArrayList<Integer> keySetTask() {
+    public ArrayList<Integer> keySetTaskMap() {
         return new ArrayList<>(taskMap.keySet());
     }
 
     @Override
-    public ArrayList<Integer> keySetEpic() {
+    public ArrayList<Integer> keySetEpicMap() {
         return new ArrayList<>(epicMap.keySet());
     }
 
     @Override
-    public ArrayList<Integer> keySetSubTask() {
+    public ArrayList<Integer> keySetSubTaskMap() {
         return new ArrayList<>(subTaskMap.keySet());
     }
 
@@ -188,7 +188,7 @@ public class InMemoryTaskManager implements TaskManager {
 //------------------------------------------- 2 - Вывод полный ---------------------------------------------------------
 
     @Override
-    public ArrayList<Epic> getEpic() { // кладем значение из мапы эпиков в лист и возвращаем его
+    public ArrayList<Epic> getEpics() { // кладем значение из мапы эпиков в лист и возвращаем его
         return new ArrayList<>(epicMap.values());
     }
 
@@ -210,7 +210,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<SubTask> getSubTask() { // кладем значение из мап тасков в лист и возвращаем его
+    public ArrayList<SubTask> getSubTasks() { // кладем значение из мап тасков в лист и возвращаем его
         return new ArrayList<>(subTaskMap.values());
     }
 
@@ -232,21 +232,21 @@ public class InMemoryTaskManager implements TaskManager {
 
     //--------------------------------------------- 5 - Полное удаление ------------------------------------------------
     @Override
-    public void deleteContent() {// удалить всё
-        deleteTasks();
-        deleteEpics();
+    public void clearContent() {// удалить всё
+        clearTasks();
+        clearEpics();
         idUp = 0;// обнуляем переменную для id
         System.out.println("Все содержимое полностью очищено.");
     }
 
     @Override
-    public void deleteTasks() {// удалить все задачи
+    public void clearTasks() {// удалить все задачи
         taskMap.clear();
         System.out.println("Задачи полностью удалены.");
     }
 
     @Override
-    public void deleteSubTaskOfEpic(int epicId) {// удалить все подзадачи у одного эпика
+    public void clearSubTasksOfEpic(int epicId) {// удалить все подзадачи у одного эпика
 
         for (int i : epicMap.get(epicId).getSubtaskIds()) {// если в списке есть id подзадачи – то удаляем эту подзадачу
             subTaskMap.remove(i);
@@ -257,23 +257,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteEpics() {// удалить все эпики и подзадачи к ним относящиеся
+    public void clearEpics() {// удалить все эпики и подзадачи к ним относящиеся
 
-        for (Integer name : epicMap.keySet()) {// перебираем значение для вывода
-
-            for (int i : epicMap.get(name).subtaskIds) {// если в списке есть id подзадачи – то удаляем эту подзадачу
-
-                subTaskMap.remove(i);
-
-            }
-        }
+        subTaskMap.clear();
         epicMap.clear();
         System.out.println("Эпики и подзадачи к ним относящиеся полностью удалены.");
 
     }
 
     @Override
-    public void deleteSubtasks() {
+    public void clearSubtasks() {
 
         for (Integer name : subTaskMap.keySet()) {
 

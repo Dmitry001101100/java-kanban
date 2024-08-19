@@ -172,7 +172,7 @@ public class TaskManagerTest {
         final ArrayList<Task> tasks = taskManager.getTasks();// Вызываем Task для проверки перед удалением
 
         assertEquals(2, tasks.size(), "Неверное количество задач.");//проверяем длину перед удалением
-        taskManager.deleteTasks();
+        taskManager.clearTasks();
         final ArrayList<Task> tasks1 = taskManager.getTasks();// Вызываем Task для проверки перед удалением
         assertEquals(0, tasks1.size(), "Неверное количество задач.");// и после
     }
@@ -192,17 +192,17 @@ public class TaskManagerTest {
         taskManager.saveSubTask(sub6);
         taskManager.saveSubTask(sub7);
 
-        ArrayList<Epic> epics = taskManager.getEpic();
+        ArrayList<Epic> epics = taskManager.getEpics();
 
         assertEquals(1, epics.size(), "Неверное количество эпиков.");//проверяем длину эпиков перед удалением
         assertEquals(3, taskManager.outIdEpic(epic3.id).getSubtaskIds().size(), "Неверное количество подзадач.");//проверяем длину списка подзадач перед удалением
 
-        taskManager.deleteEpic();// удаляем все эпики
+        taskManager.clearEpics();// удаляем все эпики
 
-        ArrayList<Epic> epics1 = taskManager.getEpic();
+        ArrayList<Epic> epics1 = taskManager.getEpics();
 
         assertEquals(0, epics1.size(), "Неверное количество эпиков.");//проверяем длину эпиков после удаления
-        assertEquals(0, taskManager.getSubTask().size(), "Неверное количество подзадач.");//проверяем длину списка подзадач после удаления
+        assertEquals(0, taskManager.getSubTasks().size(), "Неверное количество подзадач.");//проверяем длину списка подзадач после удаления
     }
 
     @Test
@@ -210,12 +210,12 @@ public class TaskManagerTest {
         Epic epic3 = new Epic("Test titleEpic", "Test description", taskManager.getIdUp(), Status.NEW);
         taskManager.saveEpic(epic3);// сохранение
 
-        ArrayList<Epic> epics = taskManager.getEpic();
+        ArrayList<Epic> epics = taskManager.getEpics();
         assertEquals(1, epics.size(), "Неверное количество эпиков.");//проверяем длину эпиков перед удалением
 
-        taskManager.deleteEpic();// удаляем все эпики
+        taskManager.clearEpics();// удаляем все эпики
 
-        ArrayList<Epic> epics1 = taskManager.getEpic();
+        ArrayList<Epic> epics1 = taskManager.getEpics();
         assertEquals(0, epics1.size(), "Неверное количество эпиков.");//проверяем длину эпиков после удаления
 
     }
@@ -262,7 +262,7 @@ public class TaskManagerTest {
         assertEquals(2, taskManager.outIdEpicHis(epic3.id).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
         assertEquals(2, subs.size(), "Неверное количество подзадач.");//проверяем длину списка подзадач по id эпика перед удалением
 
-        taskManager.deleteSubTaskOfEpic(epic3.id);// удаляем одну подзадачу по id
+        taskManager.clearSubTasksOfEpic(epic3.id);// удаляем одну подзадачу по id
 
         ArrayList<SubTask> subs1 = taskManager.getSubTasksId(epic3.id);
 
@@ -285,14 +285,14 @@ public class TaskManagerTest {
 
         //проверяем длину списков систем хранения перед полным удалением
         assertEquals(1, taskManager.getTasks().size(), "Неверное количество задач.");
-        assertEquals(1, taskManager.getEpic().size(), "Неверное эпиков задач.");
+        assertEquals(1, taskManager.getEpics().size(), "Неверное эпиков задач.");
         assertEquals(1, taskManager.getSubTasksId(epic3.id).size(), "Неверное количество подзадач.");
 
-        taskManager.deleteContent();
+        taskManager.clearContent();
 
         assertEquals(0, taskManager.getTasks().size(), "Неверное количество задач.");
-        assertEquals(0, taskManager.getEpic().size(), "Неверное эпиков задач.");
-        assertEquals(0, taskManager.getSubTask().size(), "Неверное количество подзадач.");
+        assertEquals(0, taskManager.getEpics().size(), "Неверное эпиков задач.");
+        assertEquals(0, taskManager.getSubTasks().size(), "Неверное количество подзадач.");
 
     }
 

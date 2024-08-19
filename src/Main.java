@@ -59,24 +59,24 @@ public class Main {
     public static void idTes(TaskManager taskManager, int command) {//
 
         if (command == 1) {
-            if (!taskManager.isEmptyTask()) {
-                System.out.println(taskManager.keySetTask());
+            if (!taskManager.isEmptyTaskMap()) {
+                System.out.println(taskManager.keySetTaskMap());
             } else {
                 System.out.println("список задач пуст,введите любую команду для выхода");
             }
 
         } else if (command == 2) {
 
-            if (!taskManager.isEmptyEpic()) {
-                System.out.println(taskManager.keySetEpic());
+            if (!taskManager.isEmptyEpicMap()) {
+                System.out.println(taskManager.keySetEpicMap());
             } else {
                 System.out.println("список задач пуст,введите любую команду для выхода");
             }
 
         } else if (command == 3) {
 
-            if (!taskManager.isEmptySubTask()) {
-                System.out.println(taskManager.keySetSubTask());
+            if (!taskManager.isEmptySubTaskMap()) {
+                System.out.println(taskManager.keySetSubTaskMap());
             } else {
                 System.out.println("список задач пуст,введите любую команду для выхода");
             }
@@ -127,7 +127,7 @@ public class Main {
 
             System.out.println("К какому эпику вы хотите добавить подзадачу?");
 
-            System.out.println(taskManager.keySetEpic());
+            System.out.println(taskManager.keySetEpicMap());
 
             System.out.println("Введите id.");
             int epicSubTask = Integer.parseInt(scanner.nextLine());
@@ -162,7 +162,7 @@ public class Main {
         int command = Integer.parseInt(scanner.nextLine());
         if (command == 1) {// вывод задач
 
-            if (!taskManager.isEmptyTask()) {// проверка не пуст ли список задач
+            if (!taskManager.isEmptyTaskMap()) {// проверка не пуст ли список задач
                 for (Task tas : taskManager.getTasks()) {
                     System.out.println(tas);
                 }
@@ -173,9 +173,9 @@ public class Main {
             }
         } else if (command == 2) {// вывод эпиков
 
-            if (!taskManager.isEmptyEpic()) { //  проверка пуст ли список эпиков
+            if (!taskManager.isEmptyEpicMap()) { //  проверка пуст ли список эпиков
 
-                for (Epic epic1 : taskManager.getEpic()) {// вывод всех эпиков
+                for (Epic epic1 : taskManager.getEpics()) {// вывод всех эпиков
                     System.out.println(epic1);
                 }
 
@@ -186,7 +186,7 @@ public class Main {
 
         } else if (command == 3) {// вывод подзадач одного эпика
 
-            if (!taskManager.isEmptyEpic()) {
+            if (!taskManager.isEmptyEpicMap()) {
                 command = 2;// для корректного вывода id эпиков
                 System.out.println("Выберите id эпика для вывода подзадач");
                 idTes(taskManager, command);
@@ -202,16 +202,16 @@ public class Main {
 
         } else if (command == 4) {// вывод всех задач
 
-            if (!taskManager.isEmptyTask()) {
+            if (!taskManager.isEmptyTaskMap()) {
 
                 for (Task tas : taskManager.getTasks()) {
                     System.out.println(tas);
                 }
             }
 
-            if (!taskManager.isEmptyEpic()) {
+            if (!taskManager.isEmptyEpicMap()) {
 
-                for (Epic epic1 : taskManager.getEpic()) {// вывод всех эпиков
+                for (Epic epic1 : taskManager.getEpics()) {// вывод всех эпиков
                     System.out.println(epic1);
                     for (int numberId : epic1.subtaskIds) {// поиск и вывод привязанных к эпику задач
                         System.out.println("   " + taskManager.outIdSubTask(numberId));
@@ -219,13 +219,13 @@ public class Main {
                 }
             }
 
-            if (taskManager.isEmptyTask() && !taskManager.isEmptyEpic()) {// если список задач пуст
+            if (taskManager.isEmptyTaskMap() && !taskManager.isEmptyEpicMap()) {// если список задач пуст
                 System.out.println("Список задач пуст.");
 
-            } else if (taskManager.isEmptyEpic() && !taskManager.isEmptyTask()) {// если список эпиков пуст
+            } else if (taskManager.isEmptyEpicMap() && !taskManager.isEmptyTaskMap()) {// если список эпиков пуст
                 System.out.println("Список эпиков пуст.");
 
-            } else if ((taskManager.isEmptyTask()) && (taskManager.isEmptyEpic())) {// если списки задач и эпиков пусты
+            } else if ((taskManager.isEmptyTaskMap()) && (taskManager.isEmptyEpicMap())) {// если списки задач и эпиков пусты
                 System.out.println("Списов всех видов задач пуст.");
 
             }
@@ -462,8 +462,8 @@ public class Main {
         int command = Integer.parseInt(scanner.nextLine());
 
         if (command == 1) {// удалить все задачи
-            if (!taskManager.isEmptyTask()) {
-                taskManager.deleteTasks();
+            if (!taskManager.isEmptyTaskMap()) {
+                taskManager.clearTasks();
             } else {
                 System.out.println("Список задач пуст.");
             }
@@ -473,7 +473,7 @@ public class Main {
             idTes(taskManager, command);
             int commandTas = Integer.parseInt(scanner.nextLine());
             if (taskManager.keySearch(commandTas)) {
-                taskManager.deleteSubTaskOfEpic(commandTas);
+                taskManager.clearSubTasksOfEpic(commandTas);
 
             } else {
                 System.out.println("Выбранного id нет в списке.");
@@ -481,13 +481,13 @@ public class Main {
 
         } else if (command == 3) {// все подзадачи
 
-            taskManager.deleteSubtasks();
+            taskManager.clearSubtasks();
 
         } else if (command == 4) {// удалить все эпики
-            taskManager.deleteEpics();
+            taskManager.clearEpics();
 
         } else if (command == 5) {// удалить всё
-            taskManager.deleteContent();
+            taskManager.clearContent();
         } else {
             System.out.println("Введённая команда отсутствует");
         }

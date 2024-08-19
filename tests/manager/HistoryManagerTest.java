@@ -28,7 +28,7 @@ public class HistoryManagerTest {
 
 
     @Test
-    public void saveTasks(){// сохраняем задачи в истории
+    public void addTaskHis(){// сохраняем задачи в истории
         historyManager.addTaskHis(task1);
         historyManager.addTaskHis(epic1);
         historyManager.addTaskHis(epic2);
@@ -38,7 +38,7 @@ public class HistoryManagerTest {
 
     @Test
     public void setHistory(){// проверка сохранения
-        saveTasks();
+        addTaskHis();
         ArrayList<Task> list = historyManager.getHistory();
 
         assertEquals(task1, list.get(0), "Задача 1 должна быть первой в списке");
@@ -52,7 +52,7 @@ public class HistoryManagerTest {
 // убеждение, что задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
     @Test
     void getHistory() {// проверка вывода
-        saveTasks();
+        addTaskHis();
         List<Task> list = historyManager.getHistory();
         for (Task tas : list){
             System.out.println(tas);
@@ -61,7 +61,7 @@ public class HistoryManagerTest {
         assertEquals(5, list.size(), "Длина списка должна быть равна 3");
 
         System.out.println("\n"+"Если в списке больше 10 задач");
-        saveTasks();//повторно сохранили задачи с id 1 2 3 4 5 (получается сейчас в списке 1 2 3 4 5 1 2 3 4 5)
+        addTaskHis();//повторно сохранили задачи с id 1 2 3 4 5 (получается сейчас в списке 1 2 3 4 5 1 2 3 4 5)
         historyManager.addTaskHis(epic1);// сохраняем в общей сложности 11 задач(id последней задачи 2)
         List<Task> list1 = historyManager.getHistory();
         for (Task tas : list1){// проверяем по выводу
