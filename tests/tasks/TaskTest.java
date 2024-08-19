@@ -34,7 +34,7 @@ class TaskTest {
     @Test
     void addNewHistoryRecord() {
         Task task1 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW);
-        historyManager.setHistory(task1);
+        historyManager.addTask(task1);
         List<Task> history = historyManager.getHistory();
         assertNotNull(history, "В истории просмотров пусто.");
         assertEquals(1, history.size(), "В истории просмотров пусто.");

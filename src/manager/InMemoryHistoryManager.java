@@ -7,10 +7,11 @@ import java.util.ArrayList;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private final ArrayList<Task> history = new ArrayList<>(10);
+    private static final int maxCount = 10;// максимальная длинна списка // и перенес переменную из метода в класс
 
     @Override
-    public void setHistory(Task task) {// запись просмотренной задачи по id
-        int maxCount = 10;// максимальная длинна списка
+    public void addTaskHis(Task task) {// запись просмотренной задачи по id    // изменил название
+
 
         if (task != null ){
             if (history.size() < maxCount) {//если длинна списка меньше максимальной длинны, то идет запись

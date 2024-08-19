@@ -29,11 +29,11 @@ public class HistoryManagerTest {
 
     @Test
     public void saveTasks(){// сохраняем задачи в истории
-        historyManager.setHistory(task1);
-        historyManager.setHistory(epic1);
-        historyManager.setHistory(epic2);
-        historyManager.setHistory(sub1);
-        historyManager.setHistory(sub2);
+        historyManager.addTaskHis(task1);
+        historyManager.addTaskHis(epic1);
+        historyManager.addTaskHis(epic2);
+        historyManager.addTaskHis(sub1);
+        historyManager.addTaskHis(sub2);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class HistoryManagerTest {
 
         System.out.println("\n"+"Если в списке больше 10 задач");
         saveTasks();//повторно сохранили задачи с id 1 2 3 4 5 (получается сейчас в списке 1 2 3 4 5 1 2 3 4 5)
-        historyManager.setHistory(epic1);// сохраняем в общей сложности 11 задач(id последней задачи 2)
+        historyManager.addTaskHis(epic1);// сохраняем в общей сложности 11 задач(id последней задачи 2)
         List<Task> list1 = historyManager.getHistory();
         for (Task tas : list1){// проверяем по выводу
             System.out.println(tas);
