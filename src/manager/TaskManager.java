@@ -9,20 +9,8 @@ import java.util.ArrayList;
 public interface TaskManager {
     int getIdUp();
 
-    boolean keySearch(int numberId);
-
-    boolean keySearchTask(int numberId);
-
-    boolean keySearchEpic(int numberId);
-
-    boolean keySearchSubTask(int numberId);
 
 
-    boolean isEmptyTaskMap();
-
-    boolean isEmptyEpicMap();
-
-    boolean isEmptySubTaskMap();
 
     ArrayList<Integer> keySetTaskMap();
 

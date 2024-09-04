@@ -27,56 +27,6 @@ public class InMemoryTaskManager implements TaskManager {
         return idUp;
     }
 
-    @Override
-    public boolean keySearch(int numberId) {// проверка ключа в задачах,эпиках и подзадачах
-        for (Integer key : taskMap.keySet()) {
-            if (key == numberId) {
-                return true;
-            }
-        }
-        for (Integer key : epicMap.keySet()) {
-            if (key == numberId) {
-                return true;
-            }
-        }
-        for (Integer key : subTaskMap.keySet()) {
-            if (key == numberId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean keySearchTask(int numberId) {//проверка присутствия id в task
-        for (Integer key : taskMap.keySet()) {
-            if (key == numberId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean keySearchEpic(int numberId) {//проверка присутствия id epic
-        for (Integer key : epicMap.keySet()) {
-            if (key == numberId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean keySearchSubTask(int numberId) {//проверка присутствия id subTask
-        for (Integer key : subTaskMap.keySet()) {
-            if (key == numberId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void updateEpicStatus(int id) {// определение статуса эпика
 
         Epic epic1 = epicMap.get(id);
@@ -108,29 +58,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    //------------------------------------ проверка не пуст ли список --------------------------------------------------
-    @Override
-    public boolean isEmptyTaskMap() {
-        return taskMap.isEmpty();
-    }
-
-    @Override
-    public boolean isEmptyEpicMap() {
-        return epicMap.isEmpty();
-    }
-
-    @Override
-    public boolean isEmptySubTaskMap() {
-        return subTaskMap.isEmpty();
-    }
 
     //---------------------------- keySeach ----------------------------------------------------------------------------
-  /*  метод возвращает список ids задач, т.е. дай мне идентификаторы задач getTasksIds
-    я честно не понимаю профита от получения списка идентификаторов, кроме тестов ради тестов.*/
 
-    /*отвечаю,эти методы у меня связаны с классом маин где у меня реализована работа с этими методами.
-    (ты мог это заметить по фин 4 спринту)
-    * если в дальнейшем потребуется их убрать я их уберу*/
     @Override
     public ArrayList<Integer> keySetTaskMap() {
         return new ArrayList<>(taskMap.keySet());
@@ -148,9 +78,6 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     //---------------------------------- 1 - Сохранение ----------------------------------------------------------------
-    //просто (SubTask task)
-    // что то странно придираться к мелким ошибкам выполненым еще в прошлом спринте
-    // ну хозяин Барин)
 
     @Override
     public void saveTask(Task task) {// сохранение и перезапись задач
@@ -323,12 +250,6 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-//outIdTaskHis что тут в имени увы совсем не понимаю..  и зачем выводить.
-
-    // обьясняю по ТЗ добавление в историю просмотров идет через вывод по id, изначально мой метод истории в классе main работал по другому
-    // и требовал чтобы небыло зациклисности? должны быть методы с записью в историю и без
-    // сейчас я переделал метод в маине и теперь они ненужны я их убираю(забыл про них перед отправкой)
-
     @Override
     public ArrayList<Task> getHistory() {
         return (ArrayList<Task>) managerHis.getHistory();

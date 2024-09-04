@@ -1,6 +1,6 @@
 package tasks;
-import enumeration.Status;
-public class SubTask extends Task{
+
+public class SubTask extends Task {
 
     public int epicId;
 
