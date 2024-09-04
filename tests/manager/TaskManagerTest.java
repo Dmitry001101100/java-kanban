@@ -6,6 +6,8 @@ import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskManagerTest {
@@ -294,6 +296,93 @@ public class TaskManagerTest {
         assertEquals(0, taskManager.getEpics().size(), "Неверное эпиков задач.");
         assertEquals(0, taskManager.getSubTasks().size(), "Неверное количество подзадач.");
 
+    }
+// ----------------------- проверка обновленной истории ---------------------------------------------------------------
+
+    Task task1 = new Task("Задача1", "Описание задачи1", 1, Status.NEW);//id1
+    Epic epic1 = new Epic("Эпик1", "Описание эпик1", 2, Status.NEW);//id3
+    Epic epic2 = new Epic("Эпик2", "Описание эпик2", 3, Status.NEW);//id4
+    SubTask sub1 = new SubTask(epic1.id, "Подазадча 1", "от эпик1", 4, Status.NEW);//id5
+    SubTask sub2 = new SubTask(epic2.id, "Подзадача 2", "от эпик2", 5, Status.NEW);//id6
+    Task task2 = new Task("Задача2", "Описание задачи1", 6, Status.NEW);//id1
+    Epic epic12 = new Epic("Эпик3", "Описание эпик1", 7, Status.NEW);//id3
+    Epic epic22 = new Epic("Эпик4", "Описание эпик2", 8, Status.NEW);//id4
+    SubTask sub12 = new SubTask(epic1.id, "Подазадча 3", "от эпик1", 9, Status.NEW);//id5
+    SubTask sub22 = new SubTask(epic2.id, "Подзадача 4", "от эпик2", 10, Status.NEW);//id6
+    Epic epic13 = new Epic("Эпик2", "Описание эпик1", 11, Status.NEW);//id3
+
+
+
+    @Test
+    public void addAndGetTaskHis(){// сохраняем задачи в истории
+        taskManager.saveTask(task1);
+        taskManager.saveEpic(epic1);
+        taskManager.saveEpic(epic2);
+        taskManager.saveSubTask(sub1);
+        taskManager.saveSubTask(sub2);
+        taskManager.saveTask(task2);
+        taskManager.saveEpic(epic12);
+        taskManager.saveEpic(epic22);
+        taskManager.saveSubTask(sub22);
+        taskManager.saveSubTask(sub12);
+        taskManager.saveEpic(epic13);
+
+        taskManager.outIdTask(task1.id);
+        taskManager.outIdEpic(epic1.id);
+        taskManager.outIdEpic(epic2.id);
+        taskManager.outIdSubTask(sub1.id);
+        taskManager.outIdSubTask(sub2.id);
+        taskManager.outIdTask(task2.id);
+        taskManager.outIdEpic(epic12.id);
+        taskManager.outIdEpic(epic22.id);
+        taskManager.outIdSubTask(sub22.id);
+        taskManager.outIdSubTask(sub12.id);
+        taskManager.outIdEpic(epic13.id);
+    }
+
+
+    @Test
+    void getHistory(){// проверка может ли история сохранять больше 10 элементов
+        addAndGetTaskHis();
+        List<Task> list = taskManager.getHistory();
+        for (Task tas : list){
+            System.out.println(tas);
+        }
+    }
+
+    @Test
+    void removeTaskHis(){// проверка н аповедение при удалении
+        assertEquals(0, taskManager.getHistory().size(), "Длина списка должна быть равна 0");
+        taskManager.saveTask(task1);
+        taskManager.saveEpic(epic1);
+        taskManager.saveEpic(epic2);
+        taskManager.outIdTask(task1.id);
+        taskManager.outIdEpic(epic1.id);
+        taskManager.outIdEpic(epic2.id);
+
+        assertEquals(3, taskManager.getHistory().size(), "Длина списка должна быть равна 3");
+
+        taskManager.deleteEpicId(epic1.id);
+        assertEquals(2, taskManager.getHistory().size(), "Длина списка должна быть равна 2");
+
+    }
+
+    @Test
+    void getUniqueHistory(){// проверка на хранение только уникальной истории
+        assertEquals(0, taskManager.getHistory().size(), "Длина списка должна быть равна 0");
+        taskManager.saveTask(task1);
+
+        taskManager.outIdTask(task1.id);
+        assertEquals(1, taskManager.getHistory().size(), "Длина списка должна быть равна 1");
+
+        taskManager.outIdTask(task1.id);
+        assertEquals(1, taskManager.getHistory().size(), "Длина списка должна быть равна 1");
+    }
+
+
+    @Test
+    void historyIsEmpty() {// проверка не пуст ли список
+        assertEquals(0, taskManager.getHistory().size(), "Длина списка должна быть равна 0");
     }
 
 
