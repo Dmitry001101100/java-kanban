@@ -551,7 +551,7 @@ public class Main {
 
             if (taskManager.keySearch(task.id)){
                 System.out.println(task);
-            }else {
+            } else {
                 System.out.println("id " + task.id + " из истории просмотров уже не существует.");
             }
         }
