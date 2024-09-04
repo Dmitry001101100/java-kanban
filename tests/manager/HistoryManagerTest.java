@@ -86,4 +86,6 @@ public class HistoryManagerTest {
     void historyIsEmpty() {
         assertEquals(0, historyManager.getHistory().size(), "Длина списка должна быть равна 0");
     }
+
+
 }
