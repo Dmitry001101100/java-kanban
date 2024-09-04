@@ -547,11 +547,11 @@ public class Main {
             System.out.println("на данный момент пуста.");
         }
 
-        for(Task task : hisId){
+        for (Task task : hisId){
 
             if (taskManager.keySearch(task.id)){
                 System.out.println(task);
-            } else {
+            }else{
                 System.out.println("id " + task.id + " из истории просмотров уже не существует.");
             }
         }
