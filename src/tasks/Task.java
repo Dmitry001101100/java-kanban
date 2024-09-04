@@ -34,7 +34,9 @@ public class Task {
     }
 
     public Status getStatus() {
+
         return status;
+
     }
 
     public Integer getId() {
