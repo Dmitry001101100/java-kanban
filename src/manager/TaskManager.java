@@ -9,9 +9,6 @@ import java.util.ArrayList;
 public interface TaskManager {
     int getIdUp();
 
-
-
-
     ArrayList<Integer> keySetTaskMap();
 
     ArrayList<Integer> keySetEpicMap();
@@ -23,7 +20,6 @@ public interface TaskManager {
     void saveEpic(Epic savetheEpic);
 
     void saveSubTask(SubTask saveSubTask);
-
 
 
     ArrayList<Epic> getEpics();

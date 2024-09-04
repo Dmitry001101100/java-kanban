@@ -1,10 +1,12 @@
 package tasks;
+
 import enumeration.Status;
+
 import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    public ArrayList<Integer>  subtaskIds = new ArrayList<>();
+    public ArrayList<Integer> subtaskIds = new ArrayList<>();
 
     public Epic(String title, String description, Integer id, enumeration.Status status) { // без списка
         super(title, description, id, status);
@@ -14,7 +16,6 @@ public class Epic extends Task {
         super(title, description, id, status);
         this.subtaskIds = subtaskIds;
     }
-
 
 
     public void addSubtaskIds(Integer id) { // ложим id subtaska в лист subtaskIds

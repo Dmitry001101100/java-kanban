@@ -1,7 +1,8 @@
 package tasks;
+
 import enumeration.Status;
 
-public class Task  {
+public class Task {
     String title;
     String description;
     public Integer id;
@@ -35,6 +36,7 @@ public class Task  {
     public Status getStatus() {
         return status;
     }
+
     public Integer getId() {
         return id;
     }
