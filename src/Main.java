@@ -560,4 +560,7 @@ public class Main {
     }
 
     //1
+    public void qwwe(){
+
+    }
 }
