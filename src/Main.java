@@ -554,13 +554,10 @@ public class Main {
             }else {
                 System.out.println("id " + task.id + " из истории просмотров уже не существует.");
             }
-
         }
 
     }
 
     //1
-    public void qwwe(){
 
-    }
 }

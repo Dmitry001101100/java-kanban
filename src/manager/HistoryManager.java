@@ -2,14 +2,15 @@ package manager;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface HistoryManager {
     // ----------------------------------- история просмотра последних 10 задач по id -------------------------------------
 
 
-    void addTaskHis(Task task);
+    void add(Task task);
 
-    default ArrayList<Task> getHistory(){
+    default List<Task> getHistory(){
         return new ArrayList<>();
     }
 

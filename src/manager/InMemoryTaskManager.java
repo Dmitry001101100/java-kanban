@@ -217,19 +217,19 @@ public class InMemoryTaskManager implements TaskManager {
     //-------------------------------------- 3 - Вывод по id -----------------------------------------------------------
     @Override
     public Task outIdTask(int numberId) {//вывод задачи по id
-        managerHis.addTaskHis(taskMap.get(numberId));
+        managerHis.add(taskMap.get(numberId));
         return taskMap.get(numberId);
     }
 
     @Override
     public SubTask outIdSubTask(int numberId) {//вывод подзадачи по id
-        managerHis.addTaskHis(subTaskMap.get(numberId));
+        managerHis.add(subTaskMap.get(numberId));
         return subTaskMap.get(numberId);
     }
 
     @Override
     public Epic outIdEpic(int numberId) {//вывод эпика по id
-        managerHis.addTaskHis(epicMap.get(numberId));
+        managerHis.add(epicMap.get(numberId));
         return epicMap.get(numberId);
     }
 
@@ -290,6 +290,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteTaskId(int numberId) {// удаление задачи по id
 
         taskMap.remove(numberId);
+        managerHis.remove(numberId);
         System.out.println("Задача под номером " + numberId + " была удалена!");
 
     }
@@ -302,6 +303,7 @@ public class InMemoryTaskManager implements TaskManager {
         // подзадачи в списке который хранится в эпике
         epicMap.get(epicId).subtaskIds.remove(indexSub);// удаляем подзадачу из списка подзадач который находится в эпике
         subTaskMap.remove(numberId);
+        managerHis.remove(numberId);
         updateEpicStatus(epicId);
         System.out.println("Подзадача под номером " + numberId + " была удалена!");
 
@@ -312,9 +314,11 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (int i : epicMap.get(numberId).subtaskIds) {// если в списке есть id подзадачи, то удаляем эту подзадачу
             subTaskMap.remove(i);
+            managerHis.remove(i);
 
         }
         epicMap.remove(numberId);
+        managerHis.remove(numberId);
         System.out.println("Эпик под номером " + numberId + " был удалён!");
     }
 
@@ -327,7 +331,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getHistory() {
-        return managerHis.getHistory();
+        return (ArrayList<Task>) managerHis.getHistory();
     }
 
 

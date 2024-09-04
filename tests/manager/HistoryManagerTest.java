@@ -29,17 +29,17 @@ public class HistoryManagerTest {
 
     @Test
     public void addTaskHis(){// сохраняем задачи в истории
-        historyManager.addTaskHis(task1);
-        historyManager.addTaskHis(epic1);
-        historyManager.addTaskHis(epic2);
-        historyManager.addTaskHis(sub1);
-        historyManager.addTaskHis(sub2);
+        historyManager.add(task1);
+        historyManager.add(epic1);
+        historyManager.add(epic2);
+        historyManager.add(sub1);
+        historyManager.add(sub2);
     }
 
     @Test
     public void setHistory(){// проверка сохранения
         addTaskHis();
-        ArrayList<Task> list = historyManager.getHistory();
+        ArrayList<Task> list = (ArrayList<Task>) historyManager.getHistory();
 
         assertEquals(task1, list.get(0), "Задача 1 должна быть первой в списке");
         assertEquals(epic1, list.get(1), "Эпик 1 должен быть вторым в списке");
@@ -62,7 +62,7 @@ public class HistoryManagerTest {
 
         System.out.println("\n"+"Если в списке больше 10 задач");
         addTaskHis();//повторно сохранили задачи с id 1 2 3 4 5 (получается сейчас в списке 1 2 3 4 5 1 2 3 4 5)
-        historyManager.addTaskHis(epic1);// сохраняем в общей сложности 11 задач(id последней задачи 2)
+        historyManager.add(epic1);// сохраняем в общей сложности 11 задач(id последней задачи 2)
         List<Task> list1 = historyManager.getHistory();
         for (Task tas : list1){// проверяем по выводу
             System.out.println(tas);
