@@ -13,6 +13,8 @@ public interface HistoryManager {
         return new ArrayList<>();
     }
 
+    void remove(int id);
+
 
 
 }

@@ -29,5 +29,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         return history;
     }
 
+    @Override
+    public void remove(int id) {// добавили удаление по id
+        history.remove(id);
+    }
+
 
 }
