@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    public ArrayList<Integer>  subtaskIds = new ArrayList<Integer>();
+    public ArrayList<Integer>  subtaskIds = new ArrayList<>();
 
-    public Epic(String title, String description, Integer id, enumeration.Status status) {// без списка
+    public Epic(String title, String description, Integer id, enumeration.Status status) { // без списка
         super(title, description, id, status);
     }
 
-    public Epic(String title, String description, Integer id, Status status, ArrayList<Integer> subtaskIds) {// со списком
+    public Epic(String title, String description, Integer id, Status status, ArrayList<Integer> subtaskIds) { // со списком
         super(title, description, id, status);
         this.subtaskIds = subtaskIds;
     }
