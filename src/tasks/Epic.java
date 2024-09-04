@@ -36,7 +36,7 @@ public class Epic extends Task {
                 "name='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
-                ", status=" + status ;
+                ", status=" + status;
 
         return result + '}';
     }
