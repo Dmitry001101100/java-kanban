@@ -10,7 +10,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private static class Node<T> {
 
-        private T data;
+        private  T data;
         private Node<T> next;
         private Node<T> prev;
 
