@@ -1,13 +1,8 @@
 package manager;
 
 import enumeration.Status;
-import tasks.Epic;
-import tasks.SubTask;
-import tasks.Task;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import tasks.*;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 

@@ -2,11 +2,8 @@ package manager;
 
 import enumeration.Status;
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
-import tasks.SubTask;
-import tasks.Task;
-import java.util.ArrayList;
-import java.util.List;
+import tasks.*;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
