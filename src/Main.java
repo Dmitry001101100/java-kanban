@@ -4,4 +4,6 @@ public class Main {
     public static void main(String[] args) { // пришлось почистить а то по тестам не проходит
     System.out.println("Поехали!");
     }
+
+    // теперь 7 спринт
 }
