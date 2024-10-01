@@ -7,17 +7,15 @@ import java.util.*;
 public class InMemoryTaskManager implements TaskManager {
 
     //------------------------------------------------------------------------------------------------------------------
-    private final Map<Integer, Task> taskMap = new HashMap<>();
-    private final Map<Integer, Epic> epicMap = new HashMap<>();
-    private final Map<Integer, SubTask> subTaskMap = new HashMap<>();
+    protected final Map<Integer, Task> taskMap = new HashMap<>();
+    protected final Map<Integer, Epic> epicMap = new HashMap<>();
+    protected final Map<Integer, SubTask> subTaskMap = new HashMap<>();
 
     HistoryManager historyManager = Managers.getDefaultHistory();
 
     //-------------------------------Вспомогательные--------------------------------------------------------------------
     int idUp = 0;
 
-    public InMemoryTaskManager(HistoryManager historyManager) {
-    }
 
     @Override
     public int getIdUp() { // герерирует id
