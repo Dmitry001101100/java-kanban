@@ -176,41 +176,41 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 //------------------------------------------- 2 - Вывод полный ---------------------------------------------------------
 
     @Override
-    public ArrayList<Epic> getEpics() { // кладем значение из мапы эпиков в лист и возвращаем его
+    public ArrayList<Epic> getEpics() {
 
         return super.getEpics();
     }
 
     @Override
-    public ArrayList<Task> getTasks() { // кладем значение из мап тасков в лист и возвращаем его
+    public ArrayList<Task> getTasks() {
         return super.getTasks();
     }
 
     @Override
-    public ArrayList<SubTask> getSubTasksId(int epicId) { // кладем значение из мап подзадач в лист и возвращаем его
+    public ArrayList<SubTask> getSubTasksId(int epicId) {
         return super.getSubTasksId(epicId);
     }
 
     @Override
-    public ArrayList<SubTask> getSubTasks() { // кладем значение из мап тасков в лист и возвращаем его
+    public ArrayList<SubTask> getSubTasks() {
         return super.getSubTasks();
     }
 
     //-------------------------------------- 3 - Вывод по id -----------------------------------------------------------
     @Override
-    public Task outIdTask(int numberId) { //вывод задачи по id
+    public Task outIdTask(int numberId) {
 
         return super.outIdTask(numberId);
     }
 
     @Override
-    public SubTask outIdSubTask(int numberId) { //вывод подзадачи по id
+    public SubTask outIdSubTask(int numberId) {
 
         return super.outIdSubTask(numberId);
     }
 
     @Override
-    public Epic outIdEpic(int numberId) { //вывод эпика по id
+    public Epic outIdEpic(int numberId) {
 
         return super.outIdEpic(numberId);
     }
