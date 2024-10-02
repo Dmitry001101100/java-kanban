@@ -127,7 +127,7 @@ public class TaskManagerTest {
 
         taskManager.deleteTaskId(taskId);// удаляем задачу из мапы Таск
 
-        assertNull(taskManager.outIdTask(taskId), "Задача успешно удалена.");// проверка на удаление задачи
+        assertEquals(taskManager.outIdTask(taskId), null, "Задача успешно удалена.");// проверка на удаление задачи
 
         final ArrayList<Task> tasks = taskManager.getTasks();
         System.out.println("Список Task после удаления задачи под id: " + taskId);
@@ -348,7 +348,7 @@ public class TaskManagerTest {
     }
 
     @Test
-    void removeTaskHis(){// проверка н аповедение при удалении
+    void removeTaskHis(){// проверка на поведение при удалении
         assertEquals(0, taskManager.getHistory().size(), "Длина списка должна быть равна 0");
         taskManager.saveTask(task1);
         taskManager.saveEpic(epic1);

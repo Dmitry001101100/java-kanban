@@ -245,9 +245,9 @@ public class InMemoryTaskManager implements TaskManager {
         System.out.println("Эпик под номером " + numberId + " был удалён!");
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    @Override
-    public ArrayList<Task> getHistory() {
+// ---------------------------------------------------------------------------------------------------------------------
+
+    public ArrayList<Task> getHistory(){
         return (ArrayList<Task>) historyManager.getHistory();
     }
 

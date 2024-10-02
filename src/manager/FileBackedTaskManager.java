@@ -8,7 +8,7 @@ import tasks.SubTask;
 import tasks.Task;
 
 import java.io.*;
-
+import java.util.ArrayList;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -79,7 +79,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 switch (TypeTask.valueOf(type)) {
                     case SUBTASK -> {
                         SubTask subtask = new SubTask(idOfEpic, name, description, id, Status.valueOf(status));
-                        super.saveSubTask( subtask);
+                        super.saveSubTask(subtask);
 
                     }
                     case TASK -> {
@@ -98,7 +98,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public int getIdUp() { // герерирует id
+        return super.getIdUp();
+    }
+
+    // -------------------------------Сохранение ----------------------------------------------------------------------------
 
 
     @Override
@@ -118,6 +125,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.saveSubTask(saveSubTask);
         save();
     }
+    // -------------------------------- полное удаление ----------------------------------------------------------------
+
     @Override
     public void clearContent() {
         super.clearContent();
@@ -148,6 +157,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
+    // ------------------------------ удаление по id -----------------------------------------------------------------------
     @Override
     public void deleteTaskId(int numberId) {
         super.deleteTaskId(numberId);
@@ -165,5 +175,54 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.deleteEpicId(numberId);
         save();
     }
+
+//------------------------------------------- 2 - Вывод полный ---------------------------------------------------------
+
+    @Override
+    public ArrayList<Epic> getEpics() { // кладем значение из мапы эпиков в лист и возвращаем его
+
+        return super.getEpics();
+    }
+
+    @Override
+    public ArrayList<Task> getTasks() { // кладем значение из мап тасков в лист и возвращаем его
+        return super.getTasks();
+    }
+
+    @Override
+    public ArrayList<SubTask> getSubTasksId(int epicId) { // кладем значение из мап подзадач в лист и возвращаем его
+        return super.getSubTasksId(epicId);
+    }
+
+    @Override
+    public ArrayList<SubTask> getSubTasks() { // кладем значение из мап тасков в лист и возвращаем его
+        return super.getSubTasks();
+    }
+
+    //-------------------------------------- 3 - Вывод по id -----------------------------------------------------------
+    @Override
+    public Task outIdTask(int numberId) { //вывод задачи по id
+
+        return super.outIdTask(numberId);
+    }
+
+    @Override
+    public SubTask outIdSubTask(int numberId) { //вывод подзадачи по id
+
+        return super.outIdSubTask(numberId);
+    }
+
+    @Override
+    public Epic outIdEpic(int numberId) { //вывод эпика по id
+
+        return super.outIdEpic(numberId);
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------
+    @Override
+    public ArrayList<Task> getHistory() {
+        return super.getHistory();
+    }
+
 
 }
