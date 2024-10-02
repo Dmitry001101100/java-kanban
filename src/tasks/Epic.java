@@ -1,6 +1,7 @@
 package tasks;
 
 import enumeration.Status;
+import enumeration.TypeTask;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -31,17 +32,13 @@ public class Epic extends Task {
         subtaskIds.remove(id);
     }
 
-
     @Override
-    public String toString() {
-        String result = "Epic{" +
-                "name='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status;
-
-        return result + '}';
+    public TypeTask getType() {
+        return TypeTask.EPIC;
     }
+
+
+
 
 
     @Override

@@ -2,45 +2,39 @@ package manager;
 
 import exception.ManagerSaveException;
 import tasks.Epic;
+import tasks.SubTask;
 import tasks.Task;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Path;
+import java.util.ArrayList;
 
 
-public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
+public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager  {
 
     private final File file;
+
 
     public FileBackedTaskManager( File file) {
         super();
         this.file = file;
     }
-// ------------------------------- сохранение и перезапись -------------------------------------------------------------
-    public void saveTask(Task task){
+
+    public void saveTas(Task task){
         saveTask(task);
         save();
     }
-    public void saveEpic(Epic epic){
-        saveEpic(epic);
-        save();
-    }
-
-    public void saveSubTask(Epic epic){
-        saveSubTask(epic);
-        save();
-    }
+//----------------------------------------------------------------------------------------------------------------------
 
 
 
     // метод для сохранения всех видов задач в файл;
 
     public void save(){
-        try (FileWriter writer = new FileWriter(file)) {
+        sortList(getTasks());
+        /*
+        try (Writer writer = new FileWriter(file);){
+
             writer.write("id,type,name,status,description,epic\n");
             for (Integer key : taskMap.keySet()) {
                 writer.write(taskMap.get(key).toString() + "\n");
@@ -53,7 +47,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
             }
         } catch (IOException exp) {
             throw new ManagerSaveException("Произошла ошибка записи в файл", exp);
+        }*/
+    }
+
+    public ArrayList<String> sortList(ArrayList<Task> list){
+        ArrayList<String> sortFile = new ArrayList<>();
+
+        for(Task text : list){
+            System.out.println(text);
+            sortFile.add(text.toString());
         }
+
+
+        return sortFile;
     }
 
 

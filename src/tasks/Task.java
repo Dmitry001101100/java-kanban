@@ -1,17 +1,18 @@
 package tasks;
 
 import enumeration.Status;
+import enumeration.TypeTask;
 
 import java.util.Objects;
 
 public class Task {
-    String title;
+    String name;
     String description;
     public Integer id;
     Status status;
 
     public Task(String title, String description, Integer id, Status status) {
-        this.title = title;
+        this.name = title;
         this.description = description;
         this.id = id;
         this.status = status;
@@ -21,14 +22,13 @@ public class Task {
         this.status = status;
     }
 
+    public TypeTask getType() {
+        return TypeTask.TASK;
+    }
+
     @Override
     public String toString() {
-        return "Task{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                '}';
+        return String.format("%s,%s,%s,%s,%s", id, getType(), name, status, description);
     }
 
     public void setStatus(Status status) {
@@ -46,7 +46,7 @@ public class Task {
     }
 
     public String getTitle() {
-        return title;
+        return name;
     }
 
     public String getDescription() {
@@ -58,11 +58,11 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Objects.equals(title, task.title) && Objects.equals(description, task.description) && Objects.equals(id, task.id) && status == task.status;
+        return Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(id, task.id) && status == task.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, description, id, status);
+        return Objects.hash(name, description, id, status);
     }
 }
