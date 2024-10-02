@@ -24,14 +24,11 @@ public class TaskManagerTest {
         final int taskId = task1.id;
 
         final Task savedTask = taskManager.outIdTask(taskId);
-        //  System.out.println(savedTask);
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task1.toString(), savedTask.toString(), "toString() эпиков не совпадает");// в этом месте
         assertEquals(task1.hashCode(), savedTask.hashCode(), "hashCode() задач не совпадает");
 
-
         final ArrayList<Task> tasks = taskManager.getTasks();
-
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");

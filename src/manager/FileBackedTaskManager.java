@@ -46,9 +46,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public FileBackedTaskManager downloadingFromAFile(File file) {
-        FileBackedTaskManager manager = new FileBackedTaskManager(file);
-        TaskManager taskManager = Managers.getDefault();
+    public void downloadingFromAFile(File file) {
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -92,7 +90,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     }
                 }
             }
-            return manager;
         } catch (IOException e) {
             throw new ManagerSaveException("Saving error!");
         }
