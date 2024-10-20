@@ -148,6 +148,7 @@ public class InMemoryTaskManager implements TaskManager {
         managerHis.add(subTaskMap.get(numberId));
         return subTaskMap.get(numberId);
     }
+    //
 
     @Override
     public Epic outIdEpic(int numberId) { //вывод эпика по id
