@@ -34,7 +34,7 @@ public class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void checkingForSaving() {  // проверка на запись файла
+    public void checkingForSaving() {  // проверка на запись файла`
         savesTask();// сохраняем
 
         ArrayList<SubTask> subTasks;
