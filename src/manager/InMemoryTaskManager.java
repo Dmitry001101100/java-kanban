@@ -7,14 +7,15 @@ import java.util.*;
 public class InMemoryTaskManager implements TaskManager {
 
     //------------------------------------------------------------------------------------------------------------------
-    private final Map<Integer, Task> taskMap = new HashMap<>();
-    private final Map<Integer, Epic> epicMap = new HashMap<>();
-    private final Map<Integer, SubTask> subTaskMap = new HashMap<>();
+    protected final Map<Integer, Task> taskMap = new HashMap<>();
+    protected final Map<Integer, Epic> epicMap = new HashMap<>();
+    protected final Map<Integer, SubTask> subTaskMap = new HashMap<>();
 
-    HistoryManager managerHis = Managers.getDefaultHistory();
+    HistoryManager historyManager = Managers.getDefaultHistory();
 
     //-------------------------------Вспомогательные--------------------------------------------------------------------
     int idUp = 0;
+
 
     @Override
     public int getIdUp() { // герерирует id
@@ -139,20 +140,20 @@ public class InMemoryTaskManager implements TaskManager {
     //-------------------------------------- 3 - Вывод по id -----------------------------------------------------------
     @Override
     public Task outIdTask(int numberId) { //вывод задачи по id
-        managerHis.add(taskMap.get(numberId));
+        historyManager.add(taskMap.get(numberId));
         return taskMap.get(numberId);
     }
 
     @Override
     public SubTask outIdSubTask(int numberId) { //вывод подзадачи по id
-        managerHis.add(subTaskMap.get(numberId));
+        historyManager.add(subTaskMap.get(numberId));
         return subTaskMap.get(numberId);
     }
     //
 
     @Override
     public Epic outIdEpic(int numberId) { //вывод эпика по id
-        managerHis.add(epicMap.get(numberId));
+        historyManager.add(epicMap.get(numberId));
         return epicMap.get(numberId);
     }
 
@@ -213,7 +214,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteTaskId(int numberId) { // удаление задачи по id
 
         taskMap.remove(numberId);
-        managerHis.remove(numberId);
+        historyManager.remove(numberId);
         System.out.println("Задача под номером " + numberId + " была удалена!");
 
     }
@@ -226,7 +227,7 @@ public class InMemoryTaskManager implements TaskManager {
         // подзадачи в списке который хранится в эпике
         epicMap.get(epicId).subtaskIds.remove(indexSub); // удаляем подзадачу из списка подзадач который находится в эпике
         subTaskMap.remove(numberId);
-        managerHis.remove(numberId);
+        historyManager.remove(numberId);
         updateEpicStatus(epicId);
         System.out.println("Подзадача под номером " + numberId + " была удалена!");
 
@@ -237,18 +238,18 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (int i : epicMap.get(numberId).subtaskIds) { // если в списке есть id подзадачи, то удаляем эту подзадачу
             subTaskMap.remove(i);
-            managerHis.remove(i);
+            historyManager.remove(i);
 
         }
         epicMap.remove(numberId);
-        managerHis.remove(numberId);
+        historyManager.remove(numberId);
         System.out.println("Эпик под номером " + numberId + " был удалён!");
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    @Override
+// ---------------------------------------------------------------------------------------------------------------------
+
     public ArrayList<Task> getHistory() {
-        return (ArrayList<Task>) managerHis.getHistory();
+        return (ArrayList<Task>) historyManager.getHistory();
     }
 
 

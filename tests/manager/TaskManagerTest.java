@@ -24,14 +24,11 @@ public class TaskManagerTest {
         final int taskId = task1.id;
 
         final Task savedTask = taskManager.outIdTask(taskId);
-        //  System.out.println(savedTask);
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task1.toString(), savedTask.toString(), "toString() эпиков не совпадает");// в этом месте
         assertEquals(task1.hashCode(), savedTask.hashCode(), "hashCode() задач не совпадает");
 
-
         final ArrayList<Task> tasks = taskManager.getTasks();
-
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
@@ -127,7 +124,7 @@ public class TaskManagerTest {
 
         taskManager.deleteTaskId(taskId);// удаляем задачу из мапы Таск
 
-        assertNull(taskManager.outIdTask(taskId), "Задача успешно удалена.");// проверка на удаление задачи
+        assertEquals(taskManager.outIdTask(taskId), null, "Задача успешно удалена.");// проверка на удаление задачи
 
         final ArrayList<Task> tasks = taskManager.getTasks();
         System.out.println("Список Task после удаления задачи под id: " + taskId);
@@ -348,7 +345,7 @@ public class TaskManagerTest {
     }
 
     @Test
-    void removeTaskHis(){// проверка н аповедение при удалении
+    void removeTaskHis(){// проверка на поведение при удалении
         assertEquals(0, taskManager.getHistory().size(), "Длина списка должна быть равна 0");
         taskManager.saveTask(task1);
         taskManager.saveEpic(epic1);

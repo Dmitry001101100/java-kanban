@@ -1,5 +1,7 @@
 package tasks;
 
+import enumeration.TypeTask;
+
 import java.util.Objects;
 
 public class SubTask extends Task {
@@ -12,13 +14,13 @@ public class SubTask extends Task {
     }
 
     @Override
+    public TypeTask getType() {
+        return TypeTask.SUBTASK;
+    }
+
+    @Override
     public String toString() {
-        return "SubTask{" +
-                "Title='" + title + '\'' +
-                ", Description='" + description + '\'' +
-                ", id=" + id +
-                ", Status=" + status +
-                '}';
+        return String.format("%s,%s,%s,%s,%s,%s", id, getType(), name, status, description,epicId);
     }
 
     public int getEpicId() {
