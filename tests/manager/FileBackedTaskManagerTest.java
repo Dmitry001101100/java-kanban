@@ -23,8 +23,8 @@ public class FileBackedTaskManagerTest {
         Task task1 = new Task("Task1", "Description1", manager.getIdUp(), Status.NEW); // 1
         Task task2 = new Task("Task2", "Description2", manager.getIdUp(), Status.DONE); // 2
         Epic epic3 = new Epic("Test titleEpic", "Test description", manager.getIdUp(), Status.NEW); // 3
-        SubTask sub5 = new SubTask(epic3.id, "Test titleSub1", "Test in Epic", manager.getIdUp(), Status.DONE); // 4
-        SubTask sub6 = new SubTask(epic3.id, "Test titleSub2", "Test in Epic", manager.getIdUp(), Status.IN_PROGRESS); // 5
+        SubTask sub5 = new SubTask(epic3.getId(), "Test titleSub1", "Test in Epic", manager.getIdUp(), Status.DONE); // 4
+        SubTask sub6 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", manager.getIdUp(), Status.IN_PROGRESS); // 5
 
         manager.saveTask(task1);
         manager.saveTask(task2);

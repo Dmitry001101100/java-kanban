@@ -6,10 +6,10 @@ import enumeration.TypeTask;
 import java.util.Objects;
 
 public class Task {
-    String name;
-    String description;
-    public Integer id;
-    Status status;
+    private String name;
+    private String description;
+    private Integer id;
+    private Status status;
 
     public Task(String title, String description, Integer id, Status status) {
         this.name = title;
@@ -64,5 +64,9 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(name, description, id, status);
+    }
+
+    public String getName() {
+        return name;
     }
 }

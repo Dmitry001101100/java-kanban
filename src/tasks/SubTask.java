@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class SubTask extends Task {
 
-    public int epicId;
+    private int epicId;
 
     public SubTask(int epicSubTask, String title, String description, Integer id, enumeration.Status status) {
         super(title, description, id, status);
@@ -20,7 +20,7 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return String.format("%s,%s,%s,%s,%s,%s", id, getType(), name, status, description,epicId);
+        return String.format("%s,%s,%s,%s,%s,%s", getId(), getType(), getName(), getStatus(), getDescription(),epicId);
     }
 
     public int getEpicId() {
