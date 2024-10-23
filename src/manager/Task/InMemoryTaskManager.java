@@ -1,20 +1,23 @@
-package manager;
+package manager.Task;
 
 import enumeration.Status;
+import manager.History.HistoryManager;
+import manager.Managers;
 import tasks.*;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
     //------------------------------------------------------------------------------------------------------------------
-    private final Map<Integer, Task> taskMap = new HashMap<>();
-    private final Map<Integer, Epic> epicMap = new HashMap<>();
-    private final Map<Integer, SubTask> subTaskMap = new HashMap<>();
+    protected final Map<Integer, Task> taskMap = new HashMap<>();
+    protected final Map<Integer, Epic> epicMap = new HashMap<>();
+    protected final Map<Integer, SubTask> subTaskMap = new HashMap<>();
 
-    HistoryManager managerHis = Managers.getDefaultHistory();
+    HistoryManager historyManager = Managers.getDefaultHistory();
 
     //-------------------------------Вспомогательные--------------------------------------------------------------------
     int idUp = 0;
+
 
     @Override
     public int getIdUp() { // герерирует id
@@ -29,11 +32,11 @@ public class InMemoryTaskManager implements TaskManager {
         int numNew = 0;
         int numDone = 0;
 
-        if (epicMap.get(id).subtaskIds.isEmpty()) { // если нет подзадач статус New
+        if (epicMap.get(id).getSubtaskIds().isEmpty()) { // если нет подзадач статус New
             epic1.setStatus(Status.NEW);
         }
 
-        for (int i : epic1.subtaskIds) {
+        for (int i : epic1.getSubtaskIds()) {
             if (subTaskMap.get(i).getStatus() == Status.DONE) { //если статус подзадачи выполнен – то счетчик numDone увеличивается на 1
                 numDone++;
             } else if (subTaskMap.get(i).getStatus() == Status.NEW) { //если статус подзадачи новый – то счетчик numNew увеличивается на 1
@@ -41,11 +44,11 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
 
-        if ((epicMap.get(id).subtaskIds.isEmpty()) || (numNew == epic1.subtaskIds.size())) { // если список подзадач пуст или
+        if ((epicMap.get(id).getSubtaskIds().isEmpty()) || (numNew == epic1.getSubtaskIds().size())) { // если список подзадач пуст или
             // все задачи имеют статус новый
             epic1.setStatus(Status.NEW); // статус эпика новый
 
-        } else if (numDone == epic1.subtaskIds.size()) { // если все подзадачи имеют статсу выполнен
+        } else if (numDone == epic1.getSubtaskIds().size()) { // если все подзадачи имеют статсу выполнен
 
             epic1.setStatus(Status.DONE); //статус эпика выполнен
         } else {
@@ -77,7 +80,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void saveTask(Task task) { // сохранение и перезапись задач
 
-        taskMap.put(task.id, task);
+        taskMap.put(task.getId(), task);
         System.out.println("Задача успешно сохранена!");
 
     }
@@ -85,7 +88,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void saveEpic(Epic epic) { // сохранение и перезапись эпиков
 
-        epicMap.put(epic.id, epic);
+        epicMap.put(epic.getId(), epic);
         System.out.println("Эпик успешно сохранен!");
 
     }
@@ -93,16 +96,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void saveSubTask(SubTask subTask) { // сохранение и перезапись подзадач
 
-        int idEpic = subTask.epicId; // записали id эпика к которому принадлежит подзадача
-        int idSub = subTask.id; //записали id подзадачи
+        int idEpic = subTask.getEpicId(); // записали id эпика к которому принадлежит подзадача
+        int idSub = subTask.getId(); //записали id подзадачи
 
         Epic epic1 = epicMap.get(idEpic); // вызываем нужный элемент хеш таблицы
 
-        if (!epic1.subtaskIds.contains(idSub)) {
+        if (!epic1.getSubtaskIds().contains(idSub)) {
             epic1.addSubtaskIds(idSub); // записываем в список id подзадач новое значение
         }
 
-        subTaskMap.put(subTask.id, subTask);
+        subTaskMap.put(subTask.getId(), subTask);
         updateEpicStatus(idEpic); //проверка и если требуется изменение статуса эпика
         System.out.println("Подзадача успешно сохранена!");
 
@@ -139,20 +142,20 @@ public class InMemoryTaskManager implements TaskManager {
     //-------------------------------------- 3 - Вывод по id -----------------------------------------------------------
     @Override
     public Task outIdTask(int numberId) { //вывод задачи по id
-        managerHis.add(taskMap.get(numberId));
+        historyManager.add(taskMap.get(numberId));
         return taskMap.get(numberId);
     }
 
     @Override
     public SubTask outIdSubTask(int numberId) { //вывод подзадачи по id
-        managerHis.add(subTaskMap.get(numberId));
+        historyManager.add(subTaskMap.get(numberId));
         return subTaskMap.get(numberId);
     }
     //
 
     @Override
     public Epic outIdEpic(int numberId) { //вывод эпика по id
-        managerHis.add(epicMap.get(numberId));
+        historyManager.add(epicMap.get(numberId));
         return epicMap.get(numberId);
     }
 
@@ -178,7 +181,7 @@ public class InMemoryTaskManager implements TaskManager {
             subTaskMap.remove(i);
 
         }
-        epicMap.get(epicId).subtaskIds.clear();
+        epicMap.get(epicId).getSubtaskIds().clear();
         updateEpicStatus(epicId);
     }
 
@@ -199,7 +202,7 @@ public class InMemoryTaskManager implements TaskManager {
             SubTask subTask1 = subTaskMap.get(id); // делаем кейс с выбраными нами значениями
 
             int epicId = subTask1.getEpicId(); // забиваем данные для id эпика у которого из таблицы id подзадач будем удалять задачу
-            int indexSub = epicMap.get(epicId).subtaskIds.indexOf(id); // ищем индекс нахождения id задачи которую хотим удалить
+            int indexSub = epicMap.get(epicId).getSubtaskIds().indexOf(id); // ищем индекс нахождения id задачи которую хотим удалить
 
             epicMap.get(epicId).removeSubtaskIds(indexSub); // удаляем подзадачу из списка подзадач который находится в эпике
             updateEpicStatus(epicId); //проверка и если требуется изменение статуса эпика
@@ -213,7 +216,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteTaskId(int numberId) { // удаление задачи по id
 
         taskMap.remove(numberId);
-        managerHis.remove(numberId);
+        historyManager.remove(numberId);
         System.out.println("Задача под номером " + numberId + " была удалена!");
 
     }
@@ -221,12 +224,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubTaskId(int numberId) { // удаление подзадачи по id
 
-        int epicId = subTaskMap.get(numberId).epicId;
-        int indexSub = epicMap.get(epicId).subtaskIds.indexOf(numberId); // ищем индекс нахождения
+        int epicId = subTaskMap.get(numberId).getEpicId();
+        int indexSub = epicMap.get(epicId).getSubtaskIds().indexOf(numberId); // ищем индекс нахождения
         // подзадачи в списке который хранится в эпике
-        epicMap.get(epicId).subtaskIds.remove(indexSub); // удаляем подзадачу из списка подзадач который находится в эпике
+        epicMap.get(epicId).getSubtaskIds().remove(indexSub); // удаляем подзадачу из списка подзадач который находится в эпике
         subTaskMap.remove(numberId);
-        managerHis.remove(numberId);
+        historyManager.remove(numberId);
         updateEpicStatus(epicId);
         System.out.println("Подзадача под номером " + numberId + " была удалена!");
 
@@ -235,20 +238,20 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteEpicId(int numberId) { // удаление эпика по id
 
-        for (int i : epicMap.get(numberId).subtaskIds) { // если в списке есть id подзадачи, то удаляем эту подзадачу
+        for (int i : epicMap.get(numberId).getSubtaskIds()) { // если в списке есть id подзадачи, то удаляем эту подзадачу
             subTaskMap.remove(i);
-            managerHis.remove(i);
+            historyManager.remove(i);
 
         }
         epicMap.remove(numberId);
-        managerHis.remove(numberId);
+        historyManager.remove(numberId);
         System.out.println("Эпик под номером " + numberId + " был удалён!");
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    @Override
+// ---------------------------------------------------------------------------------------------------------------------
+
     public ArrayList<Task> getHistory() {
-        return (ArrayList<Task>) managerHis.getHistory();
+        return (ArrayList<Task>) historyManager.getHistory();
     }
 
 

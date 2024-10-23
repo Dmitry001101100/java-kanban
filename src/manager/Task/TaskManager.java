@@ -1,4 +1,4 @@
-package manager;
+package manager.Task;
 
 import tasks.Epic;
 import tasks.SubTask;

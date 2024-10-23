@@ -1,24 +1,28 @@
 package tasks;
 
+import enumeration.TypeTask;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class SubTask extends Task {
 
-    public int epicId;
+    private int epicId;
 
-    public SubTask(int epicSubTask, String title, String description, Integer id, enumeration.Status status) {
-        super(title, description, id, status);
+    public SubTask(int epicSubTask, String title, String description, Integer id, enumeration.Status status, LocalDateTime startTime, Duration duration) {
+        super(title, description, id, status,startTime,duration);
         this.epicId = epicSubTask;
     }
 
     @Override
+    public TypeTask getType() {
+        return TypeTask.SUBTASK;
+    }
+
+    @Override
     public String toString() {
-        return "SubTask{" +
-                "Title='" + title + '\'' +
-                ", Description='" + description + '\'' +
-                ", id=" + id +
-                ", Status=" + status +
-                '}';
+        return String.format("%s,%s,%s,%s,%s,%s", getId(), getType(), getName(), getStatus(), getDescription(),epicId);
     }
 
     public int getEpicId() {

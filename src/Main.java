@@ -1,8 +1,7 @@
 
 public class Main {
     //------------------------------------------------------------------------------------------------------------------
-    public static void main(String[] args) { // пришлось почистить а то по тестам не проходит
+    public static void main(String[] args) { // 8 спринт)
     System.out.println("Поехали!");
-    System.out.println("ПОЕХАЛИ 8)");
     }
 }
