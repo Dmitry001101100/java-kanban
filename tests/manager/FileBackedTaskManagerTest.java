@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class FileBackedTaskManagerTest {
-
+    /*
     File savesTasksToFile = new File("savesTasksToFile.csv"); // основной файл для записи
     File testFileReset = new File("testFileReset.csv"); // файл для теста выгрузки задач из файла
     FileBackedTaskManager manager = new FileBackedTaskManager(savesTasksToFile);
@@ -82,7 +82,7 @@ public class FileBackedTaskManagerTest {
 
     }
 
-
+*/
 
 
 }

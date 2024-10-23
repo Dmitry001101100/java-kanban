@@ -3,6 +3,8 @@ package tasks;
 import enumeration.Status;
 import enumeration.TypeTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -10,16 +12,16 @@ public class Epic extends Task {
 
     private ArrayList<Integer> subtaskIds = new ArrayList<>();
 
-    public Epic(String title, String description, Integer id, enumeration.Status status) { // без списка
-        super(title, description, id, status);
+    public Epic(String title, String description, Integer id, enumeration.Status status, LocalDateTime startTime, Duration duration) { // без списка
+        super(title, description, id, status,startTime,duration);
     }
-
+/*
     public Epic(String title, String description, Integer id, Status status, ArrayList<Integer> subtaskIds) { // со списком
         super(title, description, id, status);
         this.subtaskIds = subtaskIds;
     }
 
-
+*/
     public void addSubtaskIds(Integer id) { // ложим id subtaska в лист subtaskIds
         subtaskIds.add(id);
     }

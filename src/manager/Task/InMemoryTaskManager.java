@@ -1,6 +1,8 @@
-package manager;
+package manager.Task;
 
 import enumeration.Status;
+import manager.History.HistoryManager;
+import manager.Managers;
 import tasks.*;
 import java.util.*;
 

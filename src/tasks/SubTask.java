@@ -2,14 +2,16 @@ package tasks;
 
 import enumeration.TypeTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class SubTask extends Task {
 
     private int epicId;
 
-    public SubTask(int epicSubTask, String title, String description, Integer id, enumeration.Status status) {
-        super(title, description, id, status);
+    public SubTask(int epicSubTask, String title, String description, Integer id, enumeration.Status status, LocalDateTime startTime, Duration duration) {
+        super(title, description, id, status,startTime,duration);
         this.epicId = epicSubTask;
     }
 

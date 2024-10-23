@@ -1,4 +1,4 @@
-package manager;
+package manager.Task;
 
 import enumeration.Status;
 import enumeration.TypeTask;
@@ -8,6 +8,8 @@ import tasks.SubTask;
 import tasks.Task;
 
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 
@@ -76,16 +78,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
                 switch (TypeTask.valueOf(type)) {
                     case SUBTASK -> {
-                        SubTask subtask = new SubTask(idOfEpic, name, description, id, Status.valueOf(status));
+                        SubTask subtask = new SubTask(idOfEpic, name, description, id, Status.valueOf(status),LocalDateTime.now(),Duration.ofMinutes(55));
                         super.saveSubTask(subtask);
 
                     }
                     case TASK -> {
-                        Task task = new Task(name, description, id, Status.valueOf(status));
+                        Task task = new Task(name, description, id, Status.valueOf(status), LocalDateTime.now(), Duration.ofMinutes(12));// аналогично
                         super.saveTask(task);
                     }
                     case EPIC -> {
-                        Epic epic = new Epic(name, description, id, Status.valueOf(status));
+                        Epic epic = new Epic(name, description, id, Status.valueOf(status),LocalDateTime.now(),Duration.ofMinutes(13));// исправить сохраняемую дату из списка
                         super.saveEpic(epic);
                     }
                 }
