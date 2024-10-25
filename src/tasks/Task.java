@@ -35,13 +35,13 @@ public class Task {
         }
 
 
-        return LocalDateTime.parse(startTime.format(DATE_TIME_FORMATTER));
+        return startTime;
     }
 
 
     public LocalDateTime getEndTime(){ // расчет окончания работы задачи
         if(getStartTime() != null && duration != null){  // если оба не равны нулю
-          return LocalDateTime.parse(startTime.plus(duration).format(DATE_TIME_FORMATTER));
+          return startTime.plus(duration);
         } else {
             return null;
         }
