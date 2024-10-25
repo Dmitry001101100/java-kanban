@@ -1,22 +1,33 @@
 package manager;
 
 import enumeration.Status;
+import manager.Task.FileBackedTaskManager;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
+
+import javax.swing.plaf.PanelUI;
 import java.io.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class FileBackedTaskManagerTest {
-    /*
+
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
+
     File savesTasksToFile = new File("savesTasksToFile.csv"); // основной файл для записи
     File testFileReset = new File("testFileReset.csv"); // файл для теста выгрузки задач из файла
-    FileBackedTaskManager manager = new FileBackedTaskManager(savesTasksToFile);
 
+    FileBackedTaskManager manager = new FileBackedTaskManager(savesTasksToFile);
+    FileBackedTaskManager reset = new FileBackedTaskManager(testFileReset);
+/*
     @Test
     public void savesTask() { // сохраняем все виды задач через новый класс
 
@@ -35,7 +46,7 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void checkingForSaving() {  // проверка на запись файла`
-        savesTask();// сохраняем
+        //savesTask();// сохраняем
 
         ArrayList<SubTask> subTasks;
         subTasks = manager.getSubTasks();
@@ -83,6 +94,46 @@ public class FileBackedTaskManagerTest {
     }
 
 */
+    @Test
+    public void saveTaskTest(){
+        Task task1 = new Task("Test titleTask", "Test description", manager.getIdUp(), Status.NEW,
+                LocalDateTime.of(2024,12,14,14,42), Duration.ofDays(140));
 
+        manager.saveTask(task1);
+
+        Task savedTask = manager.outIdTask(1);
+
+        assertNotNull(savedTask, "Задача не найдена.");
+        assertEquals(task1, savedTask, "Задачи не совпадают.");
+
+        List<Task> tasks = manager.getTasks();
+
+        System.out.println(manager.outIdTask(task1.getId()));
+
+        assertNotNull(tasks, "Задачи не возвращаются.");
+        assertEquals(1, tasks.size(), "Неверное количество задач.");
+        assertEquals(task1, tasks.get(0), "Задачи не совпадают.");
+    }
+
+    @Test
+    public void loaginTaskTest(){
+        Task task1 = new Task("Test titleTask", "Test description", reset.getIdUp(), Status.NEW,
+                LocalDateTime.of(2024,12,14,14,42), Duration.ofMinutes(140));
+
+        reset.downloadingFromAFile(savesTasksToFile);
+
+        Task savedTask = reset.outIdTask(1);
+
+        assertNotNull(savedTask, "Задача не найдена.");
+        assertEquals(task1, savedTask, "Задачи не совпадают.");
+
+        List<Task> tasks = reset.getTasks();
+
+        System.out.println(reset.outIdTask(task1.getId()));
+
+        assertNotNull(tasks, "Задачи не возвращаются.");
+        assertEquals(1, tasks.size(), "Неверное количество задач.");
+        assertEquals(task1, tasks.get(0), "Задачи не совпадают.");
+    }
 
 }

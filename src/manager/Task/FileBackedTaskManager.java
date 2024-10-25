@@ -10,12 +10,15 @@ import tasks.Task;
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
+
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
 
 
     public FileBackedTaskManager(File file) {
@@ -33,7 +36,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         try (Writer writer = new FileWriter(file)) {
 
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,startTime,duration,epic\n");
             for (Integer key : taskMap.keySet()) {
                 writer.write(taskMap.get(key).toString() + "\n");
             }
@@ -73,27 +76,59 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 } else {
                     description = "";
                 }
+                System.out.println(parts[5]);
+                LocalDateTime startTime ;
+                LocalDateTime endTime;
+                Duration duration;
+// ----------------------------------- проверка времени начала и конца задачи ------------------------------------------
+                if (parts[5].equals("null")){
+                    startTime = null;
+                }else{
+                    startTime = LocalDateTime.parse(parts[5], DATE_TIME_FORMATTER);
+                }
+
+                if (parts[6].equals("null")){
+                    endTime = null;
+                }else {
+                    endTime = LocalDateTime.parse(parts[6], DATE_TIME_FORMATTER);
+                }
+// ---------------------------------------------------------------------------------------------------------------------
+             //   System.out.print(startTime.format(DATE_TIME_FORMATTER)+"   "+endTime.format(DATE_TIME_FORMATTER));
+
+                if (startTime != null && endTime != null) {
+
+                    duration = Duration.between(startTime, endTime);
+
+
+                } else {
+                    duration = null;
+
+                }
+
+
                 if (type.equals("SUBTASK")) {
-                    idOfEpic = Integer.parseInt(parts[5]);
+                    idOfEpic = Integer.parseInt(parts[7]);
                 }
                 switch (TypeTask.valueOf(type)) {
                     case SUBTASK -> {
-                        SubTask subtask = new SubTask(idOfEpic, name, description, id, Status.valueOf(status),LocalDateTime.now(),Duration.ofMinutes(55));
+
+                        SubTask subtask = new SubTask(idOfEpic, name, description, id, Status.valueOf(status), startTime, duration);
+
                         super.saveSubTask(subtask);
 
                     }
                     case TASK -> {
-                        Task task = new Task(name, description, id, Status.valueOf(status), LocalDateTime.now(), Duration.ofMinutes(12));// аналогично
+                        Task task = new Task(name, description, id, Status.valueOf(status), startTime, duration);// аналогично
                         super.saveTask(task);
                     }
                     case EPIC -> {
-                        Epic epic = new Epic(name, description, id, Status.valueOf(status),LocalDateTime.now(),Duration.ofMinutes(13));// исправить сохраняемую дату из списка
+                        Epic epic = new Epic(name, description, id, Status.valueOf(status), startTime, duration);// исправить сохраняемую дату из списка
                         super.saveEpic(epic);
                     }
                 }
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Saving error!");
+            throw new ManagerSaveException("Ошибка записи!");
         }
     }
 

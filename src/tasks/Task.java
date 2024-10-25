@@ -29,13 +29,25 @@ public class Task {
 
     }
 
-
-    public LocalDateTime getEndTime(){ //расчет окончания работы задачи
-        if((startTime==null)||(duration == null)){
+    public LocalDateTime getStartTime(){
+        if(startTime == null){
             return null;
         }
-        return startTime.plus(duration);
+
+
+        return LocalDateTime.parse(startTime.format(DATE_TIME_FORMATTER));
     }
+
+
+    public LocalDateTime getEndTime(){ // расчет окончания работы задачи
+        if(getStartTime() != null && duration != null){  // если оба не равны нулю
+          return LocalDateTime.parse(startTime.plus(duration).format(DATE_TIME_FORMATTER));
+        } else {
+            return null;
+        }
+    }
+
+
 
 
 
@@ -49,7 +61,9 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("%s,%s,%s,%s,%s,%s,%s", id, getType(), name, status, description, startTime.format(DATE_TIME_FORMATTER), getEndTime().format(DATE_TIME_FORMATTER));
+        return String.format("%s,%s,%s,%s,%s,%s,%s", id, getType(), name, status, description,
+                getStartTime(),
+                getEndTime());
     }
 
     public void setStatus(Status status) {
@@ -89,5 +103,10 @@ public class Task {
 
     public String getName() {
         return name;
+    }
+
+
+    public Duration getDuration() {
+        return duration;
     }
 }

@@ -2,6 +2,7 @@ package tasks;
 
 import manager.History.HistoryManager;
 import manager.Managers;
+import manager.Task.FileBackedTaskManager;
 import manager.Task.TaskManager;
 import enumeration.Status;
 import org.junit.jupiter.api.Test;
@@ -13,10 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
     TaskManager taskManager = Managers.getDefault();
+
     HistoryManager historyManager = Managers.getDefaultHistory();
 
     Task task1 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
-            LocalDateTime.of(2024,12,14,14,42), Duration.ofDays(140));
+            LocalDateTime.of(2024,12,14,14,42), Duration.ofMinutes(140));
 
     @Test
     void addNewTask() {
