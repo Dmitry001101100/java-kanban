@@ -19,7 +19,7 @@ public class Task {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
 
-    public Task(String title, String description, Integer id, Status status,LocalDateTime startTime,Duration duration) {
+    public Task(String title, String description, Integer id, Status status, LocalDateTime startTime, Duration duration) {
         this.name = title;
         this.description = description;
         this.id = id;
@@ -28,29 +28,31 @@ public class Task {
         this.duration = duration;
 
     }
-
-    public LocalDateTime getStartTime(){
-        if(startTime == null){
-            return null;
-        }
-
-
+    //------------------------------------ время -----------------------------------------------------------------------
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
 
-    public LocalDateTime getEndTime(){ // расчет окончания работы задачи
-        if(getStartTime() != null && duration != null){  // если оба не равны нулю
-          return startTime.plus(duration);
-        } else {
+    public LocalDateTime getEndTime() { // расчет окончания работы задачи
+        if(duration == null){
+            return startTime;
+        } else if (startTime != null) {
+            return startTime.plus(duration);
+        }else{
             return null;
         }
     }
 
+    public String toFormat(LocalDateTime time){ // метод создан для обработки случаев если пользователь ввел значение null
+        // если же все введено верно то метод выводит время и дату в нужном формате
+        if(time == null){
+            return "null";
+        }
+        return time.format(DATE_TIME_FORMATTER);
+    }
 
-
-
-
+    // -----------------------------------------------------------------------------------------------------------------
     public Task(Status status) {
         this.status = status;
     }
@@ -62,8 +64,8 @@ public class Task {
     @Override
     public String toString() {
         return String.format("%s,%s,%s,%s,%s,%s,%s", id, getType(), name, status, description,
-                getStartTime(),
-                getEndTime());
+                toFormat(startTime),
+                toFormat(getEndTime()));
     }
 
     public void setStatus(Status status) {
@@ -88,25 +90,26 @@ public class Task {
         return description;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(id, task.id) && status == task.status;
+        return Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(id,
+                task.id) && status == task.status && Objects.equals(startTime, task.startTime)
+                && Objects.equals(duration, task.duration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, id, status);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-
-    public Duration getDuration() {
-        return duration;
+        return Objects.hash(name, description, id, status, startTime, duration);
     }
 }

@@ -76,7 +76,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 } else {
                     description = "";
                 }
-                System.out.println(parts[5]);
+               // System.out.println(parts[5]);
                 LocalDateTime startTime ;
                 LocalDateTime endTime;
                 Duration duration;

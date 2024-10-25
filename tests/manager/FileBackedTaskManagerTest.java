@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class FileBackedTaskManagerTest {
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
+
 
     File savesTasksToFile = new File("savesTasksToFile.csv"); // основной файл для записи
     File testFileReset = new File("testFileReset.csv"); // файл для теста выгрузки задач из файла
@@ -97,7 +97,11 @@ public class FileBackedTaskManagerTest {
     @Test
     public void saveTaskTest(){
         Task task1 = new Task("Test titleTask", "Test description", manager.getIdUp(), Status.NEW,
-                LocalDateTime.of(2024,12,14,14,42), Duration.ofDays(140));
+               LocalDateTime.of(24,12,14,14,42),
+             //   null,
+             //   null
+               Duration.ofMinutes(134)
+        );
 
         manager.saveTask(task1);
 
@@ -133,7 +137,7 @@ public class FileBackedTaskManagerTest {
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task1, tasks.get(0), "Задачи не совпадают.");
+        assertEquals(task1, tasks.getFirst(), "Задачи не совпадают.");
     }
 
 }
