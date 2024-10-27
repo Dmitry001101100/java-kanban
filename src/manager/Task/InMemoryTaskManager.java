@@ -6,10 +6,15 @@ import manager.Managers;
 import tasks.*;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
 
     private static final Comparator<Task> taskComparator = Comparator.comparing(
             Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(Task::getId);
@@ -111,7 +116,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         Epic epic1 = epicMap.get(idEpic); // вызываем нужный элемент хеш таблицы
 
-        if (epic1.getSubtaskIds() == null ||(!epic1.getSubtaskIds().contains(idSub))) {
+        if (epic1.getSubtaskIds() == null || (!epic1.getSubtaskIds().contains(idSub))) {
             epic1.addSubtaskIds(idSub); // записываем в список id подзадач новое значение
         }
 
@@ -279,42 +284,39 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime epicEndTime = epic.getEndTime();
         Duration epicDuration = epic.getDuration();
 
-
-        System.out.println(epic.getSubtaskIds());
-
         if (epic.getSubtaskIds() != null) {
-
+            epicDuration = null;
             for (SubTask subTask : getSubTasksId(epicId)) {
-                epicDuration = null;
-
-                if (subTask.getStartTime() != null) {
-                    if (epicStartTime == null || epicStartTime.isAfter(subTask.getStartTime())) {
-                        System.out.println("изменение времени начала");
-                        epicStartTime = subTask.getStartTime();
-                    }
-                }
 
                 if (subTask.getEndTime() != null) {
-                    if (epicEndTime == null || epicEndTime.isBefore(subTask.getEndTime())) {
+                    if (epicEndTime == null || epicEndTime.isAfter(subTask.getEndTime())) {
                         System.out.println(" изменение конечного времени");
                         epicEndTime = subTask.getEndTime();
                     }
                 }
 
-                if (epicDuration != null && subTask.getDuration() != null) {
-                    System.out.println("присвоение продолжительности времени");
-                    epicDuration.plus(subTask.getDuration());
-                } else if (epicDuration == null && subTask.getDuration() != null) {
-                    System.out.println("прибавление продолжительности");
-                    epicDuration = subTask.getDuration();
+                if (subTask.getStartTime() != null) {
+                    if (epicStartTime == null || epicStartTime.isBefore(subTask.getStartTime())) {
+                        System.out.println("изменение времени начала");
+                        epicStartTime = subTask.getStartTime();
+                    }
+                }
+                if (subTask.getDuration() != null) {
+                   // System.out.println(subTask.getDuration());
+                    if (epicDuration == null) {
+                        epicDuration = subTask.getDuration();
+                    } else {
+                        epicDuration = epicDuration.plus(subTask.getDuration());
+                        System.out.println("прибавление продолжительности " + epicDuration.toMinutes());
+                    }
                 }
             }
         } else {
-            if(epicDuration == null){
+            if (epicDuration == null) {
                 epicEndTime = epicStartTime;
             } else if (epicStartTime != null) {
                 epicEndTime = epicStartTime.plus(epicDuration);
-            }else{
+            } else {
                 epicEndTime = null;
             }
         }
@@ -323,6 +325,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setDuration(epicDuration);
         epic.setEndTime(epicEndTime);
 
-
     }
+
+
 }
