@@ -1,6 +1,6 @@
 package manager.Task;
 
-import enumeration.Status;
+import enumeration.*;
 import manager.History.HistoryManager;
 import manager.Managers;
 import tasks.*;
@@ -11,10 +11,13 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
+    private static final Comparator<Task> taskComparator = Comparator.comparing(
+            Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(Task::getId);
     //------------------------------------------------------------------------------------------------------------------
     protected final Map<Integer, Task> taskMap = new HashMap<>();
     protected final Map<Integer, Epic> epicMap = new HashMap<>();
     protected final Map<Integer, SubTask> subTaskMap = new HashMap<>();
+    private Set<Task> prioritizedTasks = new TreeSet<>(taskComparator);
 
     HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -51,7 +54,7 @@ public class InMemoryTaskManager implements TaskManager {
             // все задачи имеют статус новый
             epic1.setStatus(Status.NEW); // статус эпика новый
 
-        } else if (numDone == epic1.getSubtaskIds().size()) { // если все подзадачи имеют статсу выполнен
+        } else if (numDone == epic1.getSubtaskIds().size()) { // если все подзадачи имеют статусу выполнен
 
             epic1.setStatus(Status.DONE); //статус эпика выполнен
         } else {
@@ -84,6 +87,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void saveTask(Task task) { // сохранение и перезапись задач
 
         taskMap.put(task.getId(), task);
+        prioritizedTasks.add(task);
         System.out.println("Задача успешно сохранена!");
 
     }
@@ -93,6 +97,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         epicMap.put(epic.getId(), epic);
         SearchForTheStartTimeAndDuration(epic.getId());
+        prioritizedTasks.add(epic);
         System.out.println("Эпик успешно сохранен!");
 
     }
@@ -112,7 +117,8 @@ public class InMemoryTaskManager implements TaskManager {
 
         subTaskMap.put(subTask.getId(), subTask);
         updateEpicStatus(idEpic); //проверка и если требуется изменение статуса эпика
-        SearchForTheStartTimeAndDuration(idEpic);
+        SearchForTheStartTimeAndDuration(idEpic); // временные рамки эпика
+        prioritizedTasks.add(subTask);
         System.out.println("Подзадача успешно сохранена!");
 
     }
@@ -134,7 +140,6 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (int i : epicMap.get(epicId).getSubtaskIds()) { // если в списке есть id подзадачи – то берем на вывод эту подзадачу
             subTasksIdArrayList.add(subTaskMap.get(i));
-
         }
 
         return subTasksIdArrayList;
@@ -176,6 +181,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearTasks() { // удалить все задачи
+
+        prioritizedTasks.removeIf(task -> task.getType() == TypeTask.TASK);
+
         taskMap.clear();
         System.out.println("Задачи полностью удалены.");
     }
@@ -183,13 +191,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void clearSubTasksOfEpic(int epicId) { // удалить все подзадачи у одного эпика
 
-        for (int i : epicMap.get(epicId).getSubtaskIds()) { // если в списке есть id подзадачи – то удаляем эту подзадачу
-            subTaskMap.remove(i);
-
-        }
-        epicMap.get(epicId).getSubtaskIds().clear();
-        SearchForTheStartTimeAndDuration(epicId);
-        updateEpicStatus(epicId);
+        subTaskMap.values().removeIf(subTask -> subTask.getEpicId() == epicId); // удаляем все подзадачи относящиеся к этому эпику
+        epicMap.get(epicId).getSubtaskIds().clear(); // очищаем список подзадач у эпика
+        SearchForTheStartTimeAndDuration(epicId);   // временные рамки эпика
+        updateEpicStatus(epicId);   // обновляем статус эпика
+        System.out.println("Все подзадачи в рамках одного эпика удалены");
     }
 
     @Override
@@ -273,9 +279,12 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime epicEndTime = epic.getEndTime();
         Duration epicDuration = epic.getDuration();
 
+        System.out.println(epic.getSubtaskIds());
+
         if (epic.getSubtaskIds() != null) {
 
             for (SubTask subTask : getSubTasksId(epicId)) {
+                epicDuration = null;
 
                 if (subTask.getStartTime() != null) {
                     if (epicStartTime == null || epicStartTime.isAfter(subTask.getStartTime())) {
@@ -295,13 +304,19 @@ public class InMemoryTaskManager implements TaskManager {
                     System.out.println("присвоение продолжительности времени");
                     epicDuration.plus(subTask.getDuration());
                 } else if (epicDuration == null && subTask.getDuration() != null) {
-                    System.out.println("прибовление продолжительности");
+                    System.out.println("прибавление продолжительности");
                     epicDuration = subTask.getDuration();
                 }
 
             }
         } else {
-            epic.setEndTime(epic.saveEndTameElseIdSubTaskAll());
+            if(epicDuration == null){
+                epicEndTime = epicStartTime;
+            } else if (epicStartTime != null) {
+                epicEndTime = epicStartTime.plus(epicDuration);
+            }else{
+                epicEndTime = null;
+            }
         }
 
         epic.setStartTime(epicStartTime);

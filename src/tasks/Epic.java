@@ -17,12 +17,19 @@ public class Epic extends Task {
         super(title, description, id, status,startTime,duration );
     }
 
+    public void clearSubtaskIds(){
+        subtaskIds.clear();
+    }
+
 
     public void addSubtaskIds(Integer id) { // ложим id subtaska в лист subtaskIds
         subtaskIds.add(id);
     }
 
     public ArrayList<Integer> getSubtaskIds() {
+        if (subtaskIds.isEmpty()){
+            return null;
+        }
         return subtaskIds;
     }
 
@@ -51,20 +58,6 @@ public class Epic extends Task {
     public LocalDateTime getEndTime(){
         return endTime;
     }
-
-    public LocalDateTime saveEndTameElseIdSubTaskAll(){  // та же логика, что и в выводе времени окончания задачи других классах
-        if(getDuration() == null){
-            return getStartTime();
-        } else if (getStartTime() != null) {
-            return getStartTime().plus(getDuration());
-        }else{
-            return null;
-        }
-    }
-
-
-
-
 
     @Override
     public boolean equals(Object o) {
