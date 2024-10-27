@@ -53,7 +53,7 @@ public class Task {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    public Task(Status status) {
+    public Task(String title, String description, Integer id, Status status) {
         this.status = status;
     }
 
@@ -111,5 +111,13 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(name, description, id, status, startTime, duration);
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 }

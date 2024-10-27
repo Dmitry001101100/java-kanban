@@ -4,6 +4,9 @@ import enumeration.Status;
 import manager.History.HistoryManager;
 import manager.Managers;
 import tasks.*;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -89,6 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void saveEpic(Epic epic) { // сохранение и перезапись эпиков
 
         epicMap.put(epic.getId(), epic);
+        SearchForTheStartTimeAndDuration(epic.getId());
         System.out.println("Эпик успешно сохранен!");
 
     }
@@ -99,6 +103,7 @@ public class InMemoryTaskManager implements TaskManager {
         int idEpic = subTask.getEpicId(); // записали id эпика к которому принадлежит подзадача
         int idSub = subTask.getId(); //записали id подзадачи
 
+
         Epic epic1 = epicMap.get(idEpic); // вызываем нужный элемент хеш таблицы
 
         if (!epic1.getSubtaskIds().contains(idSub)) {
@@ -107,6 +112,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         subTaskMap.put(subTask.getId(), subTask);
         updateEpicStatus(idEpic); //проверка и если требуется изменение статуса эпика
+        SearchForTheStartTimeAndDuration(idEpic);
         System.out.println("Подзадача успешно сохранена!");
 
     }
@@ -182,6 +188,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         }
         epicMap.get(epicId).getSubtaskIds().clear();
+        SearchForTheStartTimeAndDuration(epicId);
         updateEpicStatus(epicId);
     }
 
@@ -195,7 +202,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void clearSubtasks() {
+    public void clearSubtasks() { // удаление всех подзадач
 
         for (Integer id : subTaskMap.keySet()) {
 
@@ -205,6 +212,7 @@ public class InMemoryTaskManager implements TaskManager {
             int indexSub = epicMap.get(epicId).getSubtaskIds().indexOf(id); // ищем индекс нахождения id задачи которую хотим удалить
 
             epicMap.get(epicId).removeSubtaskIds(indexSub); // удаляем подзадачу из списка подзадач который находится в эпике
+            SearchForTheStartTimeAndDuration(epicId); // изменяем начальное и конечное время если требуется
             updateEpicStatus(epicId); //проверка и если требуется изменение статуса эпика
         }
 
@@ -231,6 +239,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTaskMap.remove(numberId);
         historyManager.remove(numberId);
         updateEpicStatus(epicId);
+        SearchForTheStartTimeAndDuration(epicId);
         System.out.println("Подзадача под номером " + numberId + " была удалена!");
 
     }
@@ -254,5 +263,51 @@ public class InMemoryTaskManager implements TaskManager {
         return (ArrayList<Task>) historyManager.getHistory();
     }
 
+    // ----------------------------------- расчет начального и конечного времени эпика ----------------------------------
 
+    public void SearchForTheStartTimeAndDuration(int epicId) {  // расчет времени старта, продолжительности и окончания эпика
+
+        Epic epic = epicMap.get(epicId);
+
+        LocalDateTime epicStartTime = epic.getStartTime();
+        LocalDateTime epicEndTime = epic.getEndTime();
+        Duration epicDuration = epic.getDuration();
+
+        if (epic.getSubtaskIds() != null) {
+
+            for (SubTask subTask : getSubTasksId(epicId)) {
+
+                if (subTask.getStartTime() != null) {
+                    if (epicStartTime == null || epicStartTime.isAfter(subTask.getStartTime())) {
+                        System.out.println("изменение времени начала");
+                        epicStartTime = subTask.getStartTime();
+                    }
+                }
+
+                if (subTask.getEndTime() != null) {
+                    if (epicEndTime == null || epicEndTime.isBefore(subTask.getEndTime())) {
+                        System.out.println(" изменение конечного времени");
+                        epicEndTime = subTask.getEndTime();
+                    }
+                }
+
+                if (epicDuration != null && subTask.getDuration() != null) {
+                    System.out.println("присвоение продолжительности времени");
+                    epicDuration.plus(subTask.getDuration());
+                } else if (epicDuration == null && subTask.getDuration() != null) {
+                    System.out.println("прибовление продолжительности");
+                    epicDuration = subTask.getDuration();
+                }
+
+            }
+        } else {
+            epic.setEndTime(epic.saveEndTameElseIdSubTaskAll());
+        }
+
+        epic.setStartTime(epicStartTime);
+        epic.setDuration(epicDuration);
+        epic.setEndTime(epicEndTime);
+
+
+    }
 }

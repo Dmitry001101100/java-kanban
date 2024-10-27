@@ -17,9 +17,7 @@ import java.util.ArrayList;
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
-
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
-
 
     public FileBackedTaskManager(File file) {
         super();
@@ -28,8 +26,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
 
 //----------------------------------------------------------------------------------------------------------------------
-
-
     // метод для сохранения всех видов задач в файл;
 
     public void save() {
@@ -76,7 +72,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 } else {
                     description = "";
                 }
-               // System.out.println(parts[5]);
                 LocalDateTime startTime ;
                 LocalDateTime endTime;
                 Duration duration;
@@ -99,10 +94,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
                     duration = Duration.between(startTime, endTime);
 
-
                 } else {
                     duration = null;
-
                 }
 
 
@@ -140,7 +133,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     // -------------------------------Сохранение -----------------------------------------------------------------------
-
 
     @Override
     public void saveTask(Task savetheTask) {
