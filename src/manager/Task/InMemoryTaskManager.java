@@ -111,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         Epic epic1 = epicMap.get(idEpic); // вызываем нужный элемент хеш таблицы
 
-        if (!epic1.getSubtaskIds().contains(idSub)) {
+        if (epic1.getSubtaskIds() == null ||(!epic1.getSubtaskIds().contains(idSub))) {
             epic1.addSubtaskIds(idSub); // записываем в список id подзадач новое значение
         }
 
@@ -279,6 +279,7 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime epicEndTime = epic.getEndTime();
         Duration epicDuration = epic.getDuration();
 
+
         System.out.println(epic.getSubtaskIds());
 
         if (epic.getSubtaskIds() != null) {
@@ -307,7 +308,6 @@ public class InMemoryTaskManager implements TaskManager {
                     System.out.println("прибавление продолжительности");
                     epicDuration = subTask.getDuration();
                 }
-
             }
         } else {
             if(epicDuration == null){

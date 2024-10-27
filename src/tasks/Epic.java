@@ -27,10 +27,10 @@ public class Epic extends Task {
     }
 
     public ArrayList<Integer> getSubtaskIds() {
-        if (subtaskIds.isEmpty()){
-            return null;
+        if (!subtaskIds.isEmpty()){
+            return subtaskIds;
         }
-        return subtaskIds;
+        return null;
     }
 
     public void removeSubtaskIds(Integer id) { // удаляем id subtaska из списка subtaskIds
