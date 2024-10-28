@@ -33,7 +33,7 @@ class TaskTest {
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task1, tasks.get(0), "Задачи не совпадают.");
+        assertEquals(task1, tasks.getFirst(), "Задачи не совпадают.");
     }
 
     @Test

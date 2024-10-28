@@ -4,31 +4,26 @@ import enumeration.*;
 import manager.History.HistoryManager;
 import manager.Managers;
 import tasks.*;
-
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
-    //  public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
 
     private static final Comparator<Task> taskComparator = Comparator.comparing(
             Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())).thenComparing(Task::getId);
     //------------------------------------------------------------------------------------------------------------------
+
     protected final Map<Integer, Task> taskMap = new HashMap<>();
     protected final Map<Integer, Epic> epicMap = new HashMap<>();
     protected final Map<Integer, SubTask> subTaskMap = new HashMap<>();
-    private Set<Task> prioritizedTasks = new TreeSet<>(taskComparator);
+    private final Set<Task> prioritizedTasks = new TreeSet<>(taskComparator);
 
     HistoryManager historyManager = Managers.getDefaultHistory();
 
     //-------------------------------Вспомогательные--------------------------------------------------------------------
     int idUp = 0;
-
 
     @Override
     public int getIdUp() { // герерирует id
@@ -55,19 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
         else epic.setStatus(Status.IN_PROGRESS);
 
     }
-
     // -------------------------------------- prioritizedTasks ---------------------------------------------------------
-
-    public boolean isValid(Task task) {
-        for (Task existingTask : taskMap.values()) {
-            if (existingTask.getId() != task.getId() &&
-                    (task.getStartTime().isBefore(existingTask.getEndTime()) &&
-                            task.getEndTime().isAfter(existingTask.getStartTime()))) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(prioritizedTasks);
@@ -208,7 +191,6 @@ public class InMemoryTaskManager implements TaskManager {
 
         subTaskMap.clear();
         epicMap.clear();
-        //prioritizedTasks.removeIf(task -> task.getType() == TypeTask.EPIC);
         prioritizedTasks.removeIf(task -> task.getType() == TypeTask.SUBTASK);
         System.out.println("Эпики и подзадачи к ним относящиеся полностью удалены.");
 
@@ -225,7 +207,6 @@ public class InMemoryTaskManager implements TaskManager {
                 .peek(epic -> subTaskMap.clear())
                 .collect(Collectors.toList());
 
-        // subTaskMap.clear();
     }
 
     // -------------------------------------- 6 - Удаление по id -------------------------------------------------------
@@ -270,7 +251,7 @@ public class InMemoryTaskManager implements TaskManager {
         return (ArrayList<Task>) historyManager.getHistory();
     }
 
-    // ----------------------------------- расчет начального и конечного времени и продолжительности  эпика ----------------------------------
+// ----------------------------------- расчет начального и конечного времени и продолжительности  эпика ----------------------------------
 
     public void searchForTheStartTimeAndDuration(int epicId) { // расчет временных рамок эпика
         Epic epic = epicMap.get(epicId);

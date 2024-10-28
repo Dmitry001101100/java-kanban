@@ -28,6 +28,7 @@ public class Task {
         this.duration = duration;
 
     }
+
     //------------------------------------ время -----------------------------------------------------------------------
     public LocalDateTime getStartTime() {
         return startTime;
@@ -35,27 +36,25 @@ public class Task {
 
 
     public LocalDateTime getEndTime() { // расчет окончания работы задачи
-        if(duration == null){
+        if (duration == null) {
             return startTime;
         } else if (startTime != null) {
             return startTime.plus(duration);
-        }else{
+        } else {
             return null;
         }
     }
 
-    public String toFormat(LocalDateTime time){ // метод создан для обработки случаев если пользователь ввел значение null
+    public String toFormat(LocalDateTime time) { // метод создан для обработки случаев если пользователь ввел значение null
         // если же все введено верно то метод выводит время и дату в нужном формате
-        if(time == null){
+        if (time == null) {
             return "null";
         }
         return time.format(DATE_TIME_FORMATTER);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    public Task(String title, String description, Integer id, Status status) {
-        this.status = status;
-    }
+
 
     public TypeTask getType() {
         return TypeTask.TASK;

@@ -6,12 +6,9 @@ import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
-
-import javax.swing.plaf.PanelUI;
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,18 +29,15 @@ public class FileBackedTaskManagerTest {
     public void savesTask() { // сохраняем все виды задач через новый класс
 
         Task task1 = new Task("Test titleTask", "Test description", manager.getIdUp(), Status.NEW,
-                LocalDateTime.of(2024,12,14,14,42), Duration.ofMinutes(140)); // 1
-
+                LocalDateTime.of(2024,2,14,14,42), Duration.ofMinutes(14)); // 1
         Task task2 = new Task("Test titleTask", "Test description", manager.getIdUp(), Status.NEW,
-                LocalDateTime.of(2024,12,14,14,42), Duration.ofMinutes(140)); // 2
-
+                LocalDateTime.of(2024,12,14,14,42), Duration.ofMinutes(11)); // 2
         Epic epic3 = new Epic("Епик", "описание", manager.getIdUp(), Status.NEW,
                 LocalDateTime.now(), Duration.ofMinutes(20));                                       // 3
-
         SubTask sub4 = new SubTask(epic3.getId(), "Test titleSub1", "Test in Epic", manager.getIdUp(), Status.IN_PROGRESS,
-                LocalDateTime.of(24, 12, 4, 10, 17), Duration.ofMinutes(15)); // 4
+                LocalDateTime.of(24, 12, 4, 10, 17), Duration.ofMinutes(24)); // 4
         SubTask sub5 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", manager.getIdUp(), Status.NEW,
-                LocalDateTime.of(24, 3, 25, 16, 40), Duration.ofMinutes(45)); // 5
+                LocalDateTime.of(24, 8, 25, 16, 40), Duration.ofMinutes(12)); // 5
 
         manager.saveTask(task1);
         manager.saveTask(task2);
@@ -133,7 +127,7 @@ public class FileBackedTaskManagerTest {
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task1, tasks.get(0), "Задачи не совпадают.");
+        assertEquals(task1, tasks.getFirst(), "Задачи не совпадают.");
     }
 
     @Test

@@ -1,8 +1,6 @@
 package tasks;
 
-import enumeration.Status;
 import enumeration.TypeTask;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

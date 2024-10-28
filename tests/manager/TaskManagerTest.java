@@ -45,7 +45,7 @@ public class TaskManagerTest {
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task1, tasks.get(0), "Задачи не совпадают.");
+        assertEquals(task1, tasks.getFirst(), "Задачи не совпадают.");
     }
 
     // Проверьте, что наследники класса Task равны друг другу, если равен их id
@@ -58,7 +58,7 @@ public class TaskManagerTest {
 
         SubTask sub2 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", taskManager.getIdUp(), Status.IN_PROGRESS,
                 LocalDateTime.of(24, 12, 4, 10, 17), Duration.ofMinutes(15));
-        // для этого теста возьмем обьекты epic4 и sub8
+
         taskManager.saveEpic(epic1);
         taskManager.saveSubTask(sub2);
 

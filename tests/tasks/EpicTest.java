@@ -43,7 +43,6 @@ class EpicTest {
     @Test
     public void epicHasNewStatusWhenAllSubtasksAreNew() {// если есть подзадачи со статусом New
 
-
         taskManager.saveEpic(epic1);
         taskManager.saveSubTask(sub2);
         taskManager.saveSubTask(sub3);
@@ -112,13 +111,7 @@ class EpicTest {
         Duration duration1 = sub2.getDuration().plus(sub3.getDuration()); // проверочное время из обьекта перед записью
         Duration durationTaskManager = taskManager.outIdEpic(epic1.getId()).getDuration();
 
-
         assertEquals(duration1.toMinutes(), durationTaskManager.toMinutes(), "Продолжительность времени насчитывается неправильно");
-
-        //System.out.println(taskManager.outIdEpic(epic1.getId()));
-        //taskManager.clearSubtasks();
-
-        //System.out.println(taskManager.outIdEpic(epic1.getId()));
     }
 
     @Test
@@ -126,7 +119,6 @@ class EpicTest {
         temporaryVerificationOfTheEpic();
 
         taskManager.clearSubtasks();
-
 
         assertNull(epic1.getDuration(), "Продолжительность времени насчитывается неправильно");
         assertNull(epic1.getStartTime(), "Начальное время насчитывается неправильно");
