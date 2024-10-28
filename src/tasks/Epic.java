@@ -14,11 +14,11 @@ public class Epic extends Task {
     private LocalDateTime endTime;
 
     public Epic(String title, String description, Integer id, enumeration.Status status, LocalDateTime startTime, Duration duration) { // без списка
-        super(title, description, id, status,startTime,duration );
+        super(title, description, id, status, startTime, duration);
     }
 
 
-    public void clearSubtaskIds(){
+    public void clearSubtaskIds() {
         subtaskIds.clear();
     }
 
@@ -28,10 +28,7 @@ public class Epic extends Task {
     }
 
     public ArrayList<Integer> getSubtaskIds() {
-        if (!subtaskIds.isEmpty()){
-            return subtaskIds;
-        }
-        return null;
+        return subtaskIds;
     }
 
     public void removeSubtaskIds(Integer id) { // удаляем id subtaska из списка subtaskIds
@@ -56,7 +53,7 @@ public class Epic extends Task {
     }
 
     @Override
-    public LocalDateTime getEndTime(){
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 

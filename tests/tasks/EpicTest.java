@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class EpicTest {
 
@@ -18,9 +19,9 @@ class EpicTest {
     Epic epic1 = new Epic("Епик", "описание", taskManager.getIdUp(), Status.NEW,
             LocalDateTime.now(), Duration.ofMinutes(20));
 
-    SubTask sub2 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", taskManager.getIdUp(), Status.NEW,
+    SubTask sub2 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", taskManager.getIdUp(), Status.IN_PROGRESS,
             LocalDateTime.of(24, 12, 4, 10, 17), Duration.ofMinutes(15));
-    SubTask sub3 = new SubTask(epic1.getId(), "Test titleSub2", "Test in Epic", taskManager.getIdUp(), Status.IN_PROGRESS,
+    SubTask sub3 = new SubTask(epic1.getId(), "Test titleSub2", "Test in Epic", taskManager.getIdUp(), Status.NEW,
             LocalDateTime.of(24, 3, 25, 16, 40), Duration.ofMinutes(45));
 
     @Test
@@ -28,11 +29,15 @@ class EpicTest {
 
         taskManager.saveEpic(epic1);
 
-        System.out.println(taskManager.outIdEpic(epic1.getId()));
+        System.out.println("до добавления подзадачи "+taskManager.outIdEpic(epic1.getId()));
         assertEquals(Status.NEW, taskManager.outIdEpic(epic1.getId()).getStatus(), "Статус генерируется неправильно");
 
         taskManager.saveSubTask(sub2);
-        assertEquals(Status.NEW, taskManager.outIdEpic(epic1.getId()).getStatus(), "Статус генерируется неправильно");
+        taskManager.saveSubTask(sub3);
+        System.out.println("после добавления"+taskManager.outIdEpic(epic1.getId()));
+        assertEquals(Status.IN_PROGRESS, taskManager.outIdEpic(epic1.getId()).getStatus(), "Статус генерируется неправильно");
+        taskManager.clearSubtasks();
+        System.out.println("после удаления"+taskManager.outIdEpic(epic1.getId()));
     }
 
     @Test
@@ -82,11 +87,9 @@ class EpicTest {
     public void temporaryVerificationOfTheEpic() {
         // конечное время до сохранения подзадач
         taskManager.saveEpic(epic1);
-
-        LocalDateTime endTimeEpic = epic1.getStartTime().plus(epic1.getDuration());
         LocalDateTime endTimeIsTaskManager = taskManager.outIdEpic(epic1.getId()).getEndTime();
 
-        assertEquals(endTimeEpic.format(DATE_TIME_FORMATTER), endTimeIsTaskManager.format(DATE_TIME_FORMATTER), "Конечное время насчитывается неправильно");
+        assertEquals(null, endTimeIsTaskManager, "Конечное время насчитывается неправильно");
 
         // временные рамки после сохранения подзадач----------------------------------------------------------------------
         taskManager.saveSubTask(sub2);
@@ -112,9 +115,22 @@ class EpicTest {
 
         assertEquals(duration1.toMinutes(), durationTaskManager.toMinutes(), "Продолжительность времени насчитывается неправильно");
 
+        //System.out.println(taskManager.outIdEpic(epic1.getId()));
+        //taskManager.clearSubtasks();
 
+        //System.out.println(taskManager.outIdEpic(epic1.getId()));
     }
 
     @Test
+    public void clearSubTask(){ // в этом тесте удаляем через обновленный метод очищения подзадач и сверяем что временные рамки равны нулю
+        temporaryVerificationOfTheEpic();
 
+        taskManager.clearSubtasks();
+
+
+        assertNull(epic1.getDuration(), "Продолжительность времени насчитывается неправильно");
+        assertNull(epic1.getStartTime(), "Начальное время насчитывается неправильно");
+        assertNull(epic1.getEndTime(), "Конечное время насчитывается неправильно");
+        System.out.println(taskManager.outIdEpic(epic1.getId()));
+    }
 }
