@@ -4,6 +4,7 @@ import enumeration.Status;
 import manager.Managers;
 import manager.Task.TaskManager;
 import org.junit.jupiter.api.Test;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -78,52 +79,42 @@ class EpicTest {
     }
 
     @Test
-    public void temporaryVerificationOfTheEpic(){
+    public void temporaryVerificationOfTheEpic() {
         // конечное время до сохранения подзадач
         taskManager.saveEpic(epic1);
 
         LocalDateTime endTimeEpic = epic1.getStartTime().plus(epic1.getDuration());
         LocalDateTime endTimeIsTaskManager = taskManager.outIdEpic(epic1.getId()).getEndTime();
 
-
-       // System.out.println(endTimeEpic.format(DATE_TIME_FORMATTER));
-       // System.out.println(endTimeIsTaskManager.format(DATE_TIME_FORMATTER));
-        assertEquals(endTimeEpic.format(DATE_TIME_FORMATTER),endTimeIsTaskManager.format(DATE_TIME_FORMATTER), "Конечное время насчитывается неправильно");
+        assertEquals(endTimeEpic.format(DATE_TIME_FORMATTER), endTimeIsTaskManager.format(DATE_TIME_FORMATTER), "Конечное время насчитывается неправильно");
 
         // временные рамки после сохранения подзадач----------------------------------------------------------------------
-         taskManager.saveSubTask(sub2);
-         taskManager.saveSubTask(sub3);
+        taskManager.saveSubTask(sub2);
+        taskManager.saveSubTask(sub3);
 
-         // конечное время насчитывается по самому длинному конечному времени подзадачи.
+        // конечное время насчитывается по самому длинному конечному времени подзадачи.
 
-         LocalDateTime endTimeSub3 = sub3.getEndTime();
-         LocalDateTime endTimeIsTaskManager1 = taskManager.outIdEpic(epic1.getId()).getEndTime();
+        LocalDateTime endTimeSub3 = sub3.getEndTime();
+        LocalDateTime endTimeIsTaskManager1 = taskManager.outIdEpic(epic1.getId()).getEndTime();
 
-        //System.out.println(endTimeSub3.format(DATE_TIME_FORMATTER));
-        //System.out.println(endTimeIsTaskManager1.format(DATE_TIME_FORMATTER));
-        assertEquals(endTimeSub3.format(DATE_TIME_FORMATTER),endTimeIsTaskManager1.format(DATE_TIME_FORMATTER), "Конечное время насчитывается неправильно");
+        assertEquals(endTimeSub3.format(DATE_TIME_FORMATTER), endTimeIsTaskManager1.format(DATE_TIME_FORMATTER), "Конечное время насчитывается неправильно");
 
         // время старта
-
         LocalDateTime startTime = epic1.getStartTime(); // проверочное время из обьекта перед записью
         LocalDateTime startTimeTaskManager = taskManager.outIdEpic(epic1.getId()).getStartTime();
 
-      //  System.out.println(startTime.format(DATE_TIME_FORMATTER));
-       // System.out.println(startTimeTaskManager.format(DATE_TIME_FORMATTER));
-        assertEquals(startTime.format(DATE_TIME_FORMATTER),startTimeTaskManager.format(DATE_TIME_FORMATTER), "Время старта насчитывается неправильно");
+        assertEquals(startTime.format(DATE_TIME_FORMATTER), startTimeTaskManager.format(DATE_TIME_FORMATTER), "Время старта насчитывается неправильно");
 
         // продолжительность эпика эта сумма продолжительности всех его подзадач
-
         Duration duration1 = sub2.getDuration().plus(sub3.getDuration()); // проверочное время из обьекта перед записью
         Duration durationTaskManager = taskManager.outIdEpic(epic1.getId()).getDuration();
 
-       // System.out.println(duration1.toMinutes());
-       // System.out.println(durationTaskManager.toMinutes());
 
-        assertEquals(duration1.toMinutes(),durationTaskManager.toMinutes(), "Продолжительность времени насчитывается неправильно");
-
-
+        assertEquals(duration1.toMinutes(), durationTaskManager.toMinutes(), "Продолжительность времени насчитывается неправильно");
 
 
     }
+
+    @Test
+
 }
