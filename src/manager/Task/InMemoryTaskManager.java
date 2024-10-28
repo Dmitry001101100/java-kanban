@@ -195,7 +195,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void clearSubTasksOfEpic(int epicId) { // удалить все подзадачи у одного эпика
 
         subTaskMap.values().removeIf(subTask -> subTask.getEpicId() == epicId); // удаляем все подзадачи относящиеся к этому эпику
-        //prioritizedTasks.removeIf(task -> epicMap.get(epicId).getSubtaskIds().contains(task.getId())); // удаляем все подзадачи из приоритетного списка
+        prioritizedTasks.removeIf(task -> epicMap.get(epicId).getSubtaskIds().contains(task.getId())); // удаляем все подзадачи из приоритетного списка
         epicMap.get(epicId).getSubtaskIds().clear(); // очищаем список подзадач у эпика
         searchForTheStartTimeAndDuration(epicId);   // временные рамки эпика
         updateEpicStatus(epicId);   // обновляем статус эпика

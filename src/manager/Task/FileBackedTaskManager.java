@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -130,6 +131,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public int getIdUp() { // герерирует id
         return super.getIdUp();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public List<Task> getPrioritizedTasks() {
+        return super.getPrioritizedTasks();
+    }
+
+    public void setPrioritizedTasks(Task task) {
+        super.setPrioritizedTasks(task);
     }
 
     // -------------------------------Сохранение -----------------------------------------------------------------------
