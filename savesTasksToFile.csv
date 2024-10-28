@@ -1,2 +1,6 @@
 id,type,name,status,description,startTime,duration,epic
-1,TASK,Test titleTask,NEW,Test description,14:42 14.12.24,16:56 14.12.24
+1,TASK,Test titleTask,NEW,Test description,14:42 14.12.24,17:02 14.12.24
+2,TASK,Test titleTask,NEW,Test description,14:42 14.12.24,17:02 14.12.24
+3,EPIC,Епик,IN_PROGRESS,описание,10:17 04.12.24,17:25 25.03.24
+4,SUBTASK,Test titleSub1,IN_PROGRESS,Test in Epic,10:17 04.12.24,10:32 04.12.24,3
+5,SUBTASK,Test titleSub2,NEW,Test in Epic,16:40 25.03.24,17:25 25.03.24,3
