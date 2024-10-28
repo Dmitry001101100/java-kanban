@@ -1,6 +1,10 @@
 package manager;
 
 import enumeration.Status;
+import manager.History.HistoryManager;
+import manager.History.InMemoryHistoryManager;
+import manager.Task.InMemoryTaskManager;
+import manager.Task.TaskManager;
 import org.junit.jupiter.api.Test;
 import tasks.*;
 
@@ -11,15 +15,19 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskManagerTest {
-    /*
+
     TaskManager taskManager = Managers.getDefault();
+
+    Task task1 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
+            LocalDateTime.of(2024,12,14,14,42), Duration.ofMinutes(140));
+    Task task2 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
+            LocalDateTime.of(2024,12,23,14,42), Duration.ofMinutes(12));
 
 
     // в этом тесте выполняется: проверьте, что экземпляры класса Task равны друг другу, если равен их id;
     @Test
     void addNewTask() {// проверка сохраенния новых задач
-        Task task1 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
-                LocalDateTime.now(), Duration.ofMinutes(30));
+
 
         taskManager.saveTask(task1);
 
@@ -45,49 +53,48 @@ public class TaskManagerTest {
     @Test
     void epicInstancesAreEqualWhenTheirIdsEqual() {// так же в этом месте проверяется сохранение подзадач
 
-        Epic epic4 = new Epic("Test titleEpic2", "Test description2", taskManager.getIdUp(), Status.NEW);
+        Epic epic1 = new Epic("Епик", "описание", taskManager.getIdUp(), Status.NEW,
+                LocalDateTime.now(), Duration.ofMinutes(20));
 
-        SubTask sub8 = new SubTask(epic4.id, "Test titleSub4", "Test in Epic2", taskManager.getIdUp(), Status.NEW);
+        SubTask sub2 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", taskManager.getIdUp(), Status.IN_PROGRESS,
+                LocalDateTime.of(24, 12, 4, 10, 17), Duration.ofMinutes(15));
         // для этого теста возьмем обьекты epic4 и sub8
-        taskManager.saveEpic(epic4);
-        taskManager.saveSubTask(sub8);
+        taskManager.saveEpic(epic1);
+        taskManager.saveSubTask(sub2);
 
-        Epic savedEpic = taskManager.outIdEpic(epic4.id);
-        SubTask savedSubtask = taskManager.outIdSubTask(sub8.id);
+        Epic savedEpic = taskManager.outIdEpic(epic1.getId());
+        SubTask savedSubtask = taskManager.outIdSubTask(sub2.getId());
 
-        assertEquals(epic4, savedEpic, "Эпики не совпадают");
-        assertEquals(epic4.hashCode(), savedEpic.hashCode(), "hashCode() эпиков не совпадает");
-        assertEquals(epic4.toString(), savedEpic.toString(), "toString() эпиков не совпадает");
-        assertEquals(sub8, savedSubtask, "Подзадачи не совпадают");
-        assertEquals(sub8.hashCode(), savedSubtask.hashCode(), "hashCode() подзадач не совпадает");
-        assertEquals(sub8.toString(), savedSubtask.toString(), "toString() подзадач не совпадает");
+        assertEquals(epic1, savedEpic, "Эпики не совпадают");
+        assertEquals(epic1.hashCode(), savedEpic.hashCode(), "hashCode() эпиков не совпадает");
+        assertEquals(epic1.toString(), savedEpic.toString(), "toString() эпиков не совпадает");
+        assertEquals(sub2, savedSubtask, "Подзадачи не совпадают");
+        assertEquals(sub2.hashCode(), savedSubtask.hashCode(), "hashCode() подзадач не совпадает");
+        assertEquals(sub2.toString(), savedSubtask.toString(), "toString() подзадач не совпадает");
     }
 
     //проверьте, что задачи с заданным id и сгенерированным id не конфликтуют внутри менеджера;
     @Test
     void checkingTheSetAndGeneratedId() {// проверка конфликтности заданого и сгенерированнного id
-        Task task01 = new Task("Test сгенерированный", "Test сгенерированный", taskManager.getIdUp(), Status.NEW);//id1
-        Task task02 = new Task("Test titleTask", "Test заданый", 3, Status.NEW);//id1
+        taskManager.saveTask(task1);
+        taskManager.saveTask(task2);
 
-        taskManager.saveTask(task01);
-        taskManager.saveTask(task02);
-
-        assertEquals(task01, taskManager.outIdTask(1), "Первая задача должна иметь идентификатор 1");
-        assertEquals(task02, taskManager.outIdTask(3), "Вторая задача должна иметь идентификатор 2");
+        assertEquals(task1, taskManager.outIdTask(1), "Первая задача должна иметь идентификатор 1");
+        assertEquals(task2, taskManager.outIdTask(2), "Вторая задача должна иметь идентификатор 2");
     }
 
 
     //создайте тест, в котором проверяется неизменность задачи (по всем полям) при добавлении задачи в менеджер
     @Test
     void checkingForImmutabilityByFields() {// проверка на неизменность задачи по полям после добавления ее через менеджер
-        Task task01 = new Task("Test сгенерированный", "Test сгенерированный", taskManager.getIdUp(), Status.NEW);//id1
 
-        taskManager.saveTask(task01);
 
-        assertEquals(task01.getTitle(), taskManager.outIdTask(task01.id).getTitle(), "Изменилось название");
-        assertEquals(task01.getDescription(), taskManager.outIdTask(task01.id).getDescription(), "Изменилось описание");
-        assertEquals(task01.getId(), taskManager.outIdTask(task01.id).getId(), "Изменилось id");
-        assertEquals(task01.getStatus(), taskManager.outIdTask(task01.id).getStatus(), "Изменился статус");
+        taskManager.saveTask(task1);
+
+        assertEquals(task1.getTitle(), taskManager.outIdTask(task1.getId()).getTitle(), "Изменилось название");
+        assertEquals(task1.getDescription(), taskManager.outIdTask(task1.getId()).getDescription(), "Изменилось описание");
+        assertEquals(task1.getId(), taskManager.outIdTask(task1.getId()).getId(), "Изменилось id");
+        assertEquals(task1.getStatus(), taskManager.outIdTask(task1.getId()).getStatus(), "Изменился статус");
 
 
     }

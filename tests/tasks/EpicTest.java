@@ -133,4 +133,13 @@ class EpicTest {
         assertNull(epic1.getEndTime(), "Конечное время насчитывается неправильно");
         System.out.println(taskManager.outIdEpic(epic1.getId()));
     }
+
+    @Test
+    public void getSubtaskofEpicId(){
+        temporaryVerificationOfTheEpic();
+
+        for (SubTask subTask : taskManager.getSubTasksId(epic1.getId())){
+            System.out.println(subTask);
+        }
+    }
 }
