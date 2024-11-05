@@ -195,7 +195,7 @@ public class InMemoryTaskManager implements TaskManager {
     // -------------------------------------- 6 - Удаление по id -------------------------------------------------------
     @Override
     public void deleteTaskId(int numberId) { // удаление задачи по id
-
+        prioritizedTasks.removeIf(task -> task.getId() == numberId);
         taskMap.remove(numberId);
         historyManager.remove(numberId);
         System.out.println("Задача под номером " + numberId + " была удалена!");
@@ -207,6 +207,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         subTaskMap.values().stream()
                 .filter(subTask -> subTask.getId().equals(numberId)) // проверяем есть ли подзадача с этим id
+                .peek(prioritizedTasks::remove) // удаляем из списка приоритетных задач
                 .peek(subTask -> historyManager.remove(subTask.getId())) // удаляем из истории
                 .peek(subTask -> epicMap.get(subTask.getEpicId()).removeSubtaskIds(subTask.getId())) // удаляем подзадачу из списка подзадач эпика
                 .peek(subTask -> updateEpicStatus(subTask.getEpicId())) // обновляем статус эпика после удаления подзадачи

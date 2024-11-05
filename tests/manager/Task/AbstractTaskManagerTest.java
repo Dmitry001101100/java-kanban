@@ -30,8 +30,6 @@ public class AbstractTaskManagerTest {
 
     Epic epic3 = new Epic("Епик", "описание", taskManager.getIdUp(), Status.NEW,
             LocalDateTime.now(), Duration.ofMinutes(20));
-    SubTask sub4 = new SubTask(epic3.getId(), "Test titleSub1", "Test in Epic", taskManager.getIdUp(), Status.IN_PROGRESS,
-            LocalDateTime.of(24, 12, 4, 10, 17), Duration.ofMinutes(24));
     SubTask sub5 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", taskManager.getIdUp(), Status.NEW,
             LocalDateTime.of(24, 8, 25, 16, 40), Duration.ofMinutes(12));
     SubTask sub7 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", taskManager.getIdUp(), Status.DONE,
@@ -40,9 +38,9 @@ public class AbstractTaskManagerTest {
 
     public void savesTask(TaskManager taskManager) { // сохраняем все виды задач
 
-        Task task1 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
+        Task task1 = new Task("ДЛя теста", "Test description", taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.of(2024, 2, 14, 14, 42), Duration.ofMinutes(14)); // 1
-        Task task2 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
+        Task task2 = new Task("ДЛя теста 2", "Test description", taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(11)); // 2
         Epic epic3 = new Epic("Епик", "описание", taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.now(), Duration.ofMinutes(20));                                       // 3
@@ -119,9 +117,11 @@ public class AbstractTaskManagerTest {
                 LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(140));
         taskManager.saveTask(task1);
         taskManager.saveTask(task2);
+        int idTask1 = task1.getId();
+        int idTask2 = task2.getId();
 
-        assertEquals(task1, taskManager.outIdTask(1), "Первая задача должна иметь идентификатор 1");
-        assertEquals(task2, taskManager.outIdTask(2), "Вторая задача должна иметь идентификатор 2");
+        assertEquals(task1, taskManager.outIdTask(idTask1), "Первая задача должна иметь идентификатор 1");
+        assertEquals(task2, taskManager.outIdTask(idTask2), "Вторая задача должна иметь идентификатор 2");
     }
 
 
@@ -219,12 +219,14 @@ public class AbstractTaskManagerTest {
 
     void deleteEpic(TaskManager taskManager) {//проверка на удаление подзадач при удалении эпика
 
-        savesTask(taskManager);
+        taskManager.saveEpic(epic3);
+        taskManager.saveSubTask(sub5);
+        taskManager.saveSubTask(sub7);
 
         ArrayList<Epic> epics = taskManager.getEpics();
 
         assertEquals(1, epics.size(), "Неверное количество эпиков.");//проверяем длину эпиков перед удалением
-        assertEquals(3, taskManager.outIdEpic(epic3.getId()).getSubtaskIds().size(), "Неверное количество подзадач.");//проверяем длину списка подзадач перед удалением
+        assertEquals(2, taskManager.outIdEpic(epic3.getId()).getSubtaskIds().size(), "Неверное количество подзадач.");//проверяем длину списка подзадач перед удалением
 
         taskManager.clearEpics();// удаляем все эпики
 

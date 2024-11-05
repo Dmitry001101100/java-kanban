@@ -7,6 +7,7 @@ import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 
+import java.awt.image.VolatileImage;
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -22,16 +23,32 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
     FileBackedTaskManager manager = Managers.getDefaultFileBackedTaskManager(taskToList);
 
 
+    @Test
+    void checkingTheUnloadingOfAllTypesOfTasksFromAFile() {
+        manager.clearContent();
+        saveTask1(); // сохраняем все выды задач
+        manager.deleteTaskId(1);// удаляем некоторые чтобы проверить что они удалились из списка приоритетных
+        manager.deleteSubTaskId(4);
+        System.out.println(manager.getTasks());
 
+        assertEquals(2, manager.getPrioritizedTasks().size(), "Длинна приоритетных задач отличается от ожидаемой");
+        // создаем новый менеждер
+        FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
+        assertEquals(fileBackedTaskManager.getPrioritizedTasks().size(), manager.getPrioritizedTasks().size(),
+                "Длинна приоритетных задач отличается от ожидаемой");
+        assertEquals(fileBackedTaskManager.getTasks().size(), manager.getTasks().size(),
+                "Неверное количество задач");
+        assertEquals(fileBackedTaskManager.getSubTasks().size(), manager.getSubTasks().size(),
+                "Неверное количество подзадач");
+        assertEquals(fileBackedTaskManager.getEpics().size(), manager.getEpics().size(),
+                "Неверное количество эпиков");
 
-
-
-
+    }
 
     // -----------------------------совместимые тесты ------------------------------------------------------------------
     @Test
     void saveTask1() {
-        taskManager.clearContent();
+        manager.clearContent();
         savesTask(manager);
     }
 
