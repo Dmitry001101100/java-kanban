@@ -4,6 +4,7 @@ import enumeration.*;
 import manager.History.HistoryManager;
 import manager.Managers;
 import tasks.*;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -59,29 +60,11 @@ public class InMemoryTaskManager implements TaskManager {
     public void setPrioritizedTasks(Task task) {
         this.prioritizedTasks.add(task);
     }
-    //---------------------------- keySeach ----------------------------------------------------------------------------
-
-    @Override
-    public ArrayList<Integer> keySetTaskMap() {
-        return new ArrayList<>(taskMap.keySet());
-    }
-
-    @Override
-    public ArrayList<Integer> keySetEpicMap() {
-        return new ArrayList<>(epicMap.keySet());
-    }
-
-    @Override
-    public ArrayList<Integer> keySetSubTaskMap() {
-        return new ArrayList<>(subTaskMap.keySet());
-    }
-
 
     //---------------------------------- 1 - Сохранение ----------------------------------------------------------------
 
     @Override
     public void saveTask(Task task) { // сохранение и перезапись задач
-
         taskMap.put(task.getId(), task);
         prioritizedTasks.add(task);
         System.out.println("Задача успешно сохранена!");
@@ -228,8 +211,9 @@ public class InMemoryTaskManager implements TaskManager {
                 .peek(subTask -> epicMap.get(subTask.getEpicId()).removeSubtaskIds(subTask.getId())) // удаляем подзадачу из списка подзадач эпика
                 .peek(subTask -> updateEpicStatus(subTask.getEpicId())) // обновляем статус эпика после удаления подзадачи
                 .peek(subTask -> searchForTheStartTimeAndDuration(subTask.getEpicId())) //обновляем временные рамки эпика
-                .peek(subTask -> subTaskMap.remove(subTask.getId()))
-                .collect(Collectors.toList());
+                .toList();
+
+        subTaskMap.remove(numberId);
     }
 
     @Override

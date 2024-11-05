@@ -119,4 +119,8 @@ public class Task {
     public void setDuration(Duration duration) {
         this.duration = duration;
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

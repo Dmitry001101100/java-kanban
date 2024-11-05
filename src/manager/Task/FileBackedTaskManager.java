@@ -21,8 +21,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
 
     public FileBackedTaskManager(File file) {
-        super();
+
+        if(!isFileEmpty(file) && file.length() >=2){
+            downloadingFromAFile(file);
+        }
         this.file = file;
+    }
+
+    public boolean isFileEmpty(File file) {
+        return file.length() == 0;
     }
 
 
@@ -65,9 +72,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 String status = parts[3];
                 String description;
                 int idOfEpic = 0;
-                if (id > super.idUp) {
-                    super.idUp = id;
-                }
                 if (parts.length > 4) {
                     description = parts[4];
                 } else {
@@ -91,11 +95,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
                 switch (TypeTask.valueOf(type)) {
                     case SUBTASK -> {
-
                         SubTask subtask = new SubTask(idOfEpic, name, description, id, Status.valueOf(status), startTime, duration);
-
                         super.saveSubTask(subtask);
-
                     }
                     case TASK -> {
                         Task task = new Task(name, description, id, Status.valueOf(status), startTime, duration);// аналогично
