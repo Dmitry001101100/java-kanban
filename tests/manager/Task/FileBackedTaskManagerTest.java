@@ -1,19 +1,10 @@
 package manager.Task;
 
-import enumeration.Status;
 import manager.Managers;
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
 import tasks.SubTask;
-import tasks.Task;
-
-import java.awt.image.VolatileImage;
 import java.io.*;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -29,7 +20,6 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         saveTask1(); // сохраняем все выды задач
         manager.deleteTaskId(1);// удаляем некоторые чтобы проверить что они удалились из списка приоритетных
         manager.deleteSubTaskId(4);
-        System.out.println(manager.getEpics());
 
         assertEquals(2, manager.getPrioritizedTasks().size(), "Длинна приоритетных задач отличается от ожидаемой");
         // создаем новый менеждер
@@ -86,8 +76,6 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         assertEquals(manager.outIdEpic(3).getSubtaskIds(),fileBackedTaskManager.outIdEpic(3).getSubtaskIds(),
                 "id подзадач в эпике не совпадают");
 
-        System.out.println(manager.outIdSubTask(5).getStartTime());
-        System.out.println(fileBackedTaskManager.outIdSubTask(5).getStartTime());
         // сравниваем подзадачи
           assertEquals(manager.outIdSubTask(5), fileBackedTaskManager.outIdSubTask(5), "подзадачи не совпадают");
         // по переменным
