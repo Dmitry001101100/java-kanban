@@ -268,6 +268,8 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
 
+       // String startTime = epicStartTime.format(DATE_TIME_FORMATTER);
+
         epic.setStartTime(epicStartTime);
         epic.setDuration(epicDuration);
         epic.setEndTime(epicEndTime);

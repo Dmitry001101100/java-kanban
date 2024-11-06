@@ -31,9 +31,9 @@ public class AbstractTaskManagerTest {
     Epic epic3 = new Epic("Епик", "описание", taskManager.getIdUp(), Status.NEW,
             LocalDateTime.now(), Duration.ofMinutes(20));
     SubTask sub5 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", taskManager.getIdUp(), Status.NEW,
-            LocalDateTime.of(24, 8, 25, 16, 40), Duration.ofMinutes(12));
+            LocalDateTime.of(2024, 8, 25, 16, 40), Duration.ofMinutes(12));
     SubTask sub7 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", taskManager.getIdUp(), Status.DONE,
-            LocalDateTime.of(24, 8, 25, 16, 40), Duration.ofMinutes(12));
+            LocalDateTime.of(2024, 8, 25, 16, 40), Duration.ofMinutes(12));
 
 
     public void savesTask(TaskManager taskManager) { // сохраняем все виды задач
@@ -45,9 +45,9 @@ public class AbstractTaskManagerTest {
         Epic epic3 = new Epic("Епик", "описание", taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.now(), Duration.ofMinutes(20));                                       // 3
         SubTask sub4 = new SubTask(epic3.getId(), "Test titleSub1", "Test in Epic", taskManager.getIdUp(), Status.IN_PROGRESS,
-                LocalDateTime.of(24, 12, 4, 10, 17), Duration.ofMinutes(24)); // 4
+                LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24)); // 4
         SubTask sub5 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", taskManager.getIdUp(), Status.NEW,
-                LocalDateTime.of(24, 8, 25, 16, 40), Duration.ofMinutes(12)); // 5
+                LocalDateTime.of(2024, 8, 25, 16, 40), Duration.ofMinutes(12)); // 5
 
         taskManager.saveTask(task1);
         taskManager.saveTask(task2);

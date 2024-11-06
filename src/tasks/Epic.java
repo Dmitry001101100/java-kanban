@@ -15,7 +15,6 @@ public class Epic extends Task {
         super(title, description, id, status, startTime, duration);
     }
 
-
     public void clearSubtaskIds() {
         subtaskIds.clear();
     }
