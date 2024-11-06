@@ -22,7 +22,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager(File file) {
 
-        if(!isFileEmpty(file) && file.length() >=2){
+        if (!isFileEmpty(file) && file.length() >= 2) {
             downloadingFromAFile(file);
         }
         this.file = file;
@@ -81,14 +81,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 LocalDateTime endTime;
                 Duration duration;
 // ----------------------------------- проверка времени начала и конца задачи ------------------------------------------
-                if (parts[5].equals("null")) { startTime = null; }
-                else { startTime = LocalDateTime.parse(parts[5], DATE_TIME_FORMATTER); }
+                if (parts[5].equals("null")) {
+                    startTime = null;
+                } else {
+                    startTime = LocalDateTime.parse(parts[5], DATE_TIME_FORMATTER);
+                }
 
-                if (parts[6].equals("null")){ endTime = null; }
-                else { endTime = LocalDateTime.parse(parts[6], DATE_TIME_FORMATTER); }
+                if (parts[6].equals("null")) {
+                    endTime = null;
+                } else {
+                    endTime = LocalDateTime.parse(parts[6], DATE_TIME_FORMATTER);
+                }
 // ---------------------------------------------------------------------------------------------------------------------
-                if (startTime != null && endTime != null) { duration = Duration.between(startTime, endTime); }
-                else { duration = null; }
+                if (startTime != null && endTime != null) {
+                    duration = Duration.between(startTime, endTime);
+                } else {
+                    duration = null;
+                }
 
                 if (type.equals("SUBTASK")) {
                     idOfEpic = Integer.parseInt(parts[7]);
