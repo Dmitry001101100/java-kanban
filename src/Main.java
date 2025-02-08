@@ -4,5 +4,5 @@ public class Main {
     public static void main(String[] args) { // 8 спринт)
     System.out.println("Поехали!");
     }
-    // подготовка к 9 спринту
+    // 9 спринт
 }
