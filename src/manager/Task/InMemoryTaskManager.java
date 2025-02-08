@@ -215,6 +215,7 @@ public class InMemoryTaskManager implements TaskManager {
                 .toList();
 
         subTaskMap.remove(numberId);
+        System.out.println("Подзадача под номером " + numberId + " была удалёна!");
     }
 
     @Override
