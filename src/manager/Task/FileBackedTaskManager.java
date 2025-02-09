@@ -17,7 +17,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    File historyList = new File("historyList.csv"); // файл для сохранения истории
+     File historyList = new File("historyList.csv"); // файл для сохранения истории
 
     private final File file;
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
@@ -32,6 +32,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public boolean isFileEmpty(File file) {
         return file.length() == 0;
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+    // сохранение истории в файла
+    private void saveHistoryList(){
+        try (Writer writer = new FileWriter(historyList)) { // сохранение истории в файл
+
+            writer.write("id,type,name,status,description,startTime,duration,epic\n");
+            for(Task task : getHistory()){
+                writer.write(task.toString()+"\n");
+            }
+        } catch (IOException exp) {
+            throw new ManagerSaveException("Произошла ошибка записи в файл", exp);
+        }
     }
 
 
@@ -166,30 +180,35 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void clearContent() {
         super.clearContent();
         save();
+        saveHistoryList();
     }
 
     @Override
     public void clearTasks() {
         super.clearTasks();
         save();
+        saveHistoryList();
     }
 
     @Override
     public void clearSubTasksOfEpic(int epicId) {
         super.clearSubTasksOfEpic(epicId);
         save();
+        saveHistoryList();
     }
 
     @Override
     public void clearEpics() {
         super.clearEpics();
         save();
+        saveHistoryList();
     }
 
     @Override
     public void clearSubtasks() {
         super.clearSubtasks();
         save();
+        saveHistoryList();
     }
 
     // ------------------------------ удаление по id -------------------------------------------------------------------
@@ -197,18 +216,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void deleteTaskId(int numberId) {
         super.deleteTaskId(numberId);
         save();
+        saveHistoryList();
     }
 
     @Override
     public void deleteSubTaskId(int numberId) {
         super.deleteSubTaskId(numberId);
         save();
+        saveHistoryList();
     }
 
     @Override
     public void deleteEpicId(int numberId) {
         super.deleteEpicId(numberId);
         save();
+        saveHistoryList();
     }
 
 //------------------------------------------- 2 - Вывод полный ---------------------------------------------------------
@@ -237,20 +259,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     //-------------------------------------- 3 - Вывод по id -----------------------------------------------------------
     @Override
     public Task outIdTask(int numberId) {
+        Task task = super.outIdTask(numberId); // добавляем сохранение в файл после выгрузки
+        saveHistoryList();
+        return task ;
 
-        return super.outIdTask(numberId);
     }
 
     @Override
     public SubTask outIdSubTask(int numberId) {
-
-        return super.outIdSubTask(numberId);
+        SubTask subTask = super.outIdSubTask(numberId);
+        saveHistoryList();
+        return subTask;
     }
 
     @Override
     public Epic outIdEpic(int numberId) {
-
-        return super.outIdEpic(numberId);
+        Epic epic = super.outIdEpic(numberId);
+        saveHistoryList();
+        return epic;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------

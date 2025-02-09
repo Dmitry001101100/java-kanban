@@ -139,8 +139,13 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         manager.clearContent();
         saveTask1(); // сохраняем все виды задач
 
+        manager.outIdTask(2);
         manager.outIdTask(1);
-        System.out.println("новый менеджер:"+ manager.getHistory() );
+        manager.outIdSubTask(4);
+
+
+        manager.deleteTaskId(1);
+        System.out.println("менеджер:"+ manager.getHistory() );
 
         // создаем новый менеждер
         FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
