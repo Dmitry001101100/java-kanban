@@ -134,6 +134,21 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         assertEquals(subTask1.getEpicId(), subTask2.getEpicId(), "id эпиков не совпадает");
     }
 
+    @Test
+    void comparisonHistoryFromFile(){
+        manager.clearContent();
+        saveTask1(); // сохраняем все виды задач
+
+        manager.outIdTask(1);
+        System.out.println("новый менеджер:"+ manager.getHistory() );
+
+        // создаем новый менеждер
+        FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
+
+        System.out.println("новый менеджер:"+ fileBackedTaskManager.getHistory() );
+
+    }
+
     // -----------------------------совместимые тесты ------------------------------------------------------------------
     @Test
     void saveTask1() {
