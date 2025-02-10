@@ -2,6 +2,7 @@ package manager.Task;
 
 import manager.Managers;
 import org.junit.jupiter.api.Test;
+import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 
@@ -135,22 +136,36 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
     }
 
     @Test
-    void comparisonHistoryFromFile(){
+    void comparisonHistoryFromFile(){ // тест выгрузки исписка истории из файла
         manager.clearContent();
         saveTask1(); // сохраняем все виды задач
-
+        // выводим несколько видов задач в разном порядке id для попадания этих задач в историю просмотра
         manager.outIdTask(2);
         manager.outIdTask(1);
         manager.outIdSubTask(4);
-
-
+        manager.outIdEpic(3);
+        // удаляем одну задачу чтобы убедиться что это действие несет изменения сохранения файла истории
         manager.deleteTaskId(1);
-        System.out.println("менеджер:"+ manager.getHistory() );
-
         // создаем новый менеждер
         FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
 
-        System.out.println("новый менеджер:"+ fileBackedTaskManager.getHistory() );
+        // проверка порядка списка истории до и после выгрузки
+        assertEquals(manager.getHistory().toString(), manager.getHistory().toString(), "списки истории не совпадают");
+        // проверка всех видов задач из ссписка истории
+        Task task1 = manager.getHistory().getFirst();
+        Task task2 = fileBackedTaskManager.getHistory().getFirst();
+        assertEquals(task1, task2, "задачи из истории не совпадают");
+        assertEquals(task1.getId(), task2.getId(), "id не совпадает");
+
+        Epic epi1 = (Epic) manager.getHistory().get(2);
+        Epic epic2 = (Epic) fileBackedTaskManager.getHistory().get(2);
+        assertEquals(epi1, epic2, "списки истории не совпадают");
+        assertEquals(epi1.getId(), epic2.getId(), "id не совпадает");
+
+        SubTask subTask1 = (SubTask) manager.getHistory().get(1);
+        SubTask subTask2 = (SubTask) fileBackedTaskManager.getHistory().get(1);
+        assertEquals(subTask1, subTask2, "списки истории не совпадают");
+        assertEquals(subTask1.getId(), subTask2.getId(), "id не совпадает");
 
     }
 

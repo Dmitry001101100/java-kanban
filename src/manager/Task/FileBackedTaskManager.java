@@ -17,7 +17,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-     File historyList = new File("historyList.csv"); // файл для сохранения истории
+    private File historyList = new File("historyList.csv"); // файл для сохранения истории
 
     private final File file;
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
@@ -27,32 +27,63 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         if (!isFileEmpty(file) && file.length() >= 2) {
             downloadingFromAFile(file);
         }
+        if (!isFileEmpty(historyList) && historyList.length() >= 2) {
+            downloadingHistoryFromAFile();
+        }
         this.file = file;
     }
 
-    public boolean isFileEmpty(File file) {
+    private boolean isFileEmpty(File file) {
         return file.length() == 0;
     }
 
-//----------------------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------
     // сохранение истории в файла
-    private void saveHistoryList(){
+    private void saveHistoryList() {
         try (Writer writer = new FileWriter(historyList)) { // сохранение истории в файл
 
-            writer.write("id,type,name,status,description,startTime,duration,epic\n");
-            for(Task task : getHistory()){
-                writer.write(task.toString()+"\n");
+            writer.write("id,type\n");
+            for (Task task : getHistory()) {
+                writer.write(task.getId().toString() + "," + task.getType() + "\n");
             }
         } catch (IOException exp) {
             throw new ManagerSaveException("Произошла ошибка записи в файл", exp);
         }
     }
 
+    // загрузка списка истории
+    private void downloadingHistoryFromAFile() {
+        try (BufferedReader br = new BufferedReader(new FileReader(historyList))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+                String[] parts = line.split(",");
+
+                int id = Integer.parseInt(parts[0]);
+                String type = parts[1];
+                // выводим id задач согласно списку по их типу
+                switch (type) {
+                    case "TASK" -> outIdTask(id);
+                    case "EPIC" -> outIdEpic(id);
+                    case "SUBTASK" -> outIdSubTask(id);
+                    default -> System.out.println("Неверный тип задач");
+                }
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка записи!");
+        }
+
+    }
+
 
 //----------------------------------------------------------------------------------------------------------------------
     // метод для сохранения всех видов задач в файл;
 
-    public void save() {
+    private void save() {
 
         try (Writer writer = new FileWriter(file)) {
 
@@ -71,7 +102,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public void downloadingFromAFile(File file) {
+    private void downloadingFromAFile(File file) {
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -261,7 +292,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public Task outIdTask(int numberId) {
         Task task = super.outIdTask(numberId); // добавляем сохранение в файл после выгрузки
         saveHistoryList();
-        return task ;
+        return task;
 
     }
 
