@@ -7,7 +7,11 @@ import tasks.Task;
 import java.util.ArrayList;
 
 public interface TaskManager {
+
+
     int getIdUp();
+
+    boolean containsKeyTask(int id);
 
     void saveTask(Task savetheTask);
 

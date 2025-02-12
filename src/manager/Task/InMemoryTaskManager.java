@@ -51,6 +51,10 @@ public class InMemoryTaskManager implements TaskManager {
         else epic.setStatus(Status.IN_PROGRESS);
 
     }
+    @Override
+    public boolean containsKeyTask(int id){
+        return  taskMap.containsKey(id);
+    }
     // -------------------------------------- prioritizedTasks ---------------------------------------------------------
 
     public List<Task> getPrioritizedTasks() {

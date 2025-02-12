@@ -29,8 +29,12 @@ public class HttpTaskServer implements HttpHandler {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
 
         switch (endpoint) {
-            case GET_TASKS: {
+            case GET_TASKS: { // вывод всех задач
                 handleGetTasks(exchange);
+                break;
+            }
+            case GET_TASK: {   // вывод задачи по id
+                handleGetTask(exchange);
                 break;
             }
 
@@ -48,16 +52,52 @@ public class HttpTaskServer implements HttpHandler {
         }
         exchange.close();
     }
-
-    private void handleGetTasks(HttpExchange exchange) throws IOException {
+//---------------------------------------------------------------------------------------------------------------------
+    // Task
+    private void handleGetTasks(HttpExchange exchange) throws IOException { // вывод всех задач
         String response = taskManager.getTasks().stream()
                 .map(Task::toString)
                 .collect(Collectors.joining("\n"));
         writeResponse(exchange, response, 200);
     }
 
+    private void handleGetTask(HttpExchange exchange) throws IOException { // вывод задачи по id
+        String path = exchange.getRequestURI().getPath();
+        String[] pathParts = path.split("/");
+
+        int id  = Integer.parseInt(pathParts[3]);
+        String response;
+
+        if((taskManager.containsKeyTask(id))) {
+            response = taskManager.outIdTask(id).toString();
+            writeResponse(exchange, response, 200);
+        } else {
+            response = "Задачи с id: "+id+" не существует.";
+            writeResponse(exchange, response, 404);
+        }
+
+
+    }
+
+
+//---------------------------------------------------------------------------------------------------------------------
     private Endpoint getEndpoint(String path, String requestMethod) {
-        return Endpoint.GET_TASKS;
+        String[] pathParts = path.split("/");
+        System.out.println(pathParts[2]);
+
+        if (requestMethod.equals("GET")) {
+            if(pathParts[2].equals("tasks")){
+
+                if(pathParts.length <= 3){
+                    return Endpoint.GET_TASKS;
+                } else {
+                    return Endpoint.GET_TASK;
+                }
+
+
+            }
+        }
+        return Endpoint.DEFAULT;
     }
 }
 
@@ -68,7 +108,7 @@ class MainHttpTaskServer{
 
 
         HttpServer httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
-        httpServer.createContext("/server",new HttpTaskServer());
+        httpServer.createContext("/taskServer",new HttpTaskServer());
         httpServer.start(); // запускаем сервер
 
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
