@@ -1,8 +1,5 @@
-
-public class Main {
-    //------------------------------------------------------------------------------------------------------------------
-    public static void main(String[] args) { // 8 спринт)
-    System.out.println("Поехали!");
+class Main {
+    public static void main(String[] arf) {
+        System.out.println("Поехали!");
     }
-    // 9 спринт
 }
