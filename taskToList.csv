@@ -3,3 +3,4 @@ id,type,name,status,description,startTime,duration,epic
 3,EPIC,Епик,IN_PROGRESS,описание,10:17 04.12.24,16:52 25.08.24
 4,SUBTASK,Test titleSub1,IN_PROGRESS,Test in Epic,10:17 04.12.24,10:41 04.12.24,3
 5,SUBTASK,Test titleSub2,NEW,Test in Epic,16:40 25.08.24,16:52 25.08.24,3
+6,TASK,ДЛя теста 2,NEW,Test description,14:42 14.12.24,14:53 14.12.24
