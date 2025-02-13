@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HttpTaskServer implements HttpHandler {
@@ -37,6 +38,9 @@ public class HttpTaskServer implements HttpHandler {
                 handleGetTask(exchange);
                 break;
             }
+            case POST_TASK: {
+
+            }
 
             default:
                 writeResponse(exchange, "Такого эндпоинта не существует", 404);
@@ -52,7 +56,8 @@ public class HttpTaskServer implements HttpHandler {
         }
         exchange.close();
     }
-//---------------------------------------------------------------------------------------------------------------------
+
+    //---------------------------------------------------------------------------------------------------------------------
     // Task
     private void handleGetTasks(HttpExchange exchange) throws IOException { // вывод всех задач
         String response = taskManager.getTasks().stream()
@@ -62,33 +67,54 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void handleGetTask(HttpExchange exchange) throws IOException { // вывод задачи по id
-        String path = exchange.getRequestURI().getPath();
-        String[] pathParts = path.split("/");
 
-        int id  = Integer.parseInt(pathParts[3]);
+        Optional<Integer> taskIdOpt = getTaskId(exchange);
+        if (taskIdOpt.isEmpty()) {
+            writeResponse(exchange, "Некорректный id задачи.", 400);
+            return;
+        }
+
+        int id = taskIdOpt.get();
         String response;
 
-        if((taskManager.containsKeyTask(id))) {
+        if ((taskManager.containsKeyTask(id))) {
             response = taskManager.outIdTask(id).toString();
             writeResponse(exchange, response, 200);
         } else {
-            response = "Задачи с id: "+id+" не существует.";
+            response = "Задачи с id: " + id + " не существует.";
             writeResponse(exchange, response, 404);
         }
 
+    }
+
+    private void handlePostTask(HttpExchange exchange) throws IOException { // сохранение задачи
+        String path = exchange.getRequestURI().getPath();
+        String[] pathParts = path.split("/");
+
+        int id = Integer.parseInt(pathParts[3]);
+        String response;
+
+        if ((taskManager.containsKeyTask(id))) {
+            response = taskManager.outIdTask(id).toString();
+            writeResponse(exchange, response, 200);
+        } else {
+            response = "Задачи с id: " + id + " не существует.";
+            writeResponse(exchange, response, 404);
+        }
 
     }
 
 
-//---------------------------------------------------------------------------------------------------------------------
+
+    //---------------------------------------------------------------------------------------------------------------------
     private Endpoint getEndpoint(String path, String requestMethod) {
         String[] pathParts = path.split("/");
-        System.out.println(pathParts[2]);
+        System.out.println(pathParts[3]);
 
         if (requestMethod.equals("GET")) {
-            if(pathParts[2].equals("tasks")){
+            if (pathParts[2].equals("tasks")) {
 
-                if(pathParts.length <= 3){
+                if (pathParts.length <= 3) {
                     return Endpoint.GET_TASKS;
                 } else {
                     return Endpoint.GET_TASK;
@@ -96,19 +122,32 @@ public class HttpTaskServer implements HttpHandler {
 
 
             }
+        } else if (requestMethod.equals("POST")) {
+            if (pathParts[2].equals("task")) {
+                return Endpoint.POST_TASK;
+            }
         }
         return Endpoint.DEFAULT;
     }
+
+    private Optional<Integer> getTaskId(HttpExchange exchange) {
+        String[] pathParts = exchange.getRequestURI().getPath().split("/");
+        try {
+            return Optional.of(Integer.parseInt(pathParts[3]));
+        } catch (NumberFormatException exception) {
+            return Optional.empty();
+        }
+    }
 }
 
-class MainHttpTaskServer{
+class MainHttpTaskServer {
     private static final int PORT = 8080;
 
-    public static void main(String[]qw) throws IOException {
+    public static void main(String[] qw) throws IOException {
 
 
         HttpServer httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
-        httpServer.createContext("/taskServer",new HttpTaskServer());
+        httpServer.createContext("/taskServer", new HttpTaskServer());
         httpServer.start(); // запускаем сервер
 
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
