@@ -1,20 +1,25 @@
 package HttpTaskServer;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import enumeration.Endpoint;
+import enumeration.Status;
 import manager.Managers;
 import manager.Task.InMemoryTaskManager;
 import manager.Task.TaskManager;
 import tasks.Task;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.InetSocketAddress;
+import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,8 +43,9 @@ public class HttpTaskServer implements HttpHandler {
                 handleGetTask(exchange);
                 break;
             }
-            case POST_TASK: {
-
+            case POST_TASK: { // запись задачи
+                handlePostTask(exchange);
+                break;
             }
 
             default:
@@ -68,7 +74,7 @@ public class HttpTaskServer implements HttpHandler {
 
     private void handleGetTask(HttpExchange exchange) throws IOException { // вывод задачи по id
 
-        Optional<Integer> taskIdOpt = getTaskId(exchange);
+        Optional<Integer> taskIdOpt = getOptionalId(exchange);
         if (taskIdOpt.isEmpty()) {
             writeResponse(exchange, "Некорректный id задачи.", 400);
             return;
@@ -88,20 +94,50 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void handlePostTask(HttpExchange exchange) throws IOException { // сохранение задачи
-        String path = exchange.getRequestURI().getPath();
-        String[] pathParts = path.split("/");
+        Optional<Task> commentOpt = parseTask(exchange.getRequestBody());
+        System.out.println(commentOpt);
 
-        int id = Integer.parseInt(pathParts[3]);
-        String response;
+        if (commentOpt.isEmpty()) {
 
-        if ((taskManager.containsKeyTask(id))) {
-            response = taskManager.outIdTask(id).toString();
-            writeResponse(exchange, response, 200);
+            writeResponse(exchange, "Поля комментария не могут быть пустыми", 400);
+
         } else {
-            response = "Задачи с id: " + id + " не существует.";
-            writeResponse(exchange, response, 404);
+            taskManager.saveTask(commentOpt.get());
+            writeResponse(exchange, "задача сохранена", 201);
         }
 
+    }
+
+    private Optional<Task> parseTask(InputStream bodyInputStream) throws IOException {
+
+
+
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(bodyInputStream, DEFAULT_CHARSET));
+        StringBuilder bodyBuilder = new StringBuilder();
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            bodyBuilder.append(line).append("\n");
+        }
+
+        String body = bodyBuilder.toString().trim();
+        int newLineInd = body.indexOf('\n');
+
+        if (newLineInd <= 0 || body.length() == newLineInd + 1) {
+            return Optional.empty();
+        }
+
+        String user = body.substring(0, newLineInd).trim();
+        String text = body.substring(newLineInd + 1);
+
+        System.out.println("Строка 1"+user);
+
+        System.out.println("Строка 2"+ text);
+
+
+        return Optional.of(new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
+                LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(140)));
     }
 
 
@@ -109,7 +145,10 @@ public class HttpTaskServer implements HttpHandler {
     //---------------------------------------------------------------------------------------------------------------------
     private Endpoint getEndpoint(String path, String requestMethod) {
         String[] pathParts = path.split("/");
-        System.out.println(pathParts[3]);
+        System.out.println("0 -"+pathParts[0]);
+        System.out.println("1 "+pathParts[1]);
+
+
 
         if (requestMethod.equals("GET")) {
             if (pathParts[2].equals("tasks")) {
@@ -123,14 +162,14 @@ public class HttpTaskServer implements HttpHandler {
 
             }
         } else if (requestMethod.equals("POST")) {
-            if (pathParts[2].equals("task")) {
+            if (pathParts[2].equals("tasks")) {
                 return Endpoint.POST_TASK;
             }
         }
         return Endpoint.DEFAULT;
     }
 
-    private Optional<Integer> getTaskId(HttpExchange exchange) {
+    private Optional<Integer> getOptionalId(HttpExchange exchange) { // проверка что id для вывода задачи является числом
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
         try {
             return Optional.of(Integer.parseInt(pathParts[3]));
