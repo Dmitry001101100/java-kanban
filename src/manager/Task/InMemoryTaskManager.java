@@ -51,19 +51,20 @@ public class InMemoryTaskManager implements TaskManager {
         else epic.setStatus(Status.IN_PROGRESS);
 
     }
+
     @Override
-    public boolean containsKeyTask(int id){
-        return  taskMap.containsKey(id);
+    public boolean containsKeyTask(int id) {
+        return taskMap.containsKey(id);
     }
 
     @Override
-    public boolean containsKeySubTask(int id){
-        return  taskMap.containsKey(id);
+    public boolean containsKeySubTask(int id) {
+        return subTaskMap.containsKey(id);
     }
 
     @Override
-    public boolean containsKeyEpic(int id){
-        return  taskMap.containsKey(id);
+    public boolean containsKeyEpic(int id) {
+        return epicMap.containsKey(id);
     }
     // -------------------------------------- prioritizedTasks ---------------------------------------------------------
 
@@ -159,6 +160,7 @@ public class InMemoryTaskManager implements TaskManager {
         clearTasks();
         clearEpics();
         prioritizedTasks.clear();
+        historyManager.clear();
         idUp = 0;// обнуляем переменную для id
         System.out.println("Все содержимое полностью очищено.");
     }
@@ -166,6 +168,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void clearTasks() { // удалить все задачи
 
+        for (int id : taskMap.keySet()) {
+            historyManager.remove(id);
+        }
         prioritizedTasks.removeIf(task -> task.getType() == TypeTask.TASK);
         taskMap.clear();
         System.out.println("Задачи полностью удалены.");
@@ -173,6 +178,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearSubTasksOfEpic(int epicId) { // удалить все подзадачи у одного эпика
+
+        for (int id : epicMap.get(epicId).getSubtaskIds()) {
+            historyManager.remove(id);
+        }
 
         subTaskMap.values().removeIf(subTask -> subTask.getEpicId() == epicId); // удаляем все подзадачи относящиеся к этому эпику
         prioritizedTasks.removeIf(task -> epicMap.get(epicId).getSubtaskIds().contains(task.getId())); // удаляем все подзадачи из приоритетного списка
@@ -186,6 +195,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void clearEpics() { // удалить все эпики и подзадачи к ним относящиеся
 
+        for (int id : epicMap.keySet()) {
+            historyManager.remove(id);
+        }
+
         subTaskMap.clear();
         epicMap.clear();
         prioritizedTasks.removeIf(task -> task.getType() == TypeTask.SUBTASK);
@@ -196,10 +209,15 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void clearSubtasks() { // удаление всех подзадач
 
+        for (int id : subTaskMap.keySet()) {
+            historyManager.remove(id);
+        }
+
         epicMap.values().stream()
                 .filter(epic -> !epic.getSubtaskIds().isEmpty())
                 .peek(Epic::clearSubtaskIds)
                 .peek(epic -> updateEpicStatus(epic.getId()))
+                //   .peek(epic -> historyManager.remove(epic.getId()))
                 .peek(epic -> searchForTheStartTimeAndDuration(epic.getId()))
                 .peek(epic -> subTaskMap.clear())
                 .collect(Collectors.toList());
@@ -238,7 +256,6 @@ public class InMemoryTaskManager implements TaskManager {
         for (int i : epicMap.get(numberId).getSubtaskIds()) { // если в списке есть id подзадачи, то удаляем эту подзадачу
             subTaskMap.remove(i);
             historyManager.remove(i);
-
         }
         epicMap.remove(numberId);
         historyManager.remove(numberId);
@@ -283,7 +300,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
 
-       // String startTime = epicStartTime.format(DATE_TIME_FORMATTER);
+        // String startTime = epicStartTime.format(DATE_TIME_FORMATTER);
 
         epic.setStartTime(epicStartTime);
         epic.setDuration(epicDuration);

@@ -66,24 +66,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 int id = Integer.parseInt(parts[0]);
                 String type = parts[1];
                 // выводим id задач согласно списку по их типу
-                switch (type) {
-                    case "TASK" -> {
-                        if (containsKeyTask(id)) {
-                            outIdTask(id);
-                        }
-                    }
-                    case "EPIC" -> {
-                        if (containsKeyEpic(id)) {
-                            outIdEpic(id);
-                        }
-                    }
-                    case "SUBTASK" -> {
-                        if (containsKeySubTask(id)) {
-                            outIdSubTask(id);
-                        }
-                    }
-                    default -> System.out.println("Неверный тип задач");
+
+                if (containsKeyTask(id)) {
+                    super.outIdTask(id);
+                    System.out.println("задача сохранена в историю");
                 }
+                if (containsKeyEpic(id)) {
+                    super.outIdEpic(id);
+                    System.out.println("эпик сохранена в историю");
+                }
+                if (containsKeySubTask(id)) {
+                    super.outIdSubTask(id);
+                    System.out.println("подзадача сохранена в историю");
+                }
+
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка записи!");
