@@ -12,6 +12,8 @@ public interface TaskManager {
     int getIdUp();
 
     boolean containsKeyTask(int id);
+    boolean containsKeySubTask(int id);
+    boolean containsKeyEpic(int id);
 
     void saveTask(Task savetheTask);
 
