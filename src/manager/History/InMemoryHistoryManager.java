@@ -1,16 +1,16 @@
 package manager.History;
-import tasks.Task;
 
+import tasks.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
     private final Map<Integer, Node<Task>> historyMap = new HashMap<>();
-
+    private Node<Task> head = null;
+    private Node<Task> tail = null;
 
     private static class Node<T> {
-
-        private  T data;
+        private T data;
         private Node<T> next;
         private Node<T> prev;
 
@@ -21,29 +21,23 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-    private Node<Task> head;
-    private Node<Task> tail;
-
-
-
     private Node<Task> linkLast(Task task) {
+        Node<Task> newNode = new Node<>(task);
         if (head == null) {
-            head = new Node<>(task);
-            tail = head;
+            head = newNode;
+            tail = newNode;
         } else {
-            Node<Task> oldTail = tail;
-            tail = new Node<>(task);
-            tail.prev = oldTail;
-            oldTail.next = tail;
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
         }
-
         return tail;
     }
 
     private List<Task> getTasks() {
         List<Task> tasksArr = new ArrayList<>();
         Node<Task> iterator = head;
-        for (int i = 0; i < historyMap.size(); i++) {
+        while (iterator != null) {
             tasksArr.add(iterator.data);
             iterator = iterator.next;
         }
@@ -56,16 +50,15 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         if (node.prev != null) {
             node.prev.next = node.next;
-        } else { //Это head
+        } else {
             head = node.next;
         }
         if (node.next != null) {
             node.next.prev = node.prev;
-        } else { //Это tail
+        } else {
             tail = node.prev;
         }
     }
-
 
     @Override
     public void add(Task task) {
@@ -80,7 +73,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-
         if (historyMap.containsKey(id)) {
             removeNode(historyMap.get(id));
             historyMap.remove(id);
@@ -90,7 +82,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void clear() {
         historyMap.clear();
+        head = null;
+        tail = null;
     }
-
-
 }
