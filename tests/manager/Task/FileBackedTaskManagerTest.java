@@ -28,7 +28,7 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         assertEquals(2, manager.getPrioritizedTasks().size(), "Длинна приоритетных задач отличается от ожидаемой");
         // создаем новый менеждер
         FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
-        // проверяем все хранилища по длинне задач
+        // проверяем все хранилища по длине задач
         assertEquals(fileBackedTaskManager.getPrioritizedTasks().size(), manager.getPrioritizedTasks().size(),
                 "Длинна приоритетных задач отличается от ожидаемой");
         assertEquals(fileBackedTaskManager.getTasks().size(), manager.getTasks().size(),
@@ -133,6 +133,9 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         assertEquals(subTask1.getEndTime(), subTask2.getEndTime(), "endTime не совпадает");
         assertEquals(subTask1.getDuration(), subTask2.getDuration(), "duration не совпадает");
         assertEquals(subTask1.getEpicId(), subTask2.getEpicId(), "id эпиков не совпадает");
+
+        fileBackedTaskManager.clearContent();
+        manager.clearContent();
     }
 
     @Test
@@ -157,6 +160,7 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         assertEquals(task1, task2, "задачи из истории не совпадают");
         assertEquals(task1.getId(), task2.getId(), "id не совпадает");
 
+        fileBackedTaskManager.getHistory().forEach(System.out :: println);
         Epic epi1 = (Epic) manager.getHistory().get(2);
         Epic epic2 = (Epic) fileBackedTaskManager.getHistory().get(2);
         assertEquals(epi1, epic2, "списки истории не совпадают");
@@ -166,6 +170,31 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         SubTask subTask2 = (SubTask) fileBackedTaskManager.getHistory().get(1);
         assertEquals(subTask1, subTask2, "списки истории не совпадают");
         assertEquals(subTask1.getId(), subTask2.getId(), "id не совпадает");
+
+    }
+
+    @Test
+    public void qwqw(){
+        manager.clearContent();
+        saveTask1(); // сохраняем все виды задач
+        // выводим несколько видов задач в разном порядке id для попадания этих задач в историю просмотра
+        manager.outIdTask(2);
+        manager.outIdTask(1);
+        manager.outIdSubTask(4);
+        manager.outIdEpic(3);
+        // удаляем одну задачу чтобы убедиться что это действие несет изменения сохранения файла истории
+        manager.deleteTaskId(1);
+        // создаем новый менеждер
+        FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
+    }
+
+    @Test
+    public void qwqw1(){
+
+        FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
+        System.out.println("Вывод истории "+fileBackedTaskManager.getHistory().size());
+        fileBackedTaskManager.clearContent();
+        System.out.println("Вывод истории "+fileBackedTaskManager.getHistory().size());
 
     }
 
