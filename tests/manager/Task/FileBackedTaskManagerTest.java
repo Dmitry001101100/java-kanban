@@ -153,7 +153,7 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
 
         // проверка порядка списка истории до и после выгрузки
-        assertEquals(manager.getHistory().toString(), manager.getHistory().toString(), "списки истории не совпадают");
+        assertEquals(manager.getHistory().toString(), fileBackedTaskManager.getHistory().toString(), "списки истории не совпадают");
         // проверка всех видов задач из ссписка истории
         Task task1 = manager.getHistory().getFirst();
         Task task2 = fileBackedTaskManager.getHistory().getFirst();
@@ -174,28 +174,49 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
     }
 
     @Test
-    public void qwqw(){
+    public void testSaveHistoryToFile(){
         manager.clearContent();
         saveTask1(); // сохраняем все виды задач
         // выводим несколько видов задач в разном порядке id для попадания этих задач в историю просмотра
         manager.outIdTask(2);
-        manager.outIdTask(1);
         manager.outIdSubTask(4);
+        manager.outIdTask(1);
+       // manager.outIdSubTask(4);
         manager.outIdEpic(3);
         // удаляем одну задачу чтобы убедиться что это действие несет изменения сохранения файла истории
         manager.deleteTaskId(1);
-        // создаем новый менеждер
+
+        manager.getHistory().forEach(System.out :: println);
+
         FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
+
+        assertEquals(manager.getHistory().toString(), fileBackedTaskManager.getHistory().toString(), "списки истории не совпадают");
+        manager.clearContent();
     }
 
     @Test
     public void qwqw1(){
+        manager.clearContent();
+        saveTask1(); // сохраняем все виды задач
+        // выводим несколько видов задач в разном порядке id для попадания этих задач в историю просмотра
 
-        FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
+        manager.outIdTask(2);
+        manager.outIdSubTask(4);
+
+        manager.outIdTask(1);
+
+        manager.outIdEpic(3);
+
+
+        manager.getHistory().forEach(System.out :: println);
+/*
+         FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
         System.out.println("Вывод истории "+fileBackedTaskManager.getHistory().size());
-        fileBackedTaskManager.clearContent();
+     //   fileBackedTaskManager.clearContent();
         System.out.println("Вывод истории "+fileBackedTaskManager.getHistory().size());
 
+
+ */
     }
 
     // -----------------------------совместимые тесты ------------------------------------------------------------------
