@@ -55,6 +55,16 @@ public class InMemoryTaskManager implements TaskManager {
     public boolean containsKeyTask(int id){
         return  taskMap.containsKey(id);
     }
+
+    @Override
+    public boolean containsKeySubTask(int id){
+        return  taskMap.containsKey(id);
+    }
+
+    @Override
+    public boolean containsKeyEpic(int id){
+        return  taskMap.containsKey(id);
+    }
     // -------------------------------------- prioritizedTasks ---------------------------------------------------------
 
     public List<Task> getPrioritizedTasks() {
