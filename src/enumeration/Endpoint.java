@@ -6,7 +6,6 @@ public enum Endpoint {
     POST_TASK,
 
 
-
-    DEFAULT
+    GET_POSTS, GET_COMMENTS, POST_COMMENT, UNKNOWN, DEFAULT
 
 }
