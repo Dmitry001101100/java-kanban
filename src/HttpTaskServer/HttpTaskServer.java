@@ -1,8 +1,6 @@
 package HttpTaskServer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -25,6 +23,8 @@ import java.util.stream.Collectors;
 
 public class HttpTaskServer implements HttpHandler {
     File file = new File("taskToList.csv"); // используется для проверки
+
+    protected final Gson gson = getGson();
 
     TaskManager taskManager = Managers.getDefaultFileBackedTaskManager(file);
 
@@ -110,30 +110,43 @@ public class HttpTaskServer implements HttpHandler {
 
     private Optional<Task> parseTask(InputStream bodyInputStream) throws IOException {
 
-
-
-
         BufferedReader reader = new BufferedReader(new InputStreamReader(bodyInputStream, DEFAULT_CHARSET));
         StringBuilder bodyBuilder = new StringBuilder();
+
         String line;
 
         while ((line = reader.readLine()) != null) {
             bodyBuilder.append(line).append("\n");
         }
 
-        String body = bodyBuilder.toString().trim();
-        int newLineInd = body.indexOf('\n');
 
-        if (newLineInd <= 0 || body.length() == newLineInd + 1) {
-            return Optional.empty();
+        JsonElement jsonElement = JsonParser.parseString(bodyBuilder.toString());
+
+        if (!jsonElement.isJsonObject()) {
+            System.out.println("Ответ от сервера не соответствует ожидаемому.");
+
         }
 
-        String user = body.substring(0, newLineInd).trim();
-        String text = body.substring(newLineInd + 1);
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
 
-        System.out.println("Строка 1"+user);
+        String title = jsonObject.get("title").getAsString();
+        String description = jsonObject.get("description").getAsString();
+        String id = jsonObject.get("id").getAsString();
+        String status = jsonObject.get("status").getAsString();
+        String startTime = jsonObject.get("startTime").getAsString();
+        String duration = jsonObject.get("duration").getAsString();
 
-        System.out.println("Строка 2"+ text);
+
+        System.out.println(jsonObject.has("status"));
+        // Task task = gson.fromJson(new InputStreamReader(bodyInputStream), Task.class);
+
+        System.out.println("task form json " + title);
+        System.out.println("task form json " + description);
+        System.out.println("task form json " + id);
+        System.out.println("task form json " + status);
+        System.out.println("task form json " + startTime);
+        System.out.println("task form json " + title);
+        System.out.println("task form json " + duration);
 
 
         return Optional.of(new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
@@ -141,13 +154,11 @@ public class HttpTaskServer implements HttpHandler {
     }
 
 
-
     //---------------------------------------------------------------------------------------------------------------------
     private Endpoint getEndpoint(String path, String requestMethod) {
         String[] pathParts = path.split("/");
-        System.out.println("0 -"+pathParts[0]);
-        System.out.println("1 "+pathParts[1]);
-
+        System.out.println("0 -" + pathParts[0]);
+        System.out.println("1 " + pathParts[1]);
 
 
         if (requestMethod.equals("GET")) {
@@ -167,6 +178,13 @@ public class HttpTaskServer implements HttpHandler {
             }
         }
         return Endpoint.DEFAULT;
+    }
+
+    public static Gson getGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        //   gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+        // gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
+        return gsonBuilder.create();
     }
 
     private Optional<Integer> getOptionalId(HttpExchange exchange) { // проверка что id для вывода задачи является числом
