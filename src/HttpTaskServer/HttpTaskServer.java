@@ -1,5 +1,7 @@
 package HttpTaskServer;
 
+import HttpTaskServer.adapters.DurationAdapter;
+import HttpTaskServer.adapters.LocalDateTimeAdapter;
 import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
 public class HttpTaskServer implements HttpHandler {
     File file = new File("taskToList.csv"); // используется для проверки
 
-    protected final Gson gson = new Gson();
+    protected final Gson gson = getGson();
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
     ;
 
@@ -96,85 +98,55 @@ public class HttpTaskServer implements HttpHandler {
 
     }
 
-    private void handlePostTask(HttpExchange exchange) throws IOException { // сохранение задачи
+    private void handlePostTask(HttpExchange exchange) throws IOException {
+        try (InputStream inputStream = exchange.getRequestBody()) {
+            Optional<Task> taskOpt = parseTask(inputStream);
 
-        Optional<Task> taskOpt = parseTask(exchange.getRequestBody());
+            if (taskOpt.isEmpty()) {
+                writeResponse(exchange, "Передан пустой запрос", 400);
+                return;
+            }
 
-        if (taskOpt.isEmpty()) {
-            writeResponse(exchange, "Передан пустой запрос", 400);
-        } else {
             Task task = taskOpt.get();
 
-            if (task.getId() == null || !taskManager.containsKeyTask(task.getId())) {
-                taskManager.saveTask(task);
-                writeResponse(exchange, "Задача сохранена", 201);
+            Optional<Integer> taskIdOpt = getOptionalId(exchange);
+            //  System.out.println("taskopt - " + taskIdOpt.orElse(-1));
 
-            } else {
-                if(taskManager.containsKeyTask(task.getId())){
-                    writeResponse(exchange,"задача пересекается с существующей",406);
+            if (taskIdOpt.isPresent()) {
+                int taskId = taskIdOpt.get();
+
+                if (task.getId() == null) {
+                    task.setId(taskId);
                 }
 
+                if (!taskManager.containsKeyTask(taskId)) {
+                    writeResponse(exchange, "Задачи с таким id не существует", 404);
+                } else {
+                    taskManager.updateTask(task);
+                    writeResponse(exchange, "Задача обновлена.", 201); // Используем 200 для успешного обновления
+                }
+            } else {
+                if (task.getId() == null) {
+                    taskManager.saveTask(task);
+                    writeResponse(exchange, "Задача сохранена", 201);
+                } else if (taskManager.containsKeyTask(task.getId())) {
+                    writeResponse(exchange, "Задача пересекается с существующей", 406);
+                } else {
+                    taskManager.saveTask(task);
+                    writeResponse(exchange, "Задача сохранена", 201);
+                }
             }
+        } catch (IOException e) {
+            writeResponse(exchange, "Внутренняя ошибка сервера", 500);
+            e.printStackTrace();
         }
-
     }
 
-    private Optional<Task> parseTask(InputStream bodyInputStream) throws IOException {
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(bodyInputStream, DEFAULT_CHARSET));
-        StringBuilder bodyBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            bodyBuilder.append(line).append("\n");
+    private Optional<Task> parseTask(InputStream inputStream) throws IOException {
+        try (InputStreamReader reader = new InputStreamReader(inputStream)) {
+            Task task = gson.fromJson(reader, Task.class);
+            return Optional.ofNullable(task);
         }
-
-        JsonElement jsonElement = JsonParser.parseString(bodyBuilder.toString());
-        if (!jsonElement.isJsonObject()) {
-            System.out.println("Ответ от сервера не соответствует ожидаемому.");
-
-        }
-        JsonObject jsonObject = jsonElement.getAsJsonObject();
-// ---------------------------------------------------------------------------------------------------------------------
-
-        //    String type = jsonObject.get("type").getAsString();
-        String title = jsonObject.get("title").getAsString();
-        String status = jsonObject.get("status").getAsString();
-        String description = jsonObject.get("description").getAsString();
-
-
-        LocalDateTime startTime;
-        LocalDateTime endTime;
-        Duration duration;
-        // ----------------------------------- проверка времени начала и конца задачи ------------------------------------------
-        if (jsonObject.get("startTime").getAsString().equals("null")) {
-            startTime = null;
-        } else {
-            startTime = LocalDateTime.parse(jsonObject.get("startTime").getAsString(), DATE_TIME_FORMATTER);
-        }
-
-        if (jsonObject.get("endTime").getAsString().equals("null")) {
-            endTime = null;
-        } else {
-            endTime = LocalDateTime.parse(jsonObject.get("endTime").getAsString(), DATE_TIME_FORMATTER);
-        }
-
-        if (startTime != null && endTime != null) {
-            duration = Duration.between(startTime, endTime);
-        } else {
-            duration = null;
-        }
-        //--------------------------------------------------------------------------------------------------------------
-        int id;
-        Task task;
-
-        if (jsonObject.has("id")) { // првоерряем есть ли в json обьекте id
-            id = jsonObject.get("id").getAsInt();
-            task = new Task(title,description,id,Status.valueOf(status),startTime,duration);
-        } else {
-            task = new Task(title,description,Status.valueOf(status),startTime,duration);
-        }
-
-        return Optional.of(task);
     }
 
 
@@ -206,12 +178,25 @@ public class HttpTaskServer implements HttpHandler {
 
 
     private Optional<Integer> getOptionalId(HttpExchange exchange) { // проверка что id для вывода задачи является числом
-        String[] pathParts = exchange.getRequestURI().getPath().split("/");
-        try {
-            return Optional.of(Integer.parseInt(pathParts[3]));
-        } catch (NumberFormatException exception) {
-            return Optional.empty();
+        String path = exchange.getRequestURI().getPath();
+        int lastSlashIndex = path.lastIndexOf('/');
+        if (lastSlashIndex != -1) {
+            try {
+                String idStr = path.substring(lastSlashIndex + 1);
+                return Optional.of(Integer.parseInt(idStr));
+            } catch (NumberFormatException e) {
+                // Не удалось преобразовать в Integer, значит id отсутствует или некорректен
+                return Optional.empty();
+            }
         }
+        return Optional.empty();
+    }
+
+    public static Gson getGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+        gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
+        return gsonBuilder.create();
     }
 }
 
