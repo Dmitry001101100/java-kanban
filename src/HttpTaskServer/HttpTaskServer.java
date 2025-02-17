@@ -113,7 +113,6 @@ public class HttpTaskServer implements HttpHandler {
 
             Task task = taskOpt.get();
             Optional<Integer> taskIdOpt = getOptionalId(exchange);
-            //  System.out.println("taskopt - " + taskIdOpt.orElse(-1));
 
             if (taskIdOpt.isPresent()) {
                 int taskId = taskIdOpt.get();
@@ -160,6 +159,8 @@ public class HttpTaskServer implements HttpHandler {
         }
     }
     // ----------------------------------------------------------------------------------------------------------------
+
+
     private Optional<Task> parseTask(InputStream inputStream) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(inputStream)) {
             Task task = gson.fromJson(reader, Task.class);
@@ -185,6 +186,14 @@ public class HttpTaskServer implements HttpHandler {
                 }
 
 
+            } else if (pathParts[2].equals("subtasks")) {
+
+                if (pathParts.length <= 3) {
+                    return Endpoint.GET_TASKS;
+                } else {
+                    return Endpoint.GET_TASK;
+                }
+                
             }
         } else if (requestMethod.equals("POST")) {
             if (pathParts[2].equals("tasks")) {
