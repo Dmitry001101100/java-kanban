@@ -48,8 +48,12 @@ public class HttpTaskServer implements HttpHandler {
                 handleGetTask(exchange);
                 break;
             }
-            case POST_TASK: { // запись задачи
+            case POST_TASK: { // запись задачи и обновление задачи
                 handlePostTask(exchange);
+                break;
+            }
+            case DELETE_TASK: { // удаление по id задачи
+                handleDeleteTask(exchange);
                 break;
             }
 
@@ -108,13 +112,11 @@ public class HttpTaskServer implements HttpHandler {
             }
 
             Task task = taskOpt.get();
-
             Optional<Integer> taskIdOpt = getOptionalId(exchange);
             //  System.out.println("taskopt - " + taskIdOpt.orElse(-1));
 
             if (taskIdOpt.isPresent()) {
                 int taskId = taskIdOpt.get();
-
                 if (task.getId() == null) {
                     task.setId(taskId);
                 }
@@ -123,7 +125,7 @@ public class HttpTaskServer implements HttpHandler {
                     writeResponse(exchange, "Задачи с таким id не существует", 404);
                 } else {
                     taskManager.updateTask(task);
-                    writeResponse(exchange, "Задача обновлена.", 201); // Используем 200 для успешного обновления
+                    writeResponse(exchange, "Задача обновлена.", 201);
                 }
             } else {
                 if (task.getId() == null) {
@@ -142,6 +144,22 @@ public class HttpTaskServer implements HttpHandler {
         }
     }
 
+    private void handleDeleteTask(HttpExchange exchange) throws IOException {
+        Optional<Integer> taskIdOpt = getOptionalId(exchange);
+
+        if (taskIdOpt.isPresent()) {
+            if(taskManager.containsKeyTask(taskIdOpt.get())){
+                taskManager.deleteTaskId(taskIdOpt.get());
+                writeResponse(exchange, "Задача удалена.", 201);
+            } else {
+                writeResponse(exchange, "Задача не найдена.", 400);
+            }
+
+        } else {
+            writeResponse(exchange, "Неверный id задачи.", 400);
+        }
+    }
+    // ----------------------------------------------------------------------------------------------------------------
     private Optional<Task> parseTask(InputStream inputStream) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(inputStream)) {
             Task task = gson.fromJson(reader, Task.class);
@@ -171,6 +189,15 @@ public class HttpTaskServer implements HttpHandler {
         } else if (requestMethod.equals("POST")) {
             if (pathParts[2].equals("tasks")) {
                 return Endpoint.POST_TASK;
+            }
+        } else if (requestMethod.equals("DELETE")) {
+            if (pathParts[2].equals("tasks")) {
+
+                if (pathParts.length >= 3) {
+                    return Endpoint.DELETE_TASK;
+                }
+
+
             }
         }
         return Endpoint.DEFAULT;
