@@ -18,13 +18,16 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HttpTaskServer implements HttpHandler {
     File file = new File("taskToList.csv"); // используется для проверки
 
-    protected final Gson gson = getGson();
+    protected final Gson gson = new Gson();
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
+    ;
 
     TaskManager taskManager = Managers.getDefaultFileBackedTaskManager(file);
 
@@ -94,16 +97,24 @@ public class HttpTaskServer implements HttpHandler {
     }
 
     private void handlePostTask(HttpExchange exchange) throws IOException { // сохранение задачи
-        Optional<Task> commentOpt = parseTask(exchange.getRequestBody());
-        System.out.println(commentOpt);
 
-        if (commentOpt.isEmpty()) {
+        Optional<Task> taskOpt = parseTask(exchange.getRequestBody());
+
+        if (taskOpt.isEmpty()) {
 
             writeResponse(exchange, "Поля комментария не могут быть пустыми", 400);
 
         } else {
-            taskManager.saveTask(commentOpt.get());
-            writeResponse(exchange, "задача сохранена", 201);
+            Task task = taskOpt.get();
+
+            if (task.getId() != null) {
+
+                writeResponse(exchange, "задача сохранена", 201);
+
+            } else {
+                taskManager.saveTask(taskOpt.get());
+                writeResponse(exchange, "задача сохранена", 201);
+            }
         }
 
     }
@@ -134,7 +145,6 @@ public class HttpTaskServer implements HttpHandler {
         String id = jsonObject.get("id").getAsString();
         String status = jsonObject.get("status").getAsString();
         String startTime = jsonObject.get("startTime").getAsString();
-        String duration = jsonObject.get("duration").getAsString();
 
 
         System.out.println(jsonObject.has("status"));
@@ -146,7 +156,6 @@ public class HttpTaskServer implements HttpHandler {
         System.out.println("task form json " + status);
         System.out.println("task form json " + startTime);
         System.out.println("task form json " + title);
-        System.out.println("task form json " + duration);
 
 
         return Optional.of(new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
@@ -180,12 +189,6 @@ public class HttpTaskServer implements HttpHandler {
         return Endpoint.DEFAULT;
     }
 
-    public static Gson getGson() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        //   gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
-        // gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
-        return gsonBuilder.create();
-    }
 
     private Optional<Integer> getOptionalId(HttpExchange exchange) { // проверка что id для вывода задачи является числом
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
