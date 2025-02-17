@@ -6,6 +6,9 @@ public enum Endpoint {
     POST_TASK,
     DELETE_TASK,
 
+    GET_SUBTASK,
+    GET_SUBTASKS,
+
 
 
      DEFAULT
