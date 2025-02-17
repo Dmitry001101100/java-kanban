@@ -179,10 +179,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    @Override
-    public int getIdUp() { // герерирует id
-        return super.getIdUp();
-    }
 
     @Override
     public boolean containsKeyTask(int id) {
@@ -214,6 +210,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void saveTask(Task savetheTask) {
         super.saveTask(savetheTask);
+        save();
+    }
+
+    @Override
+    public void updateTask(Task updateTask) {
+        super.saveTask(updateTask);
         save();
     }
 

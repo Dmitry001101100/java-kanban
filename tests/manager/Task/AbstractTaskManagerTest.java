@@ -322,14 +322,14 @@ public class AbstractTaskManagerTest {
 
 
     public void addAndGetTaskHis(TaskManager taskManager) {// сохраняем задачи в истории
-        Task task1 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
+        Task task1 = new Task("Test titleTask", "Test description", taskManager.getIdUp(),Status.NEW,
                 LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(140));
-        Task task2 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
+        Task task2 = new Task("Test titleTask", "Test description",taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.of(2024, 12, 23, 14, 42), Duration.ofMinutes(12));
 
         Epic epic3 = new Epic("Епик", "описание", taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.now(), Duration.ofMinutes(20));
-        SubTask sub4 = new SubTask(epic3.getId(), "Test titleSub1", "Test in Epic", taskManager.getIdUp(), Status.IN_PROGRESS,
+        SubTask sub4 = new SubTask(epic3.getId(), "Test titleSub1", "Test in Epic",taskManager.getIdUp(), Status.IN_PROGRESS,
                 LocalDateTime.of(24, 12, 4, 10, 17), Duration.ofMinutes(24));
         SubTask sub5 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.of(24, 8, 25, 16, 40), Duration.ofMinutes(12));

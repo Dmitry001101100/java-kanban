@@ -101,19 +101,19 @@ public class HttpTaskServer implements HttpHandler {
         Optional<Task> taskOpt = parseTask(exchange.getRequestBody());
 
         if (taskOpt.isEmpty()) {
-
-            writeResponse(exchange, "Поля комментария не могут быть пустыми", 400);
-
+            writeResponse(exchange, "Передан пустой запрос", 400);
         } else {
             Task task = taskOpt.get();
 
-            if (task.getId() != null) {
-
-                writeResponse(exchange, "задача сохранена", 201);
+            if (task.getId() == null || !taskManager.containsKeyTask(task.getId())) {
+                taskManager.saveTask(task);
+                writeResponse(exchange, "Задача сохранена", 201);
 
             } else {
-                taskManager.saveTask(taskOpt.get());
-                writeResponse(exchange, "задача сохранена", 201);
+                if(taskManager.containsKeyTask(task.getId())){
+                    writeResponse(exchange,"задача пересекается с существующей",406);
+                }
+
             }
         }
 
@@ -123,43 +123,58 @@ public class HttpTaskServer implements HttpHandler {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(bodyInputStream, DEFAULT_CHARSET));
         StringBuilder bodyBuilder = new StringBuilder();
-
         String line;
-
         while ((line = reader.readLine()) != null) {
             bodyBuilder.append(line).append("\n");
         }
 
-
         JsonElement jsonElement = JsonParser.parseString(bodyBuilder.toString());
-
         if (!jsonElement.isJsonObject()) {
             System.out.println("Ответ от сервера не соответствует ожидаемому.");
 
         }
-
         JsonObject jsonObject = jsonElement.getAsJsonObject();
+// ---------------------------------------------------------------------------------------------------------------------
 
+        //    String type = jsonObject.get("type").getAsString();
         String title = jsonObject.get("title").getAsString();
-        String description = jsonObject.get("description").getAsString();
-        String id = jsonObject.get("id").getAsString();
         String status = jsonObject.get("status").getAsString();
-        String startTime = jsonObject.get("startTime").getAsString();
+        String description = jsonObject.get("description").getAsString();
 
 
-        System.out.println(jsonObject.has("status"));
-        // Task task = gson.fromJson(new InputStreamReader(bodyInputStream), Task.class);
+        LocalDateTime startTime;
+        LocalDateTime endTime;
+        Duration duration;
+        // ----------------------------------- проверка времени начала и конца задачи ------------------------------------------
+        if (jsonObject.get("startTime").getAsString().equals("null")) {
+            startTime = null;
+        } else {
+            startTime = LocalDateTime.parse(jsonObject.get("startTime").getAsString(), DATE_TIME_FORMATTER);
+        }
 
-        System.out.println("task form json " + title);
-        System.out.println("task form json " + description);
-        System.out.println("task form json " + id);
-        System.out.println("task form json " + status);
-        System.out.println("task form json " + startTime);
-        System.out.println("task form json " + title);
+        if (jsonObject.get("endTime").getAsString().equals("null")) {
+            endTime = null;
+        } else {
+            endTime = LocalDateTime.parse(jsonObject.get("endTime").getAsString(), DATE_TIME_FORMATTER);
+        }
 
+        if (startTime != null && endTime != null) {
+            duration = Duration.between(startTime, endTime);
+        } else {
+            duration = null;
+        }
+        //--------------------------------------------------------------------------------------------------------------
+        int id;
+        Task task;
 
-        return Optional.of(new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
-                LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(140)));
+        if (jsonObject.has("id")) { // првоерряем есть ли в json обьекте id
+            id = jsonObject.get("id").getAsInt();
+            task = new Task(title,description,id,Status.valueOf(status),startTime,duration);
+        } else {
+            task = new Task(title,description,Status.valueOf(status),startTime,duration);
+        }
+
+        return Optional.of(task);
     }
 
 

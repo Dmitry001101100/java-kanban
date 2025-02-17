@@ -29,6 +29,13 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int getIdUp() { // герерирует id
         idUp++;
+        while (true) {
+            if (containsKeyTask(idUp) || containsKeyEpic(idUp) || containsKeySubTask(idUp)) {
+                idUp++;
+            } else {
+                break;
+            }
+        }
         return idUp;
     }
 
@@ -79,24 +86,51 @@ public class InMemoryTaskManager implements TaskManager {
     //---------------------------------- 1 - Сохранение ----------------------------------------------------------------
 
     @Override
-    public void saveTask(Task task) { // сохранение и перезапись задач
+    public void saveTask(Task task) { // сохранение задач
+        if (task.getId() == null) {
+            task.setId(getIdUp());
+            System.out.println("id задачи изменен для устранения конфликта.");
+        }
+
+        if (containsKeyTask(task.getId())) {
+            System.out.println("Запись прервана,задача пересекается с существующей");
+        }
         taskMap.put(task.getId(), task);
         prioritizedTasks.add(task);
-        System.out.println("Задача успешно сохранена!");
+        System.out.println("Задача успешно записана!");
+
 
     }
 
     @Override
-    public void saveEpic(Epic epic) { // сохранение и перезапись эпиков
+    public void updateTask(Task newTask) { // пока так попозже подкорректировать
+        taskMap.put(newTask.getId(), newTask);
+        System.out.println("Задача успешно обновлена!");
+    }
 
-        epicMap.put(epic.getId(), epic);
-        searchForTheStartTimeAndDuration(epic.getId());
-        System.out.println("Эпик успешно сохранен!");
+    @Override
+    public void saveEpic(Epic epic) { // сохранение и перезапись эпиков
+        if (epic.getId() == null) {
+            epic.setId(getIdUp());
+
+            epicMap.put(epic.getId(), epic);
+            searchForTheStartTimeAndDuration(epic.getId());
+            System.out.println("Эпик успешно сохранен!");
+        } else if (containsKeyEpic(epic.getId())) {
+            epicMap.put(epic.getId(), epic);
+            searchForTheStartTimeAndDuration(epic.getId());
+            System.out.println("Эпик успешно обновлен!");
+        }
+
 
     }
 
     @Override
     public void saveSubTask(SubTask subTask) { // сохранение и перезапись подзадач
+        if (subTask.getId() == null) {
+            subTask.setId(getIdUp());
+            System.out.println("Изменен id");
+        }
 
         Epic epic1 = epicMap.get(subTask.getEpicId()); // вызываем нужный элемент хеш таблицы
         if (!epic1.getSubtaskIds().contains(subTask.getId())) {
