@@ -89,17 +89,17 @@ public class InMemoryTaskManager implements TaskManager {
     public void saveTask(Task task) { // сохранение задач
         if (task.getId() == null) {
             task.setId(getIdUp());
-            System.out.println("id задачи изменен для устранения конфликта.");
+            System.out.println("id задачи изменен.");
         }
 
         if (containsKeyTask(task.getId())) {
             System.out.println("Запись прервана,задача пересекается с существующей");
+        } else {
+            taskMap.put(task.getId(), task);
+            prioritizedTasks.add(task);
+            System.out.println("Задача успешно записана!");
+
         }
-        taskMap.put(task.getId(), task);
-        prioritizedTasks.add(task);
-        System.out.println("Задача успешно записана!");
-
-
     }
 
     @Override
@@ -112,14 +112,16 @@ public class InMemoryTaskManager implements TaskManager {
     public void saveEpic(Epic epic) { // сохранение и перезапись эпиков
         if (epic.getId() == null) {
             epic.setId(getIdUp());
+            System.out.println("id задачи изменен.");
 
+        }
+
+        if (containsKeyEpic(epic.getId())) {
+            System.out.println("Запись прервана,эпик пересекается с существующим.");
+        } else {
             epicMap.put(epic.getId(), epic);
             searchForTheStartTimeAndDuration(epic.getId());
-            System.out.println("Эпик успешно сохранен!");
-        } else if (containsKeyEpic(epic.getId())) {
-            epicMap.put(epic.getId(), epic);
-            searchForTheStartTimeAndDuration(epic.getId());
-            System.out.println("Эпик успешно обновлен!");
+            System.out.println("Эпик успешно записан!");
         }
 
 
