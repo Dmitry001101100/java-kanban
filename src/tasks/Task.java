@@ -29,6 +29,16 @@ public class Task {
 
     }
 
+    public Task(String title, String description, Status status, LocalDateTime startTime, Duration duration) {
+        this.name = title;
+        this.description = description;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
+
+    }
+
+
     //------------------------------------ время -----------------------------------------------------------------------
     public LocalDateTime getStartTime() {
         return startTime;

@@ -16,6 +16,7 @@ public interface TaskManager {
     boolean containsKeyEpic(int id);
 
     void saveTask(Task savetheTask);
+    void updateTask(Task newTask);
 
     void saveEpic(Epic savetheEpic);
 
