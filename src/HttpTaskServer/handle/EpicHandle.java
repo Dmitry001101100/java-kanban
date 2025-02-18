@@ -81,24 +81,26 @@ public class EpicHandle extends BaseHandle implements HttpHandler {
 
     private void handlePostEpic(HttpExchange exchange) throws IOException { // сохранение и перезапись задач
         try (InputStream inputStream = exchange.getRequestBody()) {
-            Optional<Epic> epicOpt = parseTask(inputStream);
+            Optional<Task> epicOpt= parseTask(inputStream);
 
             if (epicOpt.isEmpty()) {
-                writeResponse(exchange, "Передан пустой запрос.", 400);
+                writeResponse(exchange, "Передан пустой запрос", 400);
                 return;
             }
 
-            Epic epic = epicOpt.get();
+            Epic epic = (Epic) epicOpt.get();
+            System.out.println(epic);
             Optional<Integer> taskIdOpt = getOptionalId(exchange);
 
-            if (taskIdOpt.isPresent()) {  // проверяем указан ли в URL строке id для перезаписи
-                int taskId = taskIdOpt.get();
+            if (taskIdOpt.isPresent()) {  // проверяем указан ли в URL строке id  для перезаписи
+                int epicId = taskIdOpt.get();
                 if (epic.getId() == null) {
-                    epic.setId(taskId);
+                    epic.setId(epicId);
                 }
 
-                if (!taskManager.containsKeyEpic(taskId)) {
-                    writeResponse(exchange, "Эпика с таким id не существует", 404);
+                if (!taskManager.containsKeyEpic(epicId)) {
+                    taskManager.createEpic(epic);
+                    writeResponse(exchange, "Эпик сохранен.", 201);
                 } else {
                     taskManager.updateEpic(epic);
                     writeResponse(exchange, "Эпик обновлен.", 201);
@@ -107,15 +109,16 @@ public class EpicHandle extends BaseHandle implements HttpHandler {
                 if (epic.getId() == null) {
                     taskManager.createEpic(epic);
                     writeResponse(exchange, "Эпик сохранен.", 201);
-                } else if (taskManager.containsKeyTask(epic.getId())) {
-                    writeResponse(exchange, "Эпик пересекается с существующим.", 406);
+                } else if (taskManager.containsKeyEpic(epic.getId())) {
+                    taskManager.updateEpic(epic);
+                    writeResponse(exchange, "Эпик обновлен.", 201);
                 } else {
                     taskManager.createEpic(epic);
                     writeResponse(exchange, "Эпик сохранен.", 201);
                 }
             }
         } catch (IOException e) {
-            writeResponse(exchange, "Внутренняя ошибка сервера.", 500);
+            writeResponse(exchange, "Внутренняя ошибка сервера", 500);
             e.printStackTrace();
         }
     }
@@ -138,7 +141,7 @@ public class EpicHandle extends BaseHandle implements HttpHandler {
     // ----------------------------------------------------------------------------------------------------------------
 
 
-    private Optional<Epic> parseTask(InputStream inputStream) throws IOException {
+    private Optional<Task> parseTask(InputStream inputStream) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(inputStream)) {
             Epic epic = gson.fromJson(reader, Epic.class);
             return Optional.ofNullable(epic);

@@ -109,14 +109,19 @@ public class InMemoryTaskManager implements TaskManager {
             prioritizedTasks.add(task);
             System.out.println("Задача успешно записана!");
         } else {
-            System.out.println("Запись прервана,задача пересекается с существующей");
+            System.out.println("Запись прервана,задача пересекается с существующей.");
         }
     }
 
     @Override
     public void updateTask(Task newTask) { // пока так попозже подкорректировать
-        taskMap.put(newTask.getId(), newTask);
-        System.out.println("Задача успешно обновлена!");
+        if(containsKeyTasks(newTask.getId())){
+            taskMap.put(newTask.getId(), newTask);
+            System.out.println("Задача успешно обновлена!");
+        } else {
+            System.out.println("Задача с данным id не найдена.");
+        }
+
     }
 
     @Override
@@ -140,12 +145,10 @@ public class InMemoryTaskManager implements TaskManager {
         if(containsKeyEpic(epic.getId())){
             epicMap.put(epic.getId(), epic);
             searchForTheStartTimeAndDuration(epic.getId());
-            System.out.println("Эпик успешно записан!");
+            System.out.println("Эпик успешно изменен!");
         } else {
-            System.out.println("Эпик с таким id не найден");
+            System.out.println("Эпик с таким id не найден.");
         }
-
-
     }
 
     @Override

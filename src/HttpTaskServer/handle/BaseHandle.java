@@ -83,7 +83,7 @@ public class BaseHandle {
             } else if (pathParts[2].equals("subtasks")) {
                 return Endpoint.POST_SUBTASK;
             } else if (pathParts[2].equals("epics")) {
-                return Endpoint.GET_EPICS;
+                return Endpoint.POST_EPIC;
             }
         } else if (requestMethod.equals("DELETE")) {
             if (pathParts[2].equals("tasks")) {
