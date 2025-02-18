@@ -73,6 +73,18 @@ public class InMemoryTaskManager implements TaskManager {
     public boolean containsKeyEpic(int id) {
         return epicMap.containsKey(id);
     }
+
+    @Override
+    public boolean containsKeyTasks(int id) {
+        if (taskMap.containsKey(id)) {
+            return true;
+        } else if (epicMap.containsKey(id)) {
+            return true;
+        } else if (subTaskMap.containsKey(id)) {
+            return true;
+        }
+        return false;
+    }
     // -------------------------------------- prioritizedTasks ---------------------------------------------------------
 
     public List<Task> getPrioritizedTasks() {
@@ -92,13 +104,12 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("id задачи изменен.");
         }
 
-        if (containsKeyTask(task.getId())) {
-            System.out.println("Запись прервана,задача пересекается с существующей");
-        } else {
+        if (!containsKeyTask(task.getId()) || !containsKeySubTask(task.getId()) || !containsKeyEpic(task.getId())) {
             taskMap.put(task.getId(), task);
             prioritizedTasks.add(task);
             System.out.println("Задача успешно записана!");
-
+        } else {
+            System.out.println("Запись прервана,задача пересекается с существующей");
         }
     }
 
@@ -113,15 +124,25 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic.getId() == null) {
             epic.setId(getIdUp());
             System.out.println("id задачи изменен.");
-
         }
 
-        if (containsKeyEpic(epic.getId())) {
-            System.out.println("Запись прервана,эпик пересекается с существующим.");
-        } else {
+        if (!containsKeyTasks(epic.getId())) {
             epicMap.put(epic.getId(), epic);
             searchForTheStartTimeAndDuration(epic.getId());
             System.out.println("Эпик успешно записан!");
+        } else {
+            System.out.println("Запись прервана,эпик пересекается с существующим.");
+        }
+    }
+
+    @Override
+    public void updateEpic(Epic epic) { // сохранение и перезапись эпиков
+        if(containsKeyEpic(epic.getId())){
+            epicMap.put(epic.getId(), epic);
+            searchForTheStartTimeAndDuration(epic.getId());
+            System.out.println("Эпик успешно записан!");
+        } else {
+            System.out.println("Эпик с таким id не найден");
         }
 
 
@@ -135,15 +156,34 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         Epic epic1 = epicMap.get(subTask.getEpicId()); // вызываем нужный элемент хеш таблицы
-        if (!epic1.getSubtaskIds().contains(subTask.getId())) {
-            epic1.addSubtaskIds(subTask.getId());
-        } // записываем в список id подзадач новое значение
+        if (!containsKeyTask(subTask.getId()) || !containsKeySubTask(subTask.getId()) || !containsKeyEpic(subTask.getId())) {
+            if (!epic1.getSubtaskIds().contains(subTask.getId())) {
+                epic1.addSubtaskIds(subTask.getId());
+            } // записываем в список id подзадач новое значение
+            subTaskMap.put(subTask.getId(), subTask);
+            updateEpicStatus(subTask.getEpicId()); //проверка и если требуется изменение статуса эпика
+            searchForTheStartTimeAndDuration(subTask.getEpicId()); // временные рамки эпика
+            prioritizedTasks.add(subTask);
+            System.out.println("Подзадача успешно сохранена!");
+        } else {
+            System.out.println("подзадача пересекается с другими задачами.");
+        }
+
+
+    }
+
+    @Override
+    public void updateSubTask(SubTask subTask) {
+        if (subTask.getId() == null) {
+            subTask.setId(getIdUp());
+            System.out.println("Изменен id");
+        }
 
         subTaskMap.put(subTask.getId(), subTask);
         updateEpicStatus(subTask.getEpicId()); //проверка и если требуется изменение статуса эпика
         searchForTheStartTimeAndDuration(subTask.getEpicId()); // временные рамки эпика
-        prioritizedTasks.add(subTask);
-        System.out.println("Подзадача успешно сохранена!");
+        //  prioritizedTasks.add(subTask);
+        System.out.println("Подзадача успешно обновлена!");
 
     }
 //------------------------------------------- 2 - Вывод полный ---------------------------------------------------------

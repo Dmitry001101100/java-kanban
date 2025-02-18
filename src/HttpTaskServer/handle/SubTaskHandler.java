@@ -5,9 +5,12 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import enumeration.Endpoint;
 import manager.Task.TaskManager;
+import tasks.SubTask;
 import tasks.Task;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,6 +32,9 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
                 break;
             } case GET_SUBTASK: {
                 handleGetSubTask(exchange);
+                break;
+            } case POST_SUBTASK: {
+                handlePostSubTask(exchange);
                 break;
             }
 
@@ -61,6 +67,68 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
         } else {
             response = "Подзадачи с id: " + id + " не существует.";
             writeResponse(exchange, response, 404);
+        }
+    }
+
+    private void handlePostSubTask(HttpExchange exchange) throws IOException { // сохранение и перезапись задач
+        try (InputStream inputStream = exchange.getRequestBody()) {
+            Optional<SubTask> subTaskOpt = parseSubTask(inputStream);
+
+            if (subTaskOpt.isEmpty()) {
+                writeResponse(exchange, "Передан пустой запрос", 400);
+                return;
+            }
+
+            SubTask subTask = subTaskOpt.get();
+            Optional<Integer> epicIdOpt = getOptionalId(exchange);
+            System.out.println(subTask);
+
+            if (epicIdOpt.isPresent()) {  // проверяем указан ли в URL строке id  для перезаписи
+                int epicId = epicIdOpt.get();
+
+                if (!taskManager.containsKeyEpic(epicId)) {
+                    writeResponse(exchange, "Эпика с таким id не существует", 404);
+                } else {
+                    taskManager.updateTask(subTask);
+                    writeResponse(exchange, "Задача обновлена.", 201);
+                }
+            } else { // если не существует сохраняем новую задачу
+
+                if(taskManager.containsKeyTask(subTask.getEpicId())){
+
+                    if (subTask.getId() == null){
+                        taskManager.createSubTask(subTask);
+                        writeResponse(exchange, "Подзадача сохранена.", 201);
+                    } else {
+                        if(taskManager.containsKeySubTask(subTask.getId())){
+                            taskManager.createSubTask(subTask);
+                            writeResponse(exchange, "Подзадача обновлена.", 201);
+
+                        } else {
+                            if(taskManager.containsKeyTasks(subTask.getId())){
+                                writeResponse(exchange, "Подзадача конфликтует с другими видами задач.", 406);
+                            } else {
+                                taskManager.createSubTask(subTask);
+                                writeResponse(exchange, "Подзадача сохранена.", 201);
+                            }
+                        }
+                    }
+
+                } else {
+                    writeResponse(exchange, "Эпик с таким id не найден.", 404);
+                }
+
+            }
+        } catch (IOException e) {
+            writeResponse(exchange, "Внутренняя ошибка сервера", 500);
+            e.printStackTrace();
+        }
+    }
+
+    private Optional<SubTask> parseSubTask(InputStream inputStream) throws IOException {
+        try (InputStreamReader reader = new InputStreamReader(inputStream)) {
+            SubTask subTask = gson.fromJson(reader, SubTask.class);
+            return Optional.ofNullable(subTask);
         }
     }
 }

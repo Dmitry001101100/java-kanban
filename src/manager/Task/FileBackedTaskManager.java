@@ -230,6 +230,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.createSubTask(saveSubTask);
         save();
     }
+
+    @Override
+    public void updateSubTask(SubTask subTask) {
+        super.updateSubTask(subTask);
+        save();
+    }
     // -------------------------------- полное удаление ----------------------------------------------------------------
 
     @Override

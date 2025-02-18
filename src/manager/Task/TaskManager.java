@@ -15,12 +15,17 @@ public interface TaskManager {
     boolean containsKeySubTask(int id);
     boolean containsKeyEpic(int id);
 
+    boolean containsKeyTasks(int id);
+
     void createTask(Task savetheTask);
     void updateTask(Task newTask);
 
     void createEpic(Epic savetheEpic);
 
+    void updateEpic(Epic epic);
+
     void createSubTask(SubTask saveSubTask);
+    void updateSubTask(SubTask subTask);
 
 
     ArrayList<Epic> getEpics();

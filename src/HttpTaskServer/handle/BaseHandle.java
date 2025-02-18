@@ -51,7 +51,7 @@ public class BaseHandle {
         exchange.close();
     }
 
-    protected Endpoint getEndpoint(String path, String requestMethod) {
+    protected Endpoint getEndpoint(String path, String requestMethod) { // создание эндпоинта
         String[] pathParts = path.split("/");
         System.out.println("0 -" + pathParts[0]);
         System.out.println("1 " + pathParts[1]);
@@ -59,34 +59,41 @@ public class BaseHandle {
 
         if (requestMethod.equals("GET")) {
             if (pathParts[2].equals("tasks")) {
-
                 if (pathParts.length <= 3) {
                     return Endpoint.GET_TASKS;
                 } else {
                     return Endpoint.GET_TASK;
                 }
-
             } else if (pathParts[2].equals("subtasks")) {
-
                 if (pathParts.length <= 3) {
                     return Endpoint.GET_SUBTASKS;
                 } else {
                     return Endpoint.GET_SUBTASK;
                 }
-
-
+            } else if (pathParts[2].equals("epics")) {
+                if (pathParts.length <= 3) {
+                    return Endpoint.GET_EPICS;
+                } else {
+                    return Endpoint.GET_EPIC;
+                }
             }
         } else if (requestMethod.equals("POST")) {
             if (pathParts[2].equals("tasks")) {
                 return Endpoint.POST_TASK;
-            } else if (pathParts[2].equals("subtask")) {
-                
+            } else if (pathParts[2].equals("subtasks")) {
+                return Endpoint.POST_SUBTASK;
+            } else if (pathParts[2].equals("epics")) {
+                return Endpoint.GET_EPICS;
             }
         } else if (requestMethod.equals("DELETE")) {
             if (pathParts[2].equals("tasks")) {
 
                 if (pathParts.length >= 3) {
                     return Endpoint.DELETE_TASK;
+                }
+            } else if (pathParts[2].equals("epics")) {
+                if (pathParts.length >= 3) {
+                    return Endpoint.DELETE_EPIC;
                 }
             }
         }
