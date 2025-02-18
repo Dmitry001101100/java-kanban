@@ -1,24 +1,17 @@
 package HttpTaskServer;
 
-import HttpTaskServer.adapters.DurationAdapter;
-import HttpTaskServer.adapters.LocalDateTimeAdapter;
 import HttpTaskServer.handle.BaseHandle;
+import HttpTaskServer.handle.EpicHandle;
 import HttpTaskServer.handle.SubTaskHandler;
 import HttpTaskServer.handle.TaskHandler;
-import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import enumeration.Endpoint;
-import enumeration.Status;
 import manager.Managers;
-import manager.Task.InMemoryTaskManager;
 import manager.Task.TaskManager;
-import tasks.Task;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-
 
 public class HttpTaskServer extends BaseHandle implements HttpHandler {
 
@@ -35,6 +28,9 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
             }
             case "subtasks": {
                 new SubTaskHandler(taskManager).handle(exchange);
+            }
+            case "epics" : {
+                new EpicHandle(taskManager).handle(exchange);
             }
 
 

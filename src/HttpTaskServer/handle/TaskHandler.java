@@ -76,7 +76,7 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
 
     }
 
-    private void handlePostTask(HttpExchange exchange) throws IOException {
+    private void handlePostTask(HttpExchange exchange) throws IOException { // сохранение и перезапись задач
         try (InputStream inputStream = exchange.getRequestBody()) {
             Optional<Task> taskOpt = parseTask(inputStream);
 
@@ -117,7 +117,7 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
         }
     }
 
-    private void handleDeleteTask(HttpExchange exchange) throws IOException {
+    private void handleDeleteTask(HttpExchange exchange) throws IOException { // удаление задач по id
         Optional<Integer> taskIdOpt = getOptionalId(exchange);
 
         if (taskIdOpt.isPresent()) {
