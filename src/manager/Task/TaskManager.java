@@ -15,28 +15,28 @@ public interface TaskManager {
     boolean containsKeySubTask(int id);
     boolean containsKeyEpic(int id);
 
-    void saveTask(Task savetheTask);
+    void createTask(Task savetheTask);
     void updateTask(Task newTask);
 
-    void saveEpic(Epic savetheEpic);
+    void createEpic(Epic savetheEpic);
 
-    void saveSubTask(SubTask saveSubTask);
+    void createSubTask(SubTask saveSubTask);
 
 
     ArrayList<Epic> getEpics();
 
     ArrayList<Task> getTasks();
 
-    ArrayList<SubTask> getSubTasksId(int epicId);
+    ArrayList<SubTask> getSubTasksByEpicId(int epicId);
 
     ArrayList<SubTask> getSubTasks();
 
 
-    Task outIdTask(int numberId);
+    Task getTaskById(int numberId);
 
-    SubTask outIdSubTask(int numberId);
+    SubTask getSubTaskById(int numberId);
 
-    Epic outIdEpic(int numberId);
+    Epic getEpicById(int numberId);
 
 
     void clearContent();

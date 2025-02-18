@@ -67,7 +67,7 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
         String response;
 
         if ((taskManager.containsKeyTask(id))) {
-            response = taskManager.outIdTask(id).toString();
+            response = taskManager.getTaskById(id).toString();
             writeResponse(exchange, response, 200);
         } else {
             response = "Задачи с id: " + id + " не существует.";
@@ -88,7 +88,7 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
             Task task = taskOpt.get();
             Optional<Integer> taskIdOpt = getOptionalId(exchange);
 
-            if (taskIdOpt.isPresent()) {
+            if (taskIdOpt.isPresent()) {  // проверяем указан ли в URL строке id  для перезаписи
                 int taskId = taskIdOpt.get();
                 if (task.getId() == null) {
                     task.setId(taskId);
@@ -100,14 +100,14 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
                     taskManager.updateTask(task);
                     writeResponse(exchange, "Задача обновлена.", 201);
                 }
-            } else {
+            } else { // если не существует сохраняем новую задачу
                 if (task.getId() == null) {
-                    taskManager.saveTask(task);
+                    taskManager.createTask(task);
                     writeResponse(exchange, "Задача сохранена", 201);
                 } else if (taskManager.containsKeyTask(task.getId())) {
                     writeResponse(exchange, "Задача пересекается с существующей", 406);
                 } else {
-                    taskManager.saveTask(task);
+                    taskManager.createTask(task);
                     writeResponse(exchange, "Задача сохранена", 201);
                 }
             }

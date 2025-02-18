@@ -3,6 +3,7 @@ package HttpTaskServer;
 import HttpTaskServer.adapters.DurationAdapter;
 import HttpTaskServer.adapters.LocalDateTimeAdapter;
 import HttpTaskServer.handle.BaseHandle;
+import HttpTaskServer.handle.SubTaskHandler;
 import HttpTaskServer.handle.TaskHandler;
 import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
@@ -20,9 +21,9 @@ import java.net.InetSocketAddress;
 
 
 public class HttpTaskServer extends BaseHandle implements HttpHandler {
+
     File file = new File("taskToList.csv"); // используется для проверки
     TaskManager taskManager = Managers.getDefaultFileBackedTaskManager(file);
-
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -31,7 +32,9 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
         switch (pathParts[2]) {
             case "tasks": { // вывод всех задач
                 new TaskHandler(taskManager).handle(exchange);
-
+            }
+            case "subtasks": {
+                new SubTaskHandler(taskManager).handle(exchange);
             }
 
 

@@ -49,11 +49,11 @@ public class AbstractTaskManagerTest {
         SubTask sub5 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.of(2024, 8, 25, 16, 40), Duration.ofMinutes(12)); // 5
 
-        taskManager.saveTask(task1);
-        taskManager.saveTask(task2);
-        taskManager.saveEpic(epic3);
-        taskManager.saveSubTask(sub4);
-        taskManager.saveSubTask(sub5);
+        taskManager.createTask(task1);
+        taskManager.createTask(task2);
+        taskManager.createEpic(epic3);
+        taskManager.createSubTask(sub4);
+        taskManager.createSubTask(sub5);
     }
 
 
@@ -62,13 +62,13 @@ public class AbstractTaskManagerTest {
         Task task1 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(140));
 
-        taskManager.saveTask(task1);
+        taskManager.createTask(task1);
 
         System.out.println("Проверка на сохранение Task:");
 
         final int taskId = task1.getId();
 
-        final Task savedTask = taskManager.outIdTask(taskId);
+        final Task savedTask = taskManager.getTaskById(taskId);
         System.out.println(savedTask);
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task1.toString(), savedTask.toString(), "toString() эпиков не совпадает");// в этом месте
@@ -94,11 +94,11 @@ public class AbstractTaskManagerTest {
         SubTask sub2 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", taskManager.getIdUp(), Status.IN_PROGRESS,
                 LocalDateTime.of(24, 12, 4, 10, 17), Duration.ofMinutes(15));
 
-        taskManager.saveEpic(epic1);
-        taskManager.saveSubTask(sub2);
+        taskManager.createEpic(epic1);
+        taskManager.createSubTask(sub2);
 
-        Epic savedEpic = taskManager.outIdEpic(epic1.getId());
-        SubTask savedSubtask = taskManager.outIdSubTask(sub2.getId());
+        Epic savedEpic = taskManager.getEpicById(epic1.getId());
+        SubTask savedSubtask = taskManager.getSubTaskById(sub2.getId());
 
         assertEquals(epic1, savedEpic, "Эпики не совпадают");
         assertEquals(epic1.hashCode(), savedEpic.hashCode(), "hashCode() эпиков не совпадает");
@@ -115,13 +115,13 @@ public class AbstractTaskManagerTest {
                 LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(140));
         Task task2 = new Task("Test titleTask", "Test description", 2, Status.NEW,
                 LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(140));
-        taskManager.saveTask(task1);
-        taskManager.saveTask(task2);
+        taskManager.createTask(task1);
+        taskManager.createTask(task2);
         int idTask1 = task1.getId();
         int idTask2 = task2.getId();
 
-        assertEquals(task1, taskManager.outIdTask(idTask1), "Первая задача должна иметь идентификатор 1");
-        assertEquals(task2, taskManager.outIdTask(idTask2), "Вторая задача должна иметь идентификатор 2");
+        assertEquals(task1, taskManager.getTaskById(idTask1), "Первая задача должна иметь идентификатор 1");
+        assertEquals(task2, taskManager.getTaskById(idTask2), "Вторая задача должна иметь идентификатор 2");
     }
 
 
@@ -129,12 +129,12 @@ public class AbstractTaskManagerTest {
 
     void checkingForImmutabilityByFields(TaskManager taskManager) {// проверка на неизменность задачи по полям после добавления ее через менеджер
 
-        taskManager.saveTask(task1);
+        taskManager.createTask(task1);
 
-        assertEquals(task1.getTitle(), taskManager.outIdTask(task1.getId()).getTitle(), "Изменилось название");
-        assertEquals(task1.getDescription(), taskManager.outIdTask(task1.getId()).getDescription(), "Изменилось описание");
-        assertEquals(task1.getId(), taskManager.outIdTask(task1.getId()).getId(), "Изменилось id");
-        assertEquals(task1.getStatus(), taskManager.outIdTask(task1.getId()).getStatus(), "Изменился статус");
+        assertEquals(task1.getTitle(), taskManager.getTaskById(task1.getId()).getTitle(), "Изменилось название");
+        assertEquals(task1.getDescription(), taskManager.getTaskById(task1.getId()).getDescription(), "Изменилось описание");
+        assertEquals(task1.getId(), taskManager.getTaskById(task1.getId()).getId(), "Изменилось id");
+        assertEquals(task1.getStatus(), taskManager.getTaskById(task1.getId()).getStatus(), "Изменился статус");
     }
 
 
@@ -167,7 +167,7 @@ public class AbstractTaskManagerTest {
 
     void removeTask(TaskManager taskManager) {// удаление задачи по id
 
-        taskManager.saveTask(task2);
+        taskManager.createTask(task2);
 
         int idTask = task2.getId();
 
@@ -183,14 +183,14 @@ public class AbstractTaskManagerTest {
 
     void changeContentTask(TaskManager taskManager) {// проверка на изменение задачи
 
-        taskManager.saveTask(task1);
+        taskManager.createTask(task1);
         final int taskId = task1.getId();// выбрали id который хотим изменить
-        System.out.println(taskManager.outIdTask(taskId));// проверяем задачу перед изменением
+        System.out.println(taskManager.getTaskById(taskId));// проверяем задачу перед изменением
         Task taskNew1 = new Task("Test titleTask", "Test description", taskId, Status.NEW,
                 LocalDateTime.of(2024, 12, 23, 14, 42), Duration.ofMinutes(12));
-        taskManager.saveTask(taskNew1);
+        taskManager.createTask(taskNew1);
 
-        Task outTask = taskManager.outIdTask(taskId);
+        Task outTask = taskManager.getTaskById(taskId);
 
         System.out.println(outTask);// проверяем задачу после изменения
         final ArrayList<Task> tasks = taskManager.getTasks();
@@ -205,8 +205,8 @@ public class AbstractTaskManagerTest {
     void deleteTask(TaskManager taskManager) {// удаление всех Task
 
 
-        taskManager.saveTask(task1);// сохраняем
-        taskManager.saveTask(task2);
+        taskManager.createTask(task1);// сохраняем
+        taskManager.createTask(task2);
 
         final ArrayList<Task> tasks = taskManager.getTasks();// Вызываем Task для проверки перед удалением
 
@@ -219,14 +219,14 @@ public class AbstractTaskManagerTest {
 
     void deleteEpic(TaskManager taskManager) {//проверка на удаление подзадач при удалении эпика
 
-        taskManager.saveEpic(epic3);
-        taskManager.saveSubTask(sub5);
-        taskManager.saveSubTask(sub7);
+        taskManager.createEpic(epic3);
+        taskManager.createSubTask(sub5);
+        taskManager.createSubTask(sub7);
 
         ArrayList<Epic> epics = taskManager.getEpics();
 
         assertEquals(1, epics.size(), "Неверное количество эпиков.");//проверяем длину эпиков перед удалением
-        assertEquals(2, taskManager.outIdEpic(epic3.getId()).getSubtaskIds().size(), "Неверное количество подзадач.");//проверяем длину списка подзадач перед удалением
+        assertEquals(2, taskManager.getEpicById(epic3.getId()).getSubtaskIds().size(), "Неверное количество подзадач.");//проверяем длину списка подзадач перед удалением
 
         taskManager.clearEpics();// удаляем все эпики
 
@@ -240,7 +240,7 @@ public class AbstractTaskManagerTest {
     void removeEpic(TaskManager taskManager) {// удаление эпика по id
         Epic epic3 = new Epic("Епик", "описание", taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.now(), Duration.ofMinutes(20));
-        taskManager.saveEpic(epic3);// сохранение
+        taskManager.createEpic(epic3);// сохранение
 
         ArrayList<Epic> epics = taskManager.getEpics();
         assertEquals(1, epics.size(), "Неверное количество эпиков.");//проверяем длину эпиков перед удалением
@@ -254,24 +254,24 @@ public class AbstractTaskManagerTest {
 
 
     void removeSubtask(TaskManager taskManager) {// удаление подзадачи по id
-        taskManager.saveEpic(epic3);
-        taskManager.saveSubTask(sub7);
-        taskManager.saveSubTask(sub5);
+        taskManager.createEpic(epic3);
+        taskManager.createSubTask(sub7);
+        taskManager.createSubTask(sub5);
 
-        ArrayList<SubTask> subs = taskManager.getSubTasksId(epic3.getId());
+        ArrayList<SubTask> subs = taskManager.getSubTasksByEpicId(epic3.getId());
 
-        assertEquals(2, taskManager.outIdEpic(epic3.getId()).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
+        assertEquals(2, taskManager.getEpicById(epic3.getId()).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
         assertEquals(2, subs.size(), "Неверное количество подзадач.");//проверяем длину списка подзадач по id эпика перед удалением
 
         int dellId = sub5.getId();
         taskManager.deleteSubTaskId(dellId);// удаляем одну подзадачу по id
 
-        ArrayList<SubTask> subs1 = taskManager.getSubTasksId(epic3.getId());
+        ArrayList<SubTask> subs1 = taskManager.getSubTasksByEpicId(epic3.getId());
 
 
-        assertEquals(1, taskManager.outIdEpic(epic3.getId()).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
+        assertEquals(1, taskManager.getEpicById(epic3.getId()).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
         assertEquals(1, subs1.size(), "Неверное количество подзадач.");//проверяем длину списка подзадач по id эпика перед удалением
-        assertEquals(sub7.toString(), taskManager.outIdSubTask(sub7.getId()).toString(), "toString() подзадачи не совпадает");
+        assertEquals(sub7.toString(), taskManager.getSubTaskById(sub7.getId()).toString(), "toString() подзадачи не совпадает");
         // проверяем что осталась та подзадача из 2 которая должна остаться
 
 
@@ -280,24 +280,24 @@ public class AbstractTaskManagerTest {
 
     void clerSubTaskofEpic(TaskManager taskManager) { //проверка удаления всех эпиков у одного эпика
 
-        taskManager.saveEpic(epic3);// сохранение
-        taskManager.saveSubTask(sub5);
-        taskManager.saveSubTask(sub7);
+        taskManager.createEpic(epic3);// сохранение
+        taskManager.createSubTask(sub5);
+        taskManager.createSubTask(sub7);
 
-        ArrayList<SubTask> subs = taskManager.getSubTasksId(epic3.getId());
-        System.out.println(taskManager.outIdEpic(epic3.getId()));
+        ArrayList<SubTask> subs = taskManager.getSubTasksByEpicId(epic3.getId());
+        System.out.println(taskManager.getEpicById(epic3.getId()));
 
-        assertEquals(2, taskManager.outIdEpic(epic3.getId()).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
+        assertEquals(2, taskManager.getEpicById(epic3.getId()).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
         assertEquals(2, subs.size(), "Неверное количество подзадач.");//проверяем длину списка подзадач по id эпика перед удалением
 
         taskManager.clearSubTasksOfEpic(epic3.getId());
 
-        System.out.println(taskManager.outIdEpic(epic3.getId()));
+        System.out.println(taskManager.getEpicById(epic3.getId()));
 
-        ArrayList<SubTask> subs1 = taskManager.getSubTasksId(epic3.getId());
+        ArrayList<SubTask> subs1 = taskManager.getSubTasksByEpicId(epic3.getId());
 
 
-        assertEquals(0, taskManager.outIdEpic(epic3.getId()).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
+        assertEquals(0, taskManager.getEpicById(epic3.getId()).getSubtaskIds().size(), "Неверное количество id подзадач в списке эпиков.");//проверяем длину списка подзадч у эпика
         assertEquals(0, subs1.size(), "Неверное количество подзадач.");//проверяем длину списка подзадач по id эпика перед удалением
 
     }
@@ -349,30 +349,30 @@ public class AbstractTaskManagerTest {
         SubTask sub2 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", taskManager.getIdUp(), Status.NEW,
                 LocalDateTime.of(24, 8, 25, 16, 40), Duration.ofMinutes(12));
 
-        taskManager.saveTask(task1);
-        taskManager.saveTask(task2);
-        taskManager.saveEpic(epic3);
-        taskManager.saveSubTask(sub4);
-        taskManager.saveSubTask(sub5);
-        taskManager.saveSubTask(sub7);
+        taskManager.createTask(task1);
+        taskManager.createTask(task2);
+        taskManager.createEpic(epic3);
+        taskManager.createSubTask(sub4);
+        taskManager.createSubTask(sub5);
+        taskManager.createSubTask(sub7);
 
-        taskManager.saveTask(task3);
-        taskManager.saveTask(task4);
-        taskManager.saveEpic(epic4);
-        taskManager.saveSubTask(sub1);
-        taskManager.saveSubTask(sub2);
+        taskManager.createTask(task3);
+        taskManager.createTask(task4);
+        taskManager.createEpic(epic4);
+        taskManager.createSubTask(sub1);
+        taskManager.createSubTask(sub2);
 
-        taskManager.outIdTask(task1.getId());
-        taskManager.outIdEpic(epic3.getId());
-        taskManager.outIdSubTask(sub4.getId());
-        taskManager.outIdSubTask(sub5.getId());
-        taskManager.outIdTask(task2.getId());
-        taskManager.outIdEpic(epic3.getId());
-        taskManager.outIdTask(task3.getId());
-        taskManager.outIdTask(task4.getId());
-        taskManager.outIdEpic(epic4.getId());
-        taskManager.outIdSubTask(sub1.getId());
-        taskManager.outIdSubTask(sub2.getId());
+        taskManager.getTaskById(task1.getId());
+        taskManager.getEpicById(epic3.getId());
+        taskManager.getSubTaskById(sub4.getId());
+        taskManager.getSubTaskById(sub5.getId());
+        taskManager.getTaskById(task2.getId());
+        taskManager.getEpicById(epic3.getId());
+        taskManager.getTaskById(task3.getId());
+        taskManager.getTaskById(task4.getId());
+        taskManager.getEpicById(epic4.getId());
+        taskManager.getSubTaskById(sub1.getId());
+        taskManager.getSubTaskById(sub2.getId());
 
     }
 
@@ -389,11 +389,11 @@ public class AbstractTaskManagerTest {
 
     void removeTaskHis(TaskManager taskManager) {// проверка на поведение при удалении
         assertEquals(0, taskManager.getHistory().size(), "Длина списка должна быть равна 0");
-        taskManager.saveTask(task1);
-        taskManager.saveEpic(epic3);
+        taskManager.createTask(task1);
+        taskManager.createEpic(epic3);
 
-        taskManager.outIdTask(task1.getId());
-        taskManager.outIdEpic(epic3.getId());
+        taskManager.getTaskById(task1.getId());
+        taskManager.getEpicById(epic3.getId());
 
         assertEquals(2, taskManager.getHistory().size(), "Длина списка должна быть равна 2");
 
@@ -402,12 +402,12 @@ public class AbstractTaskManagerTest {
 
     void getUniqueHistory(TaskManager taskManager) {// проверка на хранение только уникальной истории
         assertEquals(0, taskManager.getHistory().size(), "Длина списка должна быть равна 0");
-        taskManager.saveTask(task1);
+        taskManager.createTask(task1);
 
-        taskManager.outIdTask(task1.getId());
+        taskManager.getTaskById(task1.getId());
         assertEquals(1, taskManager.getHistory().size(), "Длина списка должна быть равна 1");
 
-        taskManager.outIdTask(task1.getId());
+        taskManager.getTaskById(task1.getId());
         assertEquals(1, taskManager.getHistory().size(), "Длина списка должна быть равна 1");
     }
 
