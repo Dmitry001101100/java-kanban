@@ -42,8 +42,8 @@ public class BaseHandle {
     }
 
     protected void writeResponse(HttpExchange exchange,
-                               String responseString,
-                               int responseCode) throws IOException {
+                                 String responseString,
+                                 int responseCode) throws IOException {
         try (OutputStream os = exchange.getResponseBody()) {
             exchange.sendResponseHeaders(responseCode, 0);
             os.write(responseString.getBytes(DEFAULT_CHARSET));
@@ -66,19 +66,21 @@ public class BaseHandle {
                     return Endpoint.GET_TASK;
                 }
 
-
             } else if (pathParts[2].equals("subtasks")) {
 
                 if (pathParts.length <= 3) {
-                    return Endpoint.GET_TASKS;
+                    return Endpoint.GET_SUBTASKS;
                 } else {
-                    return Endpoint.GET_TASK;
+                    return Endpoint.GET_SUBTASK;
                 }
+
 
             }
         } else if (requestMethod.equals("POST")) {
             if (pathParts[2].equals("tasks")) {
                 return Endpoint.POST_TASK;
+            } else if (pathParts[2].equals("subtask")) {
+                
             }
         } else if (requestMethod.equals("DELETE")) {
             if (pathParts[2].equals("tasks")) {
@@ -86,8 +88,6 @@ public class BaseHandle {
                 if (pathParts.length >= 3) {
                     return Endpoint.DELETE_TASK;
                 }
-
-
             }
         }
         return Endpoint.DEFAULT;

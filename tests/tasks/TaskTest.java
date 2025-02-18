@@ -22,14 +22,14 @@ class TaskTest {
     @Test
     void addNewTask() {
 
-        taskManager.saveTask(task1);
-        Task savedTask = taskManager.outIdTask(1);
+        taskManager.createTask(task1);
+        Task savedTask = taskManager.getTaskById(1);
 
         assertNotNull(savedTask, "Задача не найдена.");
         assertEquals(task1, savedTask, "Задачи не совпадают.");
 
         List<Task> tasks = taskManager.getTasks();
-        System.out.println(taskManager.outIdTask(task1.getId()));
+        System.out.println(taskManager.getTaskById(task1.getId()));
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");

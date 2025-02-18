@@ -68,15 +68,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 // выводим id задач согласно списку по их типу
 
                 if (containsKeyTask(id)) {
-                    super.outIdTask(id);
+                    super.getTaskById(id);
                     System.out.println("задача сохранена в историю");
                 }
                 if (containsKeyEpic(id)) {
-                    super.outIdEpic(id);
+                    super.getEpicById(id);
                     System.out.println("эпик сохранена в историю");
                 }
                 if (containsKeySubTask(id)) {
-                    super.outIdSubTask(id);
+                    super.getSubTaskById(id);
                     System.out.println("подзадача сохранена в историю");
                 }
 
@@ -160,15 +160,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 switch (TypeTask.valueOf(type)) {
                     case SUBTASK -> {
                         SubTask subtask = new SubTask(idOfEpic, name, description, id, Status.valueOf(status), startTime, duration);
-                        super.saveSubTask(subtask);
+                        super.createSubTask(subtask);
                     }
                     case TASK -> {
                         Task task = new Task(name, description, id, Status.valueOf(status), startTime, duration);// аналогично
-                        super.saveTask(task);
+                        super.createTask(task);
                     }
                     case EPIC -> {
                         Epic epic = new Epic(name, description, id, Status.valueOf(status), startTime, duration);// исправить сохраняемую дату из списка
-                        super.saveEpic(epic);
+                        super.createEpic(epic);
                     }
                 }
             }
@@ -208,26 +208,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     // -------------------------------Сохранение -----------------------------------------------------------------------
 
     @Override
-    public void saveTask(Task savetheTask) {
-        super.saveTask(savetheTask);
+    public void createTask(Task savetheTask) {
+        super.createTask(savetheTask);
         save();
     }
 
     @Override
     public void updateTask(Task updateTask) {
-        super.saveTask(updateTask);
+        super.updateTask(updateTask);
         save();
     }
 
     @Override
-    public void saveEpic(Epic savetheEpic) {
-        super.saveEpic(savetheEpic);
+    public void createEpic(Epic savetheEpic) {
+        super.createEpic(savetheEpic);
         save();
     }
 
     @Override
-    public void saveSubTask(SubTask saveSubTask) {
-        super.saveSubTask(saveSubTask);
+    public void createSubTask(SubTask saveSubTask) {
+        super.createSubTask(saveSubTask);
         save();
     }
     // -------------------------------- полное удаление ----------------------------------------------------------------
@@ -303,8 +303,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public ArrayList<SubTask> getSubTasksId(int epicId) {
-        return super.getSubTasksId(epicId);
+    public ArrayList<SubTask> getSubTasksByEpicId(int epicId) {
+        return super.getSubTasksByEpicId(epicId);
     }
 
     @Override
@@ -314,23 +314,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     //-------------------------------------- 3 - Вывод по id -----------------------------------------------------------
     @Override
-    public Task outIdTask(int numberId) {
-        Task task = super.outIdTask(numberId); // добавляем сохранение в файл после выгрузки
+    public Task getTaskById(int numberId) {
+        Task task = super.getTaskById(numberId); // добавляем сохранение в файл после выгрузки
         saveHistoryList();
         return task;
 
     }
 
     @Override
-    public SubTask outIdSubTask(int numberId) {
-        SubTask subTask = super.outIdSubTask(numberId);
+    public SubTask getSubTaskById(int numberId) {
+        SubTask subTask = super.getSubTaskById(numberId);
         saveHistoryList();
         return subTask;
     }
 
     @Override
-    public Epic outIdEpic(int numberId) {
-        Epic epic = super.outIdEpic(numberId);
+    public Epic getEpicById(int numberId) {
+        Epic epic = super.getEpicById(numberId);
         saveHistoryList();
         return epic;
     }

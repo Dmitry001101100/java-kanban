@@ -86,7 +86,7 @@ public class InMemoryTaskManager implements TaskManager {
     //---------------------------------- 1 - Сохранение ----------------------------------------------------------------
 
     @Override
-    public void saveTask(Task task) { // сохранение задач
+    public void createTask(Task task) { // сохранение задач
         if (task.getId() == null) {
             task.setId(getIdUp());
             System.out.println("id задачи изменен.");
@@ -109,7 +109,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void saveEpic(Epic epic) { // сохранение и перезапись эпиков
+    public void createEpic(Epic epic) { // сохранение и перезапись эпиков
         if (epic.getId() == null) {
             epic.setId(getIdUp());
             System.out.println("id задачи изменен.");
@@ -128,7 +128,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void saveSubTask(SubTask subTask) { // сохранение и перезапись подзадач
+    public void createSubTask(SubTask subTask) { // сохранение и перезапись подзадач
         if (subTask.getId() == null) {
             subTask.setId(getIdUp());
             System.out.println("Изменен id");
@@ -159,7 +159,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<SubTask> getSubTasksId(int epicId) { // кладем значение из мап подзадач в лист и возвращаем его
+    public ArrayList<SubTask> getSubTasksByEpicId(int epicId) { // кладем значение из мап подзадач в лист и возвращаем его
         return epicMap.get(epicId).getSubtaskIds().stream()
                 .map(subTaskMap::get)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -172,20 +172,20 @@ public class InMemoryTaskManager implements TaskManager {
 
     //-------------------------------------- 3 - Вывод по id -----------------------------------------------------------
     @Override
-    public Task outIdTask(int numberId) { //вывод задачи по id
+    public Task getTaskById(int numberId) { //вывод задачи по id
         historyManager.add(taskMap.get(numberId));
         return taskMap.get(numberId);
     }
 
     @Override
-    public SubTask outIdSubTask(int numberId) { //вывод подзадачи по id
+    public SubTask getSubTaskById(int numberId) { //вывод подзадачи по id
         historyManager.add(subTaskMap.get(numberId));
         return subTaskMap.get(numberId);
     }
     //
 
     @Override
-    public Epic outIdEpic(int numberId) { //вывод эпика по id
+    public Epic getEpicById(int numberId) { //вывод эпика по id
         historyManager.add(epicMap.get(numberId));
         return epicMap.get(numberId);
     }

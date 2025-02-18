@@ -27,89 +27,89 @@ class EpicTest {
     @Test
     public void epicHasNewStatusWhenSubtaskListIsEmpty() {// когда список пуст или подзадача имеет статус новый
 
-        taskManager.saveEpic(epic1);
+        taskManager.createEpic(epic1);
 
-        System.out.println("до добавления подзадачи "+taskManager.outIdEpic(epic1.getId()));
-        assertEquals(Status.NEW, taskManager.outIdEpic(epic1.getId()).getStatus(), "Статус генерируется неправильно");
+        System.out.println("до добавления подзадачи "+taskManager.getEpicById(epic1.getId()));
+        assertEquals(Status.NEW, taskManager.getEpicById(epic1.getId()).getStatus(), "Статус генерируется неправильно");
 
-        taskManager.saveSubTask(sub2);
-        taskManager.saveSubTask(sub3);
-        System.out.println("после добавления"+taskManager.outIdEpic(epic1.getId()));
-        assertEquals(Status.IN_PROGRESS, taskManager.outIdEpic(epic1.getId()).getStatus(), "Статус генерируется неправильно");
+        taskManager.createSubTask(sub2);
+        taskManager.createSubTask(sub3);
+        System.out.println("после добавления"+taskManager.getEpicById(epic1.getId()));
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).getStatus(), "Статус генерируется неправильно");
         taskManager.clearSubTasksOfEpic(epic1.getId());
-        System.out.println("после удаления"+taskManager.outIdEpic(epic1.getId()));
+        System.out.println("после удаления"+taskManager.getEpicById(epic1.getId()));
     }
 
     @Test
     public void epicHasNewStatusWhenAllSubtasksAreNew() {// если есть подзадачи со статусом New
 
-        taskManager.saveEpic(epic1);
-        taskManager.saveSubTask(sub2);
-        taskManager.saveSubTask(sub3);
+        taskManager.createEpic(epic1);
+        taskManager.createSubTask(sub2);
+        taskManager.createSubTask(sub3);
 
-        System.out.println(taskManager.outIdEpic(epic1.getId()));
-        assertEquals(Status.IN_PROGRESS, taskManager.outIdEpic(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
+        System.out.println(taskManager.getEpicById(epic1.getId()));
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
     }
 
     @Test
     public void epiсIsAssignedAnIn_ProcessStatusWhenAtLeastOneSubtaskIsInProgress() {
         // статус у эпика статус в процессе когда не все подзадачи в статусе Done или New
-        taskManager.saveEpic(epic1);
+        taskManager.createEpic(epic1);
 
-        taskManager.saveSubTask(sub2);
-        taskManager.saveSubTask(sub3);
-        assertEquals(Status.IN_PROGRESS, taskManager.outIdEpic(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
+        taskManager.createSubTask(sub2);
+        taskManager.createSubTask(sub3);
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
 
         // меняем статус на выполнен и проверяем чтобы статус у эпика оставался в процессе
         sub2.setStatus(Status.DONE);
-        taskManager.saveSubTask(sub2);
+        taskManager.createSubTask(sub2);
 
-        assertEquals(Status.IN_PROGRESS, taskManager.outIdEpic(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
     }
 
     @Test
     public void epicHasDoneStatusWhenAllSubtasksAreDone() {
         // у эпика статус Done когда все подзадачи выполнены
-        taskManager.saveEpic(epic1);
-        assertEquals(Status.NEW, taskManager.outIdEpic(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
+        taskManager.createEpic(epic1);
+        assertEquals(Status.NEW, taskManager.getEpicById(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
 
         // меняем статус у подзадач на выполнен
         sub2.setStatus(Status.DONE);
         sub3.setStatus(Status.DONE);
 
-        taskManager.saveSubTask(sub2);
-        taskManager.saveSubTask(sub3);
-        assertEquals(Status.DONE, taskManager.outIdEpic(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
+        taskManager.createSubTask(sub2);
+        taskManager.createSubTask(sub3);
+        assertEquals(Status.DONE, taskManager.getEpicById(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
     }
 
     @Test
     public void temporaryVerificationOfTheEpic() {
         // конечное время до сохранения подзадач
-        taskManager.saveEpic(epic1);
-        LocalDateTime endTimeIsTaskManager = taskManager.outIdEpic(epic1.getId()).getEndTime();
+        taskManager.createEpic(epic1);
+        LocalDateTime endTimeIsTaskManager = taskManager.getEpicById(epic1.getId()).getEndTime();
 
         assertNull(endTimeIsTaskManager, "Конечное время насчитывается неправильно");
 
         // временные рамки после сохранения подзадач----------------------------------------------------------------------
-        taskManager.saveSubTask(sub2);
-        taskManager.saveSubTask(sub3);
+        taskManager.createSubTask(sub2);
+        taskManager.createSubTask(sub3);
 
         // конечное время насчитывается по самому длинному конечному времени подзадачи.
 
         LocalDateTime endTimeSub3 = sub3.getEndTime();
-        LocalDateTime endTimeIsTaskManager1 = taskManager.outIdEpic(epic1.getId()).getEndTime();
+        LocalDateTime endTimeIsTaskManager1 = taskManager.getEpicById(epic1.getId()).getEndTime();
 
         assertEquals(endTimeSub3.format(DATE_TIME_FORMATTER), endTimeIsTaskManager1.format(DATE_TIME_FORMATTER), "Конечное время насчитывается неправильно");
 
         // время старта
         LocalDateTime startTime = epic1.getStartTime(); // проверочное время из обьекта перед записью
-        LocalDateTime startTimeTaskManager = taskManager.outIdEpic(epic1.getId()).getStartTime();
+        LocalDateTime startTimeTaskManager = taskManager.getEpicById(epic1.getId()).getStartTime();
 
         assertEquals(startTime.format(DATE_TIME_FORMATTER), startTimeTaskManager.format(DATE_TIME_FORMATTER), "Время старта насчитывается неправильно");
 
         // продолжительность эпика эта сумма продолжительности всех его подзадач
         Duration duration1 = sub2.getDuration().plus(sub3.getDuration()); // проверочное время из обьекта перед записью
-        Duration durationTaskManager = taskManager.outIdEpic(epic1.getId()).getDuration();
+        Duration durationTaskManager = taskManager.getEpicById(epic1.getId()).getDuration();
 
         assertEquals(duration1.toMinutes(), durationTaskManager.toMinutes(), "Продолжительность времени насчитывается неправильно");
     }
@@ -123,14 +123,14 @@ class EpicTest {
         assertNull(epic1.getDuration(), "Продолжительность времени насчитывается неправильно");
         assertNull(epic1.getStartTime(), "Начальное время насчитывается неправильно");
         assertNull(epic1.getEndTime(), "Конечное время насчитывается неправильно");
-        System.out.println(taskManager.outIdEpic(epic1.getId()));
+        System.out.println(taskManager.getEpicById(epic1.getId()));
     }
 
     @Test
     public void getSubtaskofEpicId(){
         temporaryVerificationOfTheEpic();
 
-        for (SubTask subTask : taskManager.getSubTasksId(epic1.getId())){
+        for (SubTask subTask : taskManager.getSubTasksByEpicId(epic1.getId())){
             System.out.println(subTask);
         }
     }
