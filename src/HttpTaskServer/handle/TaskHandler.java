@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import enumeration.Endpoint;
 import manager.Task.TaskManager;
+import tasks.Epic;
 import tasks.Task;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
     public TaskHandler(TaskManager manager) {
         this.taskManager = manager;
     }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
@@ -81,36 +83,20 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
             Optional<Task> taskOpt = parseTask(inputStream);
 
             if (taskOpt.isEmpty()) {
-                writeResponse(exchange, "Передан пустой запрос", 400);
+                writeResponse(exchange, "Передан пустой запрос.", 400);
                 return;
             }
 
             Task task = taskOpt.get();
-            Optional<Integer> taskIdOpt = getOptionalId(exchange);
 
-            if (taskIdOpt.isPresent()) {  // проверяем указан ли в URL строке id  для перезаписи
-                int taskId = taskIdOpt.get();
-                if (task.getId() == null) {
-                    task.setId(taskId);
-                }
-
-                if (!taskManager.containsKeyTask(taskId)) {
-                    writeResponse(exchange, "Задачи с таким id не существует", 404);
-                } else {
-                    taskManager.updateTask(task);
-                    writeResponse(exchange, "Задача обновлена.", 201);
-                }
-            } else { // если не существует сохраняем новую задачу
-                if (task.getId() == null) {
-                    taskManager.createTask(task);
-                    writeResponse(exchange, "Задача сохранена", 201);
-                } else if (taskManager.containsKeyTask(task.getId())) {
-                    writeResponse(exchange, "Задача пересекается с существующей", 406);
-                } else {
-                    taskManager.createTask(task);
-                    writeResponse(exchange, "Задача сохранена", 201);
-                }
+            if (task.getId() == null || !taskManager.containsKeyTask(task.getId())) {
+                taskManager.createTask(task);
+                writeResponse(exchange, "Задача сохранена.", 201);
+            } else if (taskManager.containsKeyTask(task.getId())) {
+                taskManager.updateTask(task);
+                writeResponse(exchange, "Задача обновлена.", 201);
             }
+
         } catch (IOException e) {
             writeResponse(exchange, "Внутренняя ошибка сервера", 500);
             e.printStackTrace();
@@ -121,7 +107,7 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
         Optional<Integer> taskIdOpt = getOptionalId(exchange);
 
         if (taskIdOpt.isPresent()) {
-            if(taskManager.containsKeyTask(taskIdOpt.get())){
+            if (taskManager.containsKeyTask(taskIdOpt.get())) {
                 taskManager.deleteTaskId(taskIdOpt.get());
                 writeResponse(exchange, "Задача удалена.", 201);
             } else {

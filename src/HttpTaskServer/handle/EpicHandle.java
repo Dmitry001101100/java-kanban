@@ -42,12 +42,14 @@ public class EpicHandle extends BaseHandle implements HttpHandler {
                 handlePostEpic(exchange);
                 break;
             }
-            case DELETE_EPIC: {
+            case DELETE_EPIC: try {
                 handleDeleteEpic(exchange);
                 break;
+            } catch (Exception e){
+                e.printStackTrace();
             }
             default: {
-                writeResponse(exchange, "Такого эндпоинта не существует.", 404);
+                writeResponse(exchange, "Такого эндпоинта не существует в эпике.", 404);
             }
         }
     }
@@ -110,7 +112,7 @@ public class EpicHandle extends BaseHandle implements HttpHandler {
 
         if (epicIdOpt.isPresent()) {
             if (taskManager.containsKeyEpic(epicIdOpt.get())) {
-                taskManager.deleteTaskId(epicIdOpt.get());
+                taskManager.deleteEpicId(epicIdOpt.get());
                 writeResponse(exchange, "Эпик удален.", 201);
             } else {
                 writeResponse(exchange, "Эпик не найден.", 400);
