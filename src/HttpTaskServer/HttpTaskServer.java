@@ -9,9 +9,11 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import manager.Managers;
 import manager.Task.TaskManager;
+import tasks.Task;
 
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.util.stream.Collectors;
 
 public class HttpTaskServer extends BaseHandle implements HttpHandler {
 
@@ -37,12 +39,31 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
             case "epics" :
                 new EpicHandle(taskManager).handle(exchange);
                 break;
-
+            case "history":
+                handleGetHistory(exchange);
+                break;
+            case "prioritized":
+                handleGetPrioritizedTasks(exchange);
+                break;
 
             default:
                 writeResponse(exchange, "Такого эндпоинта не существует", 404);
                 break;
         }
+    }
+
+    private void handleGetHistory(HttpExchange exchange) throws IOException {
+        String response = taskManager.getHistory().stream()
+                .map(Task::toString)
+                .collect(Collectors.joining("\n"));
+        writeResponse(exchange, response, 200);
+    }
+
+    private void handleGetPrioritizedTasks(HttpExchange exchange) throws IOException {
+        String response = taskManager.getPrioritizedTasks().stream()
+                .map(Task::toString)
+                .collect(Collectors.joining("\n"));
+        writeResponse(exchange, response, 200);
     }
 
 }

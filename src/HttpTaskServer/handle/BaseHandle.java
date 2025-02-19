@@ -70,13 +70,10 @@ public class BaseHandle {
             } else if (pathParts[2].equals("epics")) {
                 System.out.println(pathParts.length);
                 if (pathParts.length == 5) {
-                    System.out.println("p" + pathParts[3]);
                     return Endpoint.GET_SUBTASK_BY_EPIC; // длина 5
                 } else if (pathParts.length == 3) {
-                    System.out.println("вывод эпиков");
                     return Endpoint.GET_EPICS; // длинна 3
                 } else if (pathParts.length == 4) {
-                    System.out.println("вывод эпика");
                     return Endpoint.GET_EPIC; // длинна 4
                 }
             }
