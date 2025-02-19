@@ -38,6 +38,14 @@ public class Task {
 
     }
 
+    public Task(String title, String description, Status status, LocalDateTime startTime) {
+        this.name = title;
+        this.description = description;
+        this.status = status;
+        this.startTime = startTime;
+
+    }
+
 
     //------------------------------------ время -----------------------------------------------------------------------
     public LocalDateTime getStartTime() {
