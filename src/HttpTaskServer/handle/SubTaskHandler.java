@@ -26,7 +26,7 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
-        System.out.println("перед свич");
+
         switch (endpoint) {
             case GET_SUBTASKS:
                 handleGetSubTasks(exchange);
@@ -37,9 +37,11 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
             case POST_SUBTASK:
                 handlePostSubTask(exchange);
                 break;
+            case DELETE_SUBTASK:
+                handleDeleteSubTask(exchange);
+                break;
             default:
                 writeResponse(exchange, "Такого эндпоинта не существует.", 404);
-
         }
     }
 
@@ -115,6 +117,30 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
             e.printStackTrace();
         }
     }
+
+    private void handleDeleteSubTask(HttpExchange exchange) throws IOException {
+
+        try {
+            Optional<Integer> subIdOpt = getOptionalId(exchange);
+
+            if (subIdOpt.isPresent()) {
+                int subTaskId = subIdOpt.get();
+
+                if (taskManager.containsKeySubTask(subTaskId)) {
+                    taskManager.deleteSubTaskId(subTaskId);
+                    writeResponse(exchange, "Подзадача удалена.", 200); // Используем код 200 для успешного удаления
+                } else {
+                    writeResponse(exchange, "Подзадача не найдена.", 404); // Используем код 404 для не найденного ресурса
+                }
+            } else {
+                writeResponse(exchange, "Неверный id подзадачи.", 400);
+            }
+        } catch (Exception e) {
+
+            writeResponse(exchange, "Внутренняя ошибка сервера.", 500);
+        }
+    }
+
 
     private Optional<SubTask> parseSubTask(InputStream inputStream) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(inputStream)) {

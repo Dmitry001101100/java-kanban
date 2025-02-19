@@ -83,6 +83,7 @@ public class BaseHandle {
                 return Endpoint.POST_EPIC;
             }
         } else if (requestMethod.equals("DELETE")) {
+
             if (pathParts[2].equals("tasks")) {
 
                 if (pathParts.length >= 3) {
@@ -92,7 +93,13 @@ public class BaseHandle {
                 if (pathParts.length >= 3) {
                     return Endpoint.DELETE_EPIC;
                 }
+            } else if (pathParts[2].equals("subtasks")) {
+
+                if (pathParts.length >= 3) {
+                    return Endpoint.DELETE_SUBTASK;
+                }
             }
+
         }
         return Endpoint.DEFAULT;
     }
