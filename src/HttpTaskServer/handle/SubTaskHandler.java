@@ -81,8 +81,6 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
             }
 
             SubTask subTask = subTaskOpt.get();
-            System.out.println(subTask);
-
 
             if (taskManager.containsKeyEpic(subTask.getEpicId())) {
 
@@ -95,7 +93,6 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
                     if (taskManager.containsKeySubTask(subTask.getId())) {
                         taskManager.updateSubTask(subTask);
                         writeResponse(exchange, "Подзадача обновлена.", 201);
-
 
                     } else {
                         if (taskManager.containsKeyTasks(subTask.getId())) {

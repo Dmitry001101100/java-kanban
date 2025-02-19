@@ -28,17 +28,17 @@ public class BaseHandle {
 
     protected Optional<Integer> getOptionalId(HttpExchange exchange) { // проверка что id для вывода задачи является числом
         String path = exchange.getRequestURI().getPath();
-        int lastSlashIndex = path.lastIndexOf('/');
-        if (lastSlashIndex != -1) {
-            try {
-                String idStr = path.substring(lastSlashIndex + 1);
-                return Optional.of(Integer.parseInt(idStr));
-            } catch (NumberFormatException e) {
-                // Не удалось преобразовать в Integer, значит id отсутствует или некорректен
-                return Optional.empty();
-            }
+        String[] pathParts = path.split("/");
+
+
+        try {
+            String idStr = pathParts[3];
+            return Optional.of(Integer.parseInt(idStr));
+        } catch (NumberFormatException e) {
+            // Не удалось преобразовать в Integer, значит id отсутствует или некорректен
+            return Optional.empty();
         }
-        return Optional.empty();
+
     }
 
     protected void writeResponse(HttpExchange exchange,
@@ -56,22 +56,28 @@ public class BaseHandle {
 
         if (requestMethod.equals("GET")) {
             if (pathParts[2].equals("tasks")) {
-                if (pathParts.length <= 3) {
+                if (pathParts.length == 3) {
                     return Endpoint.GET_TASKS;
                 } else {
                     return Endpoint.GET_TASK;
                 }
             } else if (pathParts[2].equals("subtasks")) {
-                if (pathParts.length <= 3) {
+                if (pathParts.length == 3) {
                     return Endpoint.GET_SUBTASKS;
                 } else {
                     return Endpoint.GET_SUBTASK;
                 }
             } else if (pathParts[2].equals("epics")) {
-                if (pathParts.length <= 3) {
-                    return Endpoint.GET_EPICS;
-                } else {
-                    return Endpoint.GET_EPIC;
+                System.out.println(pathParts.length);
+                if (pathParts.length == 5) {
+                    System.out.println("p" + pathParts[3]);
+                    return Endpoint.GET_SUBTASK_BY_EPIC; // длина 5
+                } else if (pathParts.length == 3) {
+                    System.out.println("вывод эпиков");
+                    return Endpoint.GET_EPICS; // длинна 3
+                } else if (pathParts.length == 4) {
+                    System.out.println("вывод эпика");
+                    return Endpoint.GET_EPIC; // длинна 4
                 }
             }
         } else if (requestMethod.equals("POST")) {
@@ -86,16 +92,16 @@ public class BaseHandle {
 
             if (pathParts[2].equals("tasks")) {
 
-                if (pathParts.length >= 3) {
+                if (pathParts.length == 4) {
                     return Endpoint.DELETE_TASK;
                 }
             } else if (pathParts[2].equals("epics")) {
-                if (pathParts.length >= 3) {
+                if (pathParts.length == 4) {
                     return Endpoint.DELETE_EPIC;
                 }
             } else if (pathParts[2].equals("subtasks")) {
 
-                if (pathParts.length >= 3) {
+                if (pathParts.length == 4) {
                     return Endpoint.DELETE_SUBTASK;
                 }
             }
