@@ -5,6 +5,7 @@ import tasks.SubTask;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
 
@@ -16,6 +17,9 @@ public interface TaskManager {
     boolean containsKeyEpic(int id);
 
     boolean containsKeyTasks(int id);
+
+    // -------------------------------------- prioritizedTasks ---------------------------------------------------------
+    List<Task> getPrioritizedTasks();
 
     void createTask(Task savetheTask);
     void updateTask(Task newTask);
