@@ -10,6 +10,8 @@ public enum Endpoint {
     GET_EPIC,
     POST_EPIC,
     DELETE_EPIC,
+    GET_SUBTASK_BY_EPIC,
+
 
     GET_SUBTASK,
     GET_SUBTASKS,

@@ -1,8 +1,7 @@
 id,type,name,status,description,startTime,duration,epic
-1,EPIC,Test titleTask,NEW,Test description,null,null
-3,EPIC,Test titleTask,NEW,Test description,null,null
-5,EPIC,Test titleTask,IN_PROGRESS,Test description,10:17 04.12.24,10:41 04.12.24
-8,EPIC,Test titleTask,NEW,Test description,null,null
-9,EPIC,Test titleTask,NEW,Test description,null,null
-10,EPIC,Test titleTask,NEW,Test description,null,null
-6,SUBTASK,Тест субтаска ,IN_PROGRESS,Test in Epic,10:17 04.12.24,10:41 04.12.24,5
+7,EPIC,Test titleTask,IN_PROGRESS,Test description,10:17 04.12.24,10:41 04.12.24
+12,EPIC,Test titleTask,IN_PROGRESS,Test description,10:17 04.12.24,10:41 04.12.24
+8,SUBTASK,Тест субтаска ,IN_PROGRESS,Test in Epic,10:17 04.12.24,10:41 04.12.24,7
+9,SUBTASK,Тест субтаска ,IN_PROGRESS,Test in Epic,10:17 04.12.24,10:41 04.12.24,7
+11,SUBTASK,Тест субтаска ,IN_PROGRESS,Test in Epic,10:17 04.12.24,10:41 04.12.24,7
+13,SUBTASK,Тест субтаска ,IN_PROGRESS,Test in Epic,10:17 04.12.24,10:41 04.12.24,12
