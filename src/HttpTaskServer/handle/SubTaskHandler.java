@@ -22,25 +22,34 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
     public SubTaskHandler(TaskManager manager) {
         this.taskManager = manager;
     }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
-
+        System.out.println("перед свич");
         switch (endpoint) {
-            case GET_SUBTASKS: {
+            case GET_SUBTASKS:
+                System.out.println("get 1");
                 handleGetSubTasks(exchange);
+
                 break;
-            } case GET_SUBTASK: {
+
+            case GET_SUBTASK:
+                System.out.println("get 2");
                 handleGetSubTask(exchange);
+
                 break;
-            } case POST_SUBTASK: {
+
+            case POST_SUBTASK:
+                System.out.println("пост");
                 handlePostSubTask(exchange);
+
                 break;
-            }
 
 
             default:
                 writeResponse(exchange, "Такого эндпоинта не существует.", 404);
+                break;
         }
     }
 
@@ -80,45 +89,37 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
             }
 
             SubTask subTask = subTaskOpt.get();
-            Optional<Integer> epicIdOpt = getOptionalId(exchange);
             System.out.println(subTask);
 
-            if (epicIdOpt.isPresent()) {  // проверяем указан ли в URL строке id  для перезаписи
-                int epicId = epicIdOpt.get();
 
-                if (!taskManager.containsKeyEpic(epicId)) {
-                    writeResponse(exchange, "Эпика с таким id не существует", 404);
+            if (taskManager.containsKeyEpic(subTask.getEpicId())) {
+
+                if (subTask.getId() == null) {
+                    taskManager.createSubTask(subTask);
+                    writeResponse(exchange, "Подзадача сохранена.", 201);
+
                 } else {
-                    taskManager.updateTask(subTask);
-                    writeResponse(exchange, "Задача обновлена.", 201);
-                }
-            } else { // если не существует сохраняем новую задачу
 
-                if(taskManager.containsKeyTask(subTask.getEpicId())){
+                    if (taskManager.containsKeySubTask(subTask.getId())) {
+                        taskManager.updateSubTask(subTask);
+                        writeResponse(exchange, "Подзадача обновлена.", 201);
 
-                    if (subTask.getId() == null){
-                        taskManager.createSubTask(subTask);
-                        writeResponse(exchange, "Подзадача сохранена.", 201);
+
                     } else {
-                        if(taskManager.containsKeySubTask(subTask.getId())){
-                            taskManager.createSubTask(subTask);
-                            writeResponse(exchange, "Подзадача обновлена.", 201);
-
+                        if (taskManager.containsKeyTasks(subTask.getId())) {
+                            writeResponse(exchange, "Подзадача конфликтует с другими видами задач.", 406);
                         } else {
-                            if(taskManager.containsKeyTasks(subTask.getId())){
-                                writeResponse(exchange, "Подзадача конфликтует с другими видами задач.", 406);
-                            } else {
-                                taskManager.createSubTask(subTask);
-                                writeResponse(exchange, "Подзадача сохранена.", 201);
-                            }
+                            taskManager.createSubTask(subTask);
+                            writeResponse(exchange, "Подзадача сохранена.", 201);
                         }
                     }
-
-                } else {
-                    writeResponse(exchange, "Эпик с таким id не найден.", 404);
                 }
 
+            } else {
+                writeResponse(exchange, "Эпик с таким id не найден.", 404);
             }
+
+
         } catch (IOException e) {
             writeResponse(exchange, "Внутренняя ошибка сервера", 500);
             e.printStackTrace();

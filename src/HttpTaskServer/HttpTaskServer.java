@@ -23,19 +23,28 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
 
         switch (pathParts[2]) {
-            case "tasks": { // вывод всех задач
+            case "tasks": // вывод всех задач
                 new TaskHandler(taskManager).handle(exchange);
-            }
-            case "subtasks": {
+                System.out.println("закончен tasks");
+                break;
+
+            case "subtasks": try {
                 new SubTaskHandler(taskManager).handle(exchange);
+                System.out.println("закончен subtasks");
+                break;
+            } catch (Exception e){
+                System.out.println(e);
+                e.printStackTrace();
             }
-            case "epics" : {
+            case "epics" :
                 new EpicHandle(taskManager).handle(exchange);
-            }
+                System.out.println("закончен epics");
+                break;
 
 
             default:
                 writeResponse(exchange, "Такого эндпоинта не существует", 404);
+                break;
         }
     }
 
