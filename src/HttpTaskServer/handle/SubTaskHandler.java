@@ -29,27 +29,17 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
         System.out.println("перед свич");
         switch (endpoint) {
             case GET_SUBTASKS:
-                System.out.println("get 1");
                 handleGetSubTasks(exchange);
-
                 break;
-
             case GET_SUBTASK:
-                System.out.println("get 2");
                 handleGetSubTask(exchange);
-
                 break;
-
             case POST_SUBTASK:
-                System.out.println("пост");
                 handlePostSubTask(exchange);
-
                 break;
-
-
             default:
                 writeResponse(exchange, "Такого эндпоинта не существует.", 404);
-                break;
+
         }
     }
 
