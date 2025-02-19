@@ -53,9 +53,6 @@ public class BaseHandle {
 
     protected Endpoint getEndpoint(String path, String requestMethod) { // создание эндпоинта
         String[] pathParts = path.split("/");
-        System.out.println("0 -" + pathParts[0]);
-        System.out.println("1 " + pathParts[1]);
-
 
         if (requestMethod.equals("GET")) {
             if (pathParts[2].equals("tasks")) {

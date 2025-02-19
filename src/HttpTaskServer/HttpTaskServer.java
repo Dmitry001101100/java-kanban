@@ -25,12 +25,10 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
         switch (pathParts[2]) {
             case "tasks": // вывод всех задач
                 new TaskHandler(taskManager).handle(exchange);
-                System.out.println("закончен tasks");
                 break;
 
             case "subtasks": try {
                 new SubTaskHandler(taskManager).handle(exchange);
-                System.out.println("закончен subtasks");
                 break;
             } catch (Exception e){
                 System.out.println(e);
@@ -38,7 +36,6 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
             }
             case "epics" :
                 new EpicHandle(taskManager).handle(exchange);
-                System.out.println("закончен epics");
                 break;
 
 
