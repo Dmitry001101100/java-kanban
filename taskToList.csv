@@ -1,5 +1,1 @@
 id,type,name,status,description,startTime,duration,epic
-1,TASK,Test названия задачи,NEW,Test description,14:42 14.12.24,16:42 14.12.24
-4,EPIC,Test titleTask,NEW,Test description,null,null
-8,EPIC,Test titleTask,NEW,Test description2,10:17 04.12.24,10:41 04.12.24
-9,SUBTASK,Тест субтаска 1 ,IN_PROGRESS,Test in Epic,10:17 04.12.24,10:41 04.12.24,8
