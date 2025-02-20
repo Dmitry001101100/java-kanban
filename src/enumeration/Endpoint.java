@@ -12,13 +12,13 @@ public enum Endpoint {
     DELETE_EPIC,
     GET_SUBTASK_BY_EPIC,
 
-
     GET_SUBTASK,
     GET_SUBTASKS,
     POST_SUBTASK,
     DELETE_SUBTASK,
 
-
+    GET_HISTORY,
+    GET_PRIORITIZED,
 
      DEFAULT
 

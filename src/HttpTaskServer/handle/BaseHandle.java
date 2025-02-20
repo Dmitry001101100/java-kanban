@@ -68,7 +68,6 @@ public class BaseHandle {
                     return Endpoint.GET_SUBTASK;
                 }
             } else if (pathParts[2].equals("epics")) {
-                System.out.println(pathParts.length);
                 if (pathParts.length == 5) {
                     return Endpoint.GET_SUBTASK_BY_EPIC; // длина 5
                 } else if (pathParts.length == 3) {
@@ -76,6 +75,10 @@ public class BaseHandle {
                 } else if (pathParts.length == 4) {
                     return Endpoint.GET_EPIC; // длинна 4
                 }
+            } else if (pathParts[2].equals("history")) {
+                return Endpoint.GET_HISTORY;
+            } else if (pathParts[2].equals("prioritized")) {
+                return Endpoint.GET_PRIORITIZED;
             }
         } else if (requestMethod.equals("POST")) {
             if (pathParts[2].equals("tasks")) {
