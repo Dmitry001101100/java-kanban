@@ -1,9 +1,6 @@
 package HttpTaskServer;
 
-import HttpTaskServer.handle.BaseHandle;
-import HttpTaskServer.handle.EpicHandle;
-import HttpTaskServer.handle.SubTaskHandler;
-import HttpTaskServer.handle.TaskHandler;
+import HttpTaskServer.handle.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -39,11 +36,8 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
             case "epics" :
                 new EpicHandle(taskManager).handle(exchange);
                 break;
-            case "history":
-                handleGetHistory(exchange);
-                break;
-            case "prioritized":
-                handleGetPrioritizedTasks(exchange);
+            case "history", "prioritized":
+                new HistoryAndPrioritizedHandle(taskManager).handle(exchange);
                 break;
 
             default:
@@ -52,19 +46,7 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
         }
     }
 
-    private void handleGetHistory(HttpExchange exchange) throws IOException {
-        String response = taskManager.getHistory().stream()
-                .map(Task::toString)
-                .collect(Collectors.joining("\n"));
-        writeResponse(exchange, response, 200);
-    }
 
-    private void handleGetPrioritizedTasks(HttpExchange exchange) throws IOException {
-        String response = taskManager.getPrioritizedTasks().stream()
-                .map(Task::toString)
-                .collect(Collectors.joining("\n"));
-        writeResponse(exchange, response, 200);
-    }
 
 }
 
