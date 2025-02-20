@@ -6,11 +6,9 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import manager.Managers;
 import manager.Task.TaskManager;
-import tasks.Task;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.util.stream.Collectors;
 
 public class HttpTaskServer extends BaseHandle implements HttpHandler {
 
@@ -26,26 +24,20 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
                 new TaskHandler(taskManager).handle(exchange);
                 break;
 
-            case "subtasks": try {
+            case "subtasks":
                 new SubTaskHandler(taskManager).handle(exchange);
                 break;
-            } catch (Exception e){
-                System.out.println(e);
-                e.printStackTrace();
-            }
-            case "epics" :
+            case "epics":
                 new EpicHandle(taskManager).handle(exchange);
                 break;
             case "history", "prioritized":
                 new HistoryAndPrioritizedHandle(taskManager).handle(exchange);
                 break;
-
             default:
                 writeResponse(exchange, "Такого эндпоинта не существует", 404);
                 break;
         }
     }
-
 
 
 }

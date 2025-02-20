@@ -5,8 +5,6 @@ import manager.History.HistoryManager;
 import manager.Managers;
 import tasks.*;
 
-
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -311,7 +309,7 @@ public class InMemoryTaskManager implements TaskManager {
                 .peek(epic -> historyManager.remove(epic.getId()))
                 .peek(epic -> searchForTheStartTimeAndDuration(epic.getId()))
                 .peek(epic -> subTaskMap.clear())
-                .collect(Collectors.toList());
+                .toList();
 
     }
 

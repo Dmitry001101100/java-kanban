@@ -5,7 +5,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import enumeration.Endpoint;
 import manager.Task.TaskManager;
-import tasks.Epic;
 import tasks.Task;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class TaskHandler extends BaseHandle implements HttpHandler {
 
-    private TaskManager taskManager;
+    private final TaskManager taskManager;
     private final Gson gson = getGson();
 
     public TaskHandler(TaskManager manager) {
@@ -99,7 +98,6 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
 
         } catch (IOException e) {
             writeResponse(exchange, "Внутренняя ошибка сервера", 500);
-            e.printStackTrace();
         }
     }
 
@@ -119,7 +117,6 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
         }
     }
     // ----------------------------------------------------------------------------------------------------------------
-
 
     private Optional<Task> parseTask(InputStream inputStream) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(inputStream)) {
