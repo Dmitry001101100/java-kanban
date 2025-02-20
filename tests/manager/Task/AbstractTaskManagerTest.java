@@ -188,7 +188,7 @@ public class AbstractTaskManagerTest {
         System.out.println(taskManager.getTaskById(taskId));// проверяем задачу перед изменением
         Task taskNew1 = new Task("Test titleTask", "Test description", taskId, Status.NEW,
                 LocalDateTime.of(2024, 12, 23, 14, 42), Duration.ofMinutes(12));
-        taskManager.createTask(taskNew1);
+        taskManager.updateTask(taskNew1);
 
         Task outTask = taskManager.getTaskById(taskId);
 
