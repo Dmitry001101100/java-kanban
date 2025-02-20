@@ -10,13 +10,13 @@ import tasks.Task;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-public class HistoryAndPrioritizedHandle  extends BaseHandle implements HttpHandler {
-    private TaskManager taskManager;
-    private final Gson gson = getGson();
+public class HistoryAndPrioritizedHandle extends BaseHandle implements HttpHandler {
+    private final TaskManager taskManager;
 
     public HistoryAndPrioritizedHandle(TaskManager manager) {
         this.taskManager = manager;
     }
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
@@ -35,6 +35,7 @@ public class HistoryAndPrioritizedHandle  extends BaseHandle implements HttpHand
             }
         }
     }
+
     private void handleGetHistory(HttpExchange exchange) throws IOException {
         String response = taskManager.getHistory().stream()
                 .map(Task::toString)

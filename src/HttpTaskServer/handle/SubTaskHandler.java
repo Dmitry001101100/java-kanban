@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class SubTaskHandler extends BaseHandle implements HttpHandler {
 
-    private TaskManager taskManager;
+    private final TaskManager taskManager;
     private final Gson gson = getGson();
 
     public SubTaskHandler(TaskManager manager) {
@@ -89,7 +89,6 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
                     writeResponse(exchange, "Подзадача сохранена.", 201);
 
                 } else {
-
                     if (taskManager.containsKeySubTask(subTask.getId())) {
                         taskManager.updateSubTask(subTask);
                         writeResponse(exchange, "Подзадача обновлена.", 201);
@@ -116,7 +115,6 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
     }
 
     private void handleDeleteSubTask(HttpExchange exchange) throws IOException {
-
         try {
             Optional<Integer> subIdOpt = getOptionalId(exchange);
 

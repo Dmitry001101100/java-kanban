@@ -17,7 +17,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    private  File historyList = new File("historyList.csv"); // файл для сохранения истории
+    private final File historyList = new File("historyList.csv"); // файл для сохранения истории
 
     private final File file;
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
@@ -42,7 +42,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void saveHistoryList() {
         try (Writer writer = new FileWriter(historyList)) { // сохранение истории в файл
 
-            writer.write("id,type\n");
+            writer.write("id,type\n"); // type сохраняется для удобства просмотра в файле истории
             for (Task task : getHistory()) {
                 writer.write(task.getId().toString() + "," + task.getType() + "\n");
             }
@@ -64,9 +64,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 String[] parts = line.split(",");
 
                 int id = Integer.parseInt(parts[0]);
-                String type = parts[1];
                 // выводим id задач согласно списку по их типу
-
                 if (containsKeyTask(id)) {
                     super.getTaskById(id);
                     System.out.println("задача сохранена в историю");
@@ -208,7 +206,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     // -------------------------------Сохранение -----------------------------------------------------------------------
 
 
-
     @Override
     public void createTask(Task savetheTask) {
         super.createTask(savetheTask);
@@ -224,6 +221,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void createEpic(Epic savetheEpic) {
         super.createEpic(savetheEpic);
+        save();
+    }
+
+    @Override
+    public void updateEpic(Epic epic) {
+        super.updateEpic(epic);
         save();
     }
 

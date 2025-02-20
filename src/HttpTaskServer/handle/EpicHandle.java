@@ -11,14 +11,13 @@ import tasks.Task;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class EpicHandle extends BaseHandle implements HttpHandler {
 
 
-    private TaskManager taskManager;
+    private final TaskManager taskManager;
     private final Gson gson = getGson();
 
     public EpicHandle(TaskManager manager) {
@@ -126,7 +125,6 @@ public class EpicHandle extends BaseHandle implements HttpHandler {
 
         } catch (IOException e) {
             writeResponse(exchange, "Внутренняя ошибка сервера", 500);
-            e.printStackTrace();
         }
     }
 

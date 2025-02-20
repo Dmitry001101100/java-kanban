@@ -37,7 +37,6 @@ public class BaseHandle {
             // Не удалось преобразовать в Integer, значит id отсутствует или некорректен
             return Optional.empty();
         }
-
     }
 
     protected void writeResponse(HttpExchange exchange,
