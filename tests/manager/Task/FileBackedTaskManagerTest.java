@@ -194,30 +194,6 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         manager.clearContent();
     }
 
-    @Test
-    public void qwqw1(){
-        manager.clearContent();
-        saveTask1(); // сохраняем все виды задач
-        // выводим несколько видов задач в разном порядке id для попадания этих задач в историю просмотра
-
-        manager.getTaskById(2);
-        manager.getSubTaskById(4);
-
-        manager.getTaskById(1);
-
-        manager.getSubTaskById(3);
-
-
-        manager.getHistory().forEach(System.out :: println);
-/*
-         FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
-        System.out.println("Вывод истории "+fileBackedTaskManager.getHistory().size());
-     //   fileBackedTaskManager.clearContent();
-        System.out.println("Вывод истории "+fileBackedTaskManager.getHistory().size());
-
-
- */
-    }
 
     // -----------------------------совместимые тесты ------------------------------------------------------------------
     @Test
