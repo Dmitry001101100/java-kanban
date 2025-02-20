@@ -4,13 +4,16 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import enumeration.Endpoint;
+import manager.Managers;
 import manager.Task.TaskManager;
 import tasks.Epic;
+import tasks.SubTask;
 import tasks.Task;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,7 +21,7 @@ public class EpicHandle extends BaseHandle implements HttpHandler {
 
 
     private final TaskManager taskManager;
-    private final Gson gson = getGson();
+    private final Gson gson = Managers.getGson();
 
     public EpicHandle(TaskManager manager) {
         this.taskManager = manager;
@@ -56,10 +59,9 @@ public class EpicHandle extends BaseHandle implements HttpHandler {
 
 
     private void handleGetEpics(HttpExchange exchange) throws IOException { // вывод всех задач
-        String response = taskManager.getEpics().stream()
-                .map(Task::toString)
-                .collect(Collectors.joining("\n"));
-        writeResponse(exchange, response, 200);
+        List<Epic> epicList = taskManager.getEpics();
+        String jsonResponse = gson.toJson(epicList);
+        writeResponse(exchange, jsonResponse, 200);
     }
 
     private void handleGetEpic(HttpExchange exchange) throws IOException { // вывод задачи по id
@@ -74,8 +76,9 @@ public class EpicHandle extends BaseHandle implements HttpHandler {
         String response;
 
         if ((taskManager.containsKeyEpic(id))) {
-            response = taskManager.getEpicById(id).toString();
-            writeResponse(exchange, response, 200);
+            Epic task = taskManager.getEpicById(id);
+            String jsonResponse = gson.toJson(task);
+            writeResponse(exchange, jsonResponse, 200);
         } else {
             response = "Эпик с id: " + id + " не существует.";
             writeResponse(exchange, response, 404);
@@ -94,10 +97,9 @@ public class EpicHandle extends BaseHandle implements HttpHandler {
         String response;
 
         if ((taskManager.containsKeyEpic(id))) {
-            response = taskManager.getSubTasksByEpicId(id).stream()
-                    .map(Task::toString)
-                    .collect(Collectors.joining("\n"));
-            writeResponse(exchange, response, 200);
+            List<SubTask> subtaskList = taskManager.getSubTasksByEpicId(id);
+            String jsonResponse = gson.toJson(subtaskList);
+            writeResponse(exchange, jsonResponse, 200);
         } else {
             response = "Эпик с id: " + id + " не существует.";
             writeResponse(exchange, response, 404);

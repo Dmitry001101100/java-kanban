@@ -42,7 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateEpicStatus(int id) { // определение статуса эпика
         Epic epic = epicMap.get(id);
         List<Integer> subtaskList = epicMap.get(id).getSubtaskIds();
-        if (subtaskList == null || subtaskList.isEmpty()) {
+        if (subtaskList.isEmpty()) {
             epic.setStatus(Status.NEW);
             return;
         }
@@ -134,9 +134,14 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("id эпика изменен.");
         }
 
+        if (epic.getSubtaskIds() == null) {
+            epic.setSubtaskIds(new ArrayList<>());
+        }
+
         if (!containsKeyTasks(epic.getId())) {
             epicMap.put(epic.getId(), epic);
             searchForTheStartTimeAndDuration(epic.getId());  //  мешает серверу для записи новых задач
+            updateEpicStatus(epic.getId());
             System.out.println("Эпик успешно записан!");
         } else {
             System.out.println("Запись прервана,эпик пересекается с существующим.");
@@ -146,8 +151,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpic(Epic epic) { // сохранение и перезапись эпиков
         if (containsKeyEpic(epic.getId())) {
+            if (epic.getSubtaskIds() == null) { // если подзадачи обновленной версии эпика == null то
+                if (!epicMap.get(epic.getId()).getSubtaskIds().isEmpty()) { // проверряем в старой версии эпика есть ли у него подзадачи
+                    epic.setSubtaskIds(epicMap.get(epic.getId()).getSubtaskIds()); // если подзадачи есть то переносим их в новый эпик
+                } else { // если подзадач нет присваевываем епику новый список
+                    epic.setSubtaskIds(new ArrayList<>());
+                }
+            }
             epicMap.put(epic.getId(), epic);
             searchForTheStartTimeAndDuration(epic.getId());
+            updateEpicStatus(epic.getId());
             System.out.println("Эпик успешно изменен!");
         } else {
             System.out.println("Эпик с таким id не найден.");
@@ -182,7 +195,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (!epic1.getSubtaskIds().contains(subTask.getId())) {
             epic1.addSubtaskIds(subTask.getId());
         }
-         updateEpic(epic1); // обновляем эпик
+        updateEpic(epic1); // обновляем эпик
     }
 
     @Override

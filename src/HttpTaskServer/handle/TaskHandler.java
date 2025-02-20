@@ -4,19 +4,21 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import enumeration.Endpoint;
+import manager.Managers;
 import manager.Task.TaskManager;
 import tasks.Task;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TaskHandler extends BaseHandle implements HttpHandler {
 
     private final TaskManager taskManager;
-    private final Gson gson = getGson();
+    private final Gson gson = Managers.getGson();
 
     public TaskHandler(TaskManager manager) {
         this.taskManager = manager;
@@ -50,10 +52,9 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
     }
 
     private void handleGetTasks(HttpExchange exchange) throws IOException { // вывод всех задач
-        String response = taskManager.getTasks().stream()
-                .map(Task::toString)
-                .collect(Collectors.joining("\n"));
-        writeResponse(exchange, response, 200);
+        List<Task> tasks = taskManager.getTasks();
+        String jsonResponse = gson.toJson(tasks);
+        writeResponse(exchange, jsonResponse, 200);
     }
 
     private void handleGetTask(HttpExchange exchange) throws IOException { // вывод задачи по id
@@ -65,16 +66,15 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
         }
 
         int id = taskIdOpt.get();
-        String response;
 
         if ((taskManager.containsKeyTask(id))) {
-            response = taskManager.getTaskById(id).toString();
-            writeResponse(exchange, response, 200);
+            Task task = taskManager.getTaskById(id);
+            String jsonResponse = gson.toJson(task);
+            writeResponse(exchange, jsonResponse, 200);
         } else {
-            response = "Задачи с id: " + id + " не существует.";
+            String response = "Задачи с id: " + id + " не существует.";
             writeResponse(exchange, response, 404);
         }
-
     }
 
     private void handlePostTask(HttpExchange exchange) throws IOException { // сохранение и перезапись задач
