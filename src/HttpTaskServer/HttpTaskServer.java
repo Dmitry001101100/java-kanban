@@ -13,11 +13,11 @@ import java.net.InetSocketAddress;
 
 public class HttpTaskServer extends BaseHandle implements HttpHandler {
 
-    private final File file = new File("taskToList.csv"); // используется для проверки
-    private final TaskManager taskManager = Managers.getDefaultFileBackedTaskManager(file);
+    TaskManager taskManager;
     private HttpServer httpServer; // добавляем поле для хранения экземпляра сервера
 
-    public void startServer(int port) throws IOException {
+    public void startServer(int port, TaskManager taskManager1) throws IOException {
+        taskManager = taskManager1;
         httpServer = HttpServer.create(new InetSocketAddress(port), 0);
         httpServer.createContext("/taskServer", this);
         httpServer.start();
@@ -62,18 +62,17 @@ class MainHttpTaskServer {
     private static final int PORT = 8080;
 
 
-    MainHttpTaskServer() throws IOException {
+    public static void main(String[] qw) throws IOException {
+        final File file = new File("taskToList.csv"); // используется для проверки
+        final TaskManager taskManager = Managers.getDefaultFileBackedTaskManager(file);
+
+        HttpTaskServer httpTaskServer = new HttpTaskServer();
+        httpTaskServer.startServer(PORT, taskManager); // запускаем сервер
+
+        // httpServer.stop(0);
+
     }
 
-    public static void main(String[] qw) throws IOException {
-
-        HttpServer httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
-      //  httpServer.createContext("/taskServer", new HttpTaskServer());
-        httpServer.start(); // запускаем сервер
-
-       // httpServer.stop(0);
-
-        System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
-
+    MainHttpTaskServer() throws IOException {
     }
 }
