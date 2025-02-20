@@ -29,14 +29,14 @@ class EpicTest {
 
         taskManager.createEpic(epic1);
 
-        System.out.println("до добавления подзадачи "+taskManager.getEpicById(epic1.getId()));
+        //   System.out.println("до добавления подзадачи "+taskManager.getEpicById(epic1.getId()));
         assertEquals(Status.NEW, taskManager.getEpicById(epic1.getId()).getStatus(), "Статус генерируется неправильно");
 
         taskManager.createSubTask(sub2);
         taskManager.createSubTask(sub3);
-        System.out.println("после добавления"+taskManager.getEpicById(epic1.getId()));
+       // System.out.println("после добавления"+taskManager.getEpicById(epic1.getId()));
         assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).getStatus(), "Статус генерируется неправильно");
-        taskManager.clearSubTasksOfEpic(epic1.getId());
+       // taskManager.clearSubTasksOfEpic(epic1.getId());
         System.out.println("после удаления"+taskManager.getEpicById(epic1.getId()));
     }
 
@@ -47,7 +47,7 @@ class EpicTest {
         taskManager.createSubTask(sub2);
         taskManager.createSubTask(sub3);
 
-        System.out.println(taskManager.getEpicById(epic1.getId()));
+        // System.out.println(taskManager.getEpicById(epic1.getId()));
         assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic1.getId()).getStatus(), "Статус рассчитывается неправильно");
     }
 
@@ -95,7 +95,6 @@ class EpicTest {
         taskManager.createSubTask(sub3);
 
         // конечное время насчитывается по самому длинному конечному времени подзадачи.
-
         LocalDateTime endTimeSub3 = sub3.getEndTime();
         LocalDateTime endTimeIsTaskManager1 = taskManager.getEpicById(epic1.getId()).getEndTime();
 
