@@ -40,12 +40,12 @@ public class BaseHandle {
     }
 
     protected void writeResponse(HttpExchange exchange,
-                                 String responseString,
+                                 String text,
                                  int responseCode) throws IOException {
-        try (OutputStream os = exchange.getResponseBody()) {
-            exchange.sendResponseHeaders(responseCode, 0);
-            os.write(responseString.getBytes(DEFAULT_CHARSET));
-        }
+        byte[] response = text.getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        exchange.sendResponseHeaders(responseCode, response.length);
+        exchange.getResponseBody().write(response);
         exchange.close();
     }
 
