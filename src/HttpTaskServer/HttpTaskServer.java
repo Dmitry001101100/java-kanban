@@ -54,13 +54,10 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
                 break;
         }
     }
-
-
 }
 
 class MainHttpTaskServer {
     private static final int PORT = 8080;
-
 
     public static void main(String[] qw) throws IOException {
         final File file = new File("taskToList.csv"); // используется для проверки
@@ -68,8 +65,6 @@ class MainHttpTaskServer {
 
         HttpTaskServer httpTaskServer = new HttpTaskServer();
         httpTaskServer.startServer(PORT, taskManager); // запускаем сервер
-
-        // httpServer.stop(0);
 
     }
 

@@ -10,7 +10,6 @@ import java.util.Optional;
 public class BaseHandle {
 
 
-
     protected Optional<Integer> getOptionalId(HttpExchange exchange) { // проверка что id для вывода задачи является числом
         String path = exchange.getRequestURI().getPath();
         String[] pathParts = path.split("/");
@@ -55,7 +54,7 @@ public class BaseHandle {
                         }
                     }
                     case "epics" -> {
-                        if (pathParts.length == 5) {
+                        if (pathParts.length == 5 && pathParts[4].equals("subtasks")) {
                             return Endpoint.GET_SUBTASK_BY_EPIC; // длина 5
                         } else if (pathParts.length == 3) {
                             return Endpoint.GET_EPICS; // длинна 3

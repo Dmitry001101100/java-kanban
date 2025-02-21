@@ -75,7 +75,6 @@ public class TaskHandler extends BaseHandle implements HttpHandler {
             String response = "Задачи с id: " + id + " не существует.";
             writeResponse(exchange, response, 404);
         }
-
     }
 
     private void handlePostTask(HttpExchange exchange) throws IOException { // сохранение и перезапись задач

@@ -103,8 +103,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (Integer key : subTaskMap.keySet()) {
                 writer.write(subTaskMap.get(key).toString() + "\n");
             }
-        } catch (IOException exp) {
-            throw new ManagerSaveException("Произошла ошибка записи в файл", exp);
+        } catch (NullPointerException exp) {
+            throw new ManagerSaveException("Произошла ошибка записи в файл"+exp.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

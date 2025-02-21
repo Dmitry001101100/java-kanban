@@ -33,6 +33,7 @@ public class Managers {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
         gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
+        //  gsonBuilder.serializeNulls();
         return gsonBuilder.create();
     }
 

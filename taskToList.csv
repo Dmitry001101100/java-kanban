@@ -1,7 +1,1 @@
 id,type,name,status,description,startTime,duration,epic
-1,TASK,Test titleTask,NEW,Test description,14:42 14.12.24,17:02 14.12.24
-2,TASK,Test titleTask,NEW,Test description,14:42 14.12.24,17:02 14.12.24
-3,TASK,Test titleTask,NEW,Test description,14:42 14.12.24,17:02 14.12.24
-4,TASK,Test titleTask,NEW,Test description,14:42 14.12.24,17:02 14.12.24
-5,TASK,Test titleTask,NEW,Test description,14:42 14.12.24,17:02 14.12.24
-8,EPIC,Test titleTask,NEW,Test description2,null,null
