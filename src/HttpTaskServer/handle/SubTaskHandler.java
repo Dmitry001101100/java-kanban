@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import enumeration.Endpoint;
+import manager.Managers;
 import manager.Task.TaskManager;
 import tasks.SubTask;
 import tasks.Task;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 public class SubTaskHandler extends BaseHandle implements HttpHandler {
 
     private final TaskManager taskManager;
-    private final Gson gson = getGson();
+    private final Gson gson = Managers.getGson();
 
     public SubTaskHandler(TaskManager manager) {
         this.taskManager = manager;
