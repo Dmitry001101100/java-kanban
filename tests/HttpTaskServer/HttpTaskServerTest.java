@@ -47,7 +47,14 @@ public class HttpTaskServerTest {
 
     //----------------------------------------------------------------------------------------------------------------------
     // tasks
+        /*
+        - сохранение задач+
+        - вывод задачи по id+
+        - вывод всех задач +
+        - обновление задачи +
+        - удаление задач +
 
+         */
     @Test
     void postCreateTask() throws IOException, InterruptedException { // сохранение task
         taskManager.clearContent(); // В зависимости от taskManager очищаем все задачи
@@ -407,12 +414,27 @@ public class HttpTaskServerTest {
                 LocalDateTime.of(2024, 8, 25, 16, 40), Duration.ofMinutes(12));
 
         taskManager.createEpic(epic1); // 1
+        // проверяем статус и изменение временных рамок после сохранения эпика.
+        assertEquals(taskManager.getEpicById(1).getStatus(), Status.NEW, "Статус эпика не совпадает.");
+        assertNull(taskManager.getEpicById(1).getStartTime(), "Время начала эпика не совпадает.");
+        assertNull(taskManager.getEpicById(1).getEndTime(), "Время начала эпика не совпадает.");
+        assertNull(taskManager.getEpicById(1).getDuration(), "Время начала эпика не совпадает.");
+
+
         taskManager.createSubTask(sub4); // 4
         taskManager.createSubTask(sub6); // 6
         // проверяем на сохранение
         assertTrue(taskManager.containsKeyEpic(1), "эпик с Id1 не сохранен.");
         assertTrue(taskManager.containsKeySubTask(4), "эпик с Id4 не сохранен.");
         assertTrue(taskManager.containsKeySubTask(6), "эпик с Id3 не сохранен.");
+        System.out.println(taskManager.getEpicById(1));
+        // проверяем статус и временные рамки после сохранения подзадач.
+        assertEquals(taskManager.getEpicById(1).getStatus(), Status.IN_PROGRESS, "Статус эпика не совпадает.");
+        assertEquals(taskManager.getEpicById(1).getStartTime(),taskManager.getEpicById(4).getStartTime(), "Время начала эпика не совпадает.");
+        assertEquals(taskManager.getEpicById(1).getEndTime(),taskManager.getSubTaskById(4).getEndTime(), "Время начала эпика не совпадает.");
+        assertEquals(taskManager.getEpicById(1).getDuration(),24, "Время начала эпика не совпадает.");
+
+
         // Формируем запрос к серверу для получения задачи по ID
         URI url = URI.create("http://localhost:8080/taskServer/epics/1/subtasks");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
