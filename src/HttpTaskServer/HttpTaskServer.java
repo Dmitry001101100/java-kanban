@@ -68,6 +68,4 @@ class MainHttpTaskServer {
 
     }
 
-    MainHttpTaskServer() throws IOException {
-    }
 }

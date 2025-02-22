@@ -12,6 +12,7 @@ import tasks.Task;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,10 +48,9 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
     }
 
     private void handleGetSubTasks(HttpExchange exchange) throws IOException { // вывод всех задач
-        String response = taskManager.getSubTasks().stream()
-                .map(Task::toString)
-                .collect(Collectors.joining("\n"));
-        writeResponse(exchange, response, 200);
+        List<SubTask> subTasks = taskManager.getSubTasks();
+        String jsonResponse = gson.toJson(subTasks);
+        writeResponse(exchange, jsonResponse, 200);
     }
 
     private void handleGetSubTask(HttpExchange exchange) throws IOException { // вывод всех задач
@@ -61,13 +61,12 @@ public class SubTaskHandler extends BaseHandle implements HttpHandler {
         }
 
         int id = subTaskIdOpt.get();
-        String response;
 
         if ((taskManager.containsKeySubTask(id))) {
-            response = taskManager.getSubTaskById(id).toString();
-            writeResponse(exchange, response, 200);
+            String jsonResponse = gson.toJson(taskManager.getSubTaskById(id));
+            writeResponse(exchange, jsonResponse, 200);
         } else {
-            response = "Подзадачи с id: " + id + " не существует.";
+            String response = "Подзадачи с id: " + id + " не существует.";
             writeResponse(exchange, response, 404);
         }
     }

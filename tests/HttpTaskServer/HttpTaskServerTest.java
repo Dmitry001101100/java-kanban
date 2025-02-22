@@ -73,9 +73,9 @@ public class HttpTaskServerTest {
         // Выводим тело ответа в строку
         String responseBody = response.body();
 
-        assertEquals(201, response.statusCode(), "статус ответа не совпадает"); // проверяем статус ответа
-        assertEquals("Задача сохранена.", responseBody, "Задачи не совпадают");
-        assertEquals(task1, taskManager.getTaskById(1), "Задачи не совпадают");
+        assertEquals(201, response.statusCode(), "статус ответа не совпадает."); // проверяем статус ответа
+        assertEquals("Задача сохранена.", responseBody, "Тело ответа не совпадает.");
+        assertEquals(task1, taskManager.getTaskById(1), "Задачи не совпадают.");
         taskManager.clearContent();
     }
 
@@ -87,25 +87,19 @@ public class HttpTaskServerTest {
         Task task1 = new Task("Test titleTask", "Test description", 1, Status.NEW,
                 LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(140));
         taskManager.createTask(task1);
-
         // Формируем запрос к серверу для получения задачи по ID
         URI url = URI.create("http://localhost:8080/taskServer/tasks/1");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
-
         // Отправляем запрос и получаем ответ
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
         // Проверяем статус ответа
         assertEquals(200, response.statusCode());
-
         // Выводим тело ответа в строку
         String responseBody = response.body();
         System.out.println("Тело ответа: " + responseBody);
-
         // Преобразуем ответ обратно в объект Task
         Task receivedTask = gson.fromJson(responseBody, Task.class);
         System.out.println(receivedTask);
-
         // Проверяем, что полученная задача совпадает с отправленной
         assertEquals(task1, receivedTask);
         taskManager.clearContent();
@@ -137,9 +131,9 @@ public class HttpTaskServerTest {
         }.getType());
         System.out.println("Тело ответа: " + list);
         // Проверяем, что полученная задача совпадает с отправленной
-        assertEquals(task1, list.get(0), "задача с id1 не совпадают");
-        assertEquals(task2, list.get(1), "задача с id2 не совпадают");
-        assertEquals(task3, list.get(2), "задача с id3 не совпадают");
+        assertEquals(task1, list.get(0), "задача с id1 не совпадают.");
+        assertEquals(task2, list.get(1), "задача с id2 не совпадают.");
+        assertEquals(task3, list.get(2), "задача с id3 не совпадают.");
         taskManager.clearContent();
     }
 
@@ -150,12 +144,9 @@ public class HttpTaskServerTest {
         // Создаем задачу для тестирования
         Task task1 = new Task("Test titleTask", "Test description", 1, Status.NEW,
                 LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(140));
-
         taskManager.createTask(task1); // для теста обновления таска
-
         // Преобразуем задачу в JSON строку
         String taskJson = gson.toJson(task1);
-
         // Формируем POST-запрос к серверу для сохранения задачи
         URI url = URI.create("http://localhost:8080/taskServer/tasks");
         HttpRequest request = HttpRequest.newBuilder().uri(url).header("Content-Type", "application/json")
@@ -167,7 +158,7 @@ public class HttpTaskServerTest {
         // Выводим тело ответа в строку
         String responseBody = response.body();
 
-        assertEquals(201, response.statusCode(), "Статус ответа не совпадает"); // проверяем статус ответа
+        assertEquals(201, response.statusCode(), "Статус ответа не совпадает."); // проверяем статус ответа
         assertEquals("Задача обновлена.", responseBody, "Тело ответа не совпадает.");
         assertEquals(task1, taskManager.getTaskById(1), "Задачи не совпадают.");
         taskManager.clearContent();
@@ -197,6 +188,18 @@ public class HttpTaskServerTest {
     }
     // ----------------------------------------------------------------------------------------------------------------
     //epics
+    /*
+    - сохранение эпика+
+    - выгрузка эпка по id+
+    - обновление эпика+
+    - удаление эпика +
+    - вывод эпика по id+
+    - удаление эпика по id+
+    - вывод всех подзадач одного эпика+
+(так же присутствует проверка временных рамок и статуса до и после сохранения подзадач)
+
+     */
+
 
     @Test
     void postCreateEpics() throws IOException, InterruptedException { // сохранение эпика
@@ -220,11 +223,11 @@ public class HttpTaskServerTest {
 
         assertEquals("Эпик сохранен.", responseBody, "Ответ сервера не совпадает.");
         // проверяем эпик по переменным т.к. После сохранения эпика эпика меняются его временные рамки на noll до сохранения подзадач
-        assertEquals(epic1.getId(), taskManager.getEpicById(1).getId(), "Id не совпадают");
-        assertEquals(epic1.getTitle(), taskManager.getEpicById(1).getTitle(), "Названия не совпадают");
-        assertEquals(epic1.getStatus(), taskManager.getEpicById(1).getStatus(), "Статус не совпадают");
-        assertEquals(epic1.getDescription(), taskManager.getEpicById(1).getDescription(), "Описание не совпадают");
-        assertEquals(epic1.getSubtaskIds(), taskManager.getEpicById(1).getSubtaskIds(), "Id subTasks не совпадают");
+        assertEquals(epic1.getId(), taskManager.getEpicById(1).getId(), "Id не совпадают.");
+        assertEquals(epic1.getTitle(), taskManager.getEpicById(1).getTitle(), "Названия не совпадают.");
+        assertEquals(epic1.getStatus(), taskManager.getEpicById(1).getStatus(), "Статус не совпадают.");
+        assertEquals(epic1.getDescription(), taskManager.getEpicById(1).getDescription(), "Описание не совпадают.");
+        assertEquals(epic1.getSubtaskIds(), taskManager.getEpicById(1).getSubtaskIds(), "Id subTasks не совпадают.");
         assertNull(taskManager.getEpicById(1).getStartTime(), "Время начала эпика не совпадает.");
         assertNull(taskManager.getEpicById(1).getEndTime(), "Время начала эпика не совпадает.");
         assertNull(taskManager.getEpicById(1).getDuration(), "Время начала эпика не совпадает.");
@@ -258,23 +261,23 @@ public class HttpTaskServerTest {
         }.getType());
         System.out.println("Тело ответа: " + list);
         // Проверяем, что полученная задача совпадает с отправленной
-        assertEquals(epic1.getId(), list.getFirst().getId(), "Id не совпадают");
-        assertEquals(epic1.getTitle(), list.getFirst().getTitle(), "Названия не совпадают");
-        assertEquals(epic1.getStatus(), list.getFirst().getStatus(), "Статус не совпадают");
-        assertEquals(epic1.getDescription(), list.getFirst().getDescription(), "Описание не совпадают");
-        assertEquals(epic1.getSubtaskIds(), list.getFirst().getSubtaskIds(), "Id subTasks не совпадают");
+        assertEquals(epic1.getId(), list.getFirst().getId(), "Id не совпадают.");
+        assertEquals(epic1.getTitle(), list.getFirst().getTitle(), "Названия не совпадают.");
+        assertEquals(epic1.getStatus(), list.getFirst().getStatus(), "Статус не совпадают.");
+        assertEquals(epic1.getDescription(), list.getFirst().getDescription(), "Описание не совпадают.");
+        assertEquals(epic1.getSubtaskIds(), list.getFirst().getSubtaskIds(), "Id subTasks не совпадают.");
 
-        assertEquals(epic2.getId(), list.get(1).getId(), "Id не совпадают");
-        assertEquals(epic2.getTitle(), list.get(1).getTitle(), "Названия не совпадают");
-        assertEquals(epic2.getStatus(), list.get(1).getStatus(), "Статус не совпадают");
-        assertEquals(epic2.getDescription(), list.get(1).getDescription(), "Описание не совпадают");
-        assertEquals(epic2.getSubtaskIds(), list.get(1).getSubtaskIds(), "Id subTasks не совпадают");
+        assertEquals(epic2.getId(), list.get(1).getId(), "Id не совпадают.");
+        assertEquals(epic2.getTitle(), list.get(1).getTitle(), "Названия не совпадают.");
+        assertEquals(epic2.getStatus(), list.get(1).getStatus(), "Статус не совпадают.");
+        assertEquals(epic2.getDescription(), list.get(1).getDescription(), "Описание не совпадают.");
+        assertEquals(epic2.getSubtaskIds(), list.get(1).getSubtaskIds(), "Id subTasks не совпадают.");
 
-        assertEquals(epic3.getId(), list.get(2).getId(), "Id не совпадают");
-        assertEquals(epic3.getTitle(), list.get(2).getTitle(), "Названия не совпадают");
-        assertEquals(epic3.getStatus(), list.get(2).getStatus(), "Статус не совпадают");
-        assertEquals(epic3.getDescription(), list.get(2).getDescription(), "Описание не совпадают");
-        assertEquals(epic3.getSubtaskIds(), list.get(2).getSubtaskIds(), "Id subTasks не совпадают");
+        assertEquals(epic3.getId(), list.get(2).getId(), "Id не совпадают.");
+        assertEquals(epic3.getTitle(), list.get(2).getTitle(), "Названия не совпадают.");
+        assertEquals(epic3.getStatus(), list.get(2).getStatus(), "Статус не совпадают.");
+        assertEquals(epic3.getDescription(), list.get(2).getDescription(), "Описание не совпадают.");
+        assertEquals(epic3.getSubtaskIds(), list.get(2).getSubtaskIds(), "Id subTasks не совпадают.");
 
         taskManager.clearContent();
     }
@@ -301,11 +304,11 @@ public class HttpTaskServerTest {
         assertEquals(201, response.statusCode(), "статус ответа не совпадает."); // проверяем статус ответа
         assertEquals("Эпик обновлен.", responseBody, "Ответ сервера не совпадает.");
         // проверяем эпик по переменным кроме временных рамок т.к они меняются при сохранении на null
-        assertEquals(epic1.getId(), taskManager.getEpicById(1).getId(), "Id не совпадают");
-        assertEquals(epic1.getTitle(), taskManager.getEpicById(1).getTitle(), "Названия не совпадают");
-        assertEquals(epic1.getStatus(), taskManager.getEpicById(1).getStatus(), "Статус не совпадают");
-        assertEquals(epic1.getDescription(), taskManager.getEpicById(1).getDescription(), "Описание не совпадают");
-        assertEquals(epic1.getSubtaskIds(), taskManager.getEpicById(1).getSubtaskIds(), "Id subTasks не совпадают");
+        assertEquals(epic1.getId(), taskManager.getEpicById(1).getId(), "Id не совпадают.");
+        assertEquals(epic1.getTitle(), taskManager.getEpicById(1).getTitle(), "Названия не совпадают.");
+        assertEquals(epic1.getStatus(), taskManager.getEpicById(1).getStatus(), "Статус не совпадают.");
+        assertEquals(epic1.getDescription(), taskManager.getEpicById(1).getDescription(), "Описание не совпадают.");
+        assertEquals(epic1.getSubtaskIds(), taskManager.getEpicById(1).getSubtaskIds(), "Id subTasks не совпадают.");
 
         taskManager.clearContent();
     }
@@ -361,11 +364,11 @@ public class HttpTaskServerTest {
         System.out.println("Тело ответа: " + epicResponse);
         // Проверяем, что полученная задача совпадает с отправленной
 
-        assertEquals(epic2.getId(), epicResponse.getId(), "Id не совпадают");
-        assertEquals(epic2.getTitle(), epicResponse.getTitle(), "Названия не совпадают");
-        assertEquals(epic2.getStatus(), epicResponse.getStatus(), "Статус не совпадают");
-        assertEquals(epic2.getDescription(), epicResponse.getDescription(), "Описание не совпадают");
-        assertEquals(epic2.getSubtaskIds(), epicResponse.getSubtaskIds(), "Id subTasks не совпадают");
+        assertEquals(epic2.getId(), epicResponse.getId(), "Id не совпадают.");
+        assertEquals(epic2.getTitle(), epicResponse.getTitle(), "Названия не совпадают.");
+        assertEquals(epic2.getStatus(), epicResponse.getStatus(), "Статус не совпадают.");
+        assertEquals(epic2.getDescription(), epicResponse.getDescription(), "Описание не совпадают.");
+        assertEquals(epic2.getSubtaskIds(), epicResponse.getSubtaskIds(), "Id subTasks не совпадают.");
 
         taskManager.clearContent();
     }
@@ -418,7 +421,7 @@ public class HttpTaskServerTest {
 
         taskManager.createEpic(epic1); // 1
         // проверяем статус и изменение временных рамок после сохранения эпика.
-        assertEquals(taskManager.getEpicById(1).getStatus(), Status.NEW, "Статус эпика не совпадает.");
+        assertEquals(Status.NEW,taskManager.getEpicById(1).getStatus(),  "Статус эпика не совпадает.");
         assertNull(taskManager.getEpicById(1).getStartTime(), "Время начала эпика не совпадает.");
         assertNull(taskManager.getEpicById(1).getEndTime(), "Время начала эпика не совпадает.");
         assertNull(taskManager.getEpicById(1).getDuration(), "Время начала эпика не совпадает.");
@@ -432,10 +435,10 @@ public class HttpTaskServerTest {
         assertTrue(taskManager.containsKeySubTask(6), "эпик с Id3 не сохранен.");
         System.out.println(taskManager.getEpicById(1));
         // проверяем статус и временные рамки после сохранения подзадач.
-        assertEquals(taskManager.getEpicById(1).getStatus(), Status.IN_PROGRESS, "Статус эпика не совпадает.");
-        assertEquals(taskManager.getEpicById(1).getStartTime(),taskManager.getSubTaskById(6).getStartTime(), "Время начала эпика не совпадает.");
-        assertEquals(taskManager.getEpicById(1).getEndTime(),taskManager.getSubTaskById(4).getEndTime(), "Время начала эпика не совпадает.");
-        assertEquals(taskManager.getEpicById(1).getDuration(),Duration.ofMinutes(24), "Время начала эпика не совпадает.");
+        assertEquals(Status.IN_PROGRESS,taskManager.getEpicById(1).getStatus(),  "Статус эпика не совпадает.");
+        assertEquals(taskManager.getSubTaskById(6).getStartTime(),taskManager.getEpicById(1).getStartTime(), "Время начала эпика не совпадает.");
+        assertEquals(taskManager.getSubTaskById(4).getEndTime(),taskManager.getEpicById(1).getEndTime(), "Время начала эпика не совпадает.");
+        assertEquals(Duration.ofMinutes(24),taskManager.getEpicById(1).getDuration(), "Время начала эпика не совпадает.");
 
 
         // Формируем запрос к серверу для получения задачи по ID
@@ -448,10 +451,78 @@ public class HttpTaskServerTest {
         List<SubTask> list = gson.fromJson(response.body(), new TypeToken<ArrayList<SubTask>>() {
         }.getType());
 
-        assertEquals(sub4.getId(), list.getFirst().getId(), "Подзадача с id4 не совпадают после выгрузки");
-        assertEquals(sub6.getTitle(), list.getFirst().getTitle(), "Подзадача с id4 не совпадают после выгрузки");
+        assertEquals(sub4.getId(), list.getFirst().getId(), "Подзадача с id4 не совпадают после выгрузки.");
+        assertEquals(sub6.getTitle(), list.getFirst().getTitle(), "Подзадача с id4 не совпадают после выгрузки.");
 
         taskManager.clearContent();
     }
 
+    @Test
+    void postCreatesSubtasks() throws IOException, InterruptedException { // сохранение подзадач
+        taskManager.clearContent(); // В зависимости от taskManager очищаем все задачи
+        Epic epic1 = new Epic("Епик", "описание", 1, Status.NEW,
+                LocalDateTime.now(), Duration.ofMinutes(20));
+        SubTask sub2 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", 2, Status.IN_PROGRESS,
+                LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
+        taskManager.createEpic(epic1); // сохраняем эпик для теста
+
+        // Преобразуем задачу в JSON строку
+        String subTaskJson = gson.toJson(sub2);
+        // Формируем POST-запрос к серверу для сохранения задачи
+        URI url = URI.create("http://localhost:8080/taskServer/subtasks");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(subTaskJson))
+                .build();
+        // Отправляем запрос и получаем ответ
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        // Выводим тело ответа в строку
+        String responseBody = response.body();
+
+        assertEquals(201, response.statusCode(), "Статус ответа не совпадает."); // проверяем статус ответа
+        assertEquals("Подзадача сохранена.", responseBody, "Тело ответа не совпадает.");
+        assertEquals(sub2, taskManager.getSubTaskById(2), "Подзадачи не совпадают.");
+
+        // проверяем статус и временные рамки после сохранения подзадач.
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика не совпадает.");
+        assertEquals(taskManager.getSubTaskById(2).getStartTime(),taskManager.getEpicById(1).getStartTime(), "Время начала эпика не совпадает.");
+        assertEquals(taskManager.getSubTaskById(2).getEndTime(),taskManager.getEpicById(1).getEndTime(), "Время начала эпика не совпадает.");
+        assertEquals(Duration.ofMinutes(24),taskManager.getEpicById(1).getDuration(), "Время начала эпика не совпадает.");
+        taskManager.clearContent();
+    }
+
+    @Test
+    void postUpdateSubtasks() throws IOException, InterruptedException { // обновление подзадач подзадач
+        taskManager.clearContent(); // В зависимости от taskManager очищаем все задачи
+        Epic epic1 = new Epic("Епик", "описание", 1, Status.NEW,
+                LocalDateTime.now(), Duration.ofMinutes(20));
+        SubTask sub2 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", 2, Status.IN_PROGRESS,
+                LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
+        taskManager.createEpic(epic1); // сохраняем для теста
+        taskManager.createSubTask(sub2);
+
+        SubTask sub3 = new SubTask(epic1.getId(), "Test субтаска", "описание 2", 2, Status.IN_PROGRESS,
+                LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
+        // Преобразуем задачу в JSON строку
+        String subTaskJson = gson.toJson(sub3);
+        // Формируем POST-запрос к серверу для сохранения задачи
+        URI url = URI.create("http://localhost:8080/taskServer/subtasks/2");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(subTaskJson))
+                .build();
+        // Отправляем запрос и получаем ответ
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        // Выводим тело ответа в строку
+        String responseBody = response.body();
+
+        assertEquals(201, response.statusCode(), "Статус ответа не совпадает."); // проверяем статус ответа
+        assertEquals("Подзадача обновлена.", responseBody, "Тело ответа не совпадает.");
+        assertEquals(sub3, taskManager.getSubTaskById(2), "Подзадачи не совпадают.");
+
+        // проверяем статус и временные рамки после сохранения подзадач.
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика не совпадает.");
+        assertEquals(taskManager.getSubTaskById(2).getStartTime(),taskManager.getEpicById(1).getStartTime(), "Время начала эпика не совпадает.");
+        assertEquals(taskManager.getSubTaskById(2).getEndTime(),taskManager.getEpicById(1).getEndTime(), "Время начала эпика не совпадает.");
+        assertEquals(Duration.ofMinutes(24),taskManager.getEpicById(1).getDuration(), "Время начала эпика не совпадает.");
+        taskManager.clearContent();
+    }
 }
