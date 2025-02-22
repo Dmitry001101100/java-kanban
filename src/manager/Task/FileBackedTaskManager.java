@@ -23,14 +23,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
 
     public FileBackedTaskManager(File file) {
-
+        this.file = file;
         if (!isFileEmpty(file) && file.length() >= 2) {
             downloadingFromAFile(file);
         }
         if (!isFileEmpty(historyList) && historyList.length() >= 2) {
             downloadingHistoryFromAFile();
         }
-        this.file = file;
+
     }
 
     private boolean isFileEmpty(File file) {
@@ -90,21 +90,40 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     // метод для сохранения всех видов задач в файл;
 
     private void save() {
+        // Проверка на null для файла
+        if (file == null) {
+            throw new IllegalArgumentException("Файл не может быть null");
+        }
 
         try (Writer writer = new FileWriter(file)) {
-
             writer.write("id,type,name,status,description,startTime,duration,epic\n");
-            for (Integer key : taskMap.keySet()) {
-                writer.write(taskMap.get(key).toString() + "\n");
+
+            // Проверка на null для карт
+            if (!taskMap.isEmpty()) {
+                for (Integer key : taskMap.keySet()) {
+                    if (taskMap.get(key) != null) {
+                        writer.write(taskMap.get(key).toString() + "\n");
+                    }
+                }
             }
-            for (Integer key : epicMap.keySet()) {
-                writer.write(epicMap.get(key).toString() + "\n");
+
+            if (!epicMap.isEmpty()) {
+                for (Integer key : epicMap.keySet()) {
+                    if (epicMap.get(key) != null) {
+                        writer.write(epicMap.get(key).toString() + "\n");
+                    }
+                }
             }
-            for (Integer key : subTaskMap.keySet()) {
-                writer.write(subTaskMap.get(key).toString() + "\n");
+
+            if (!subTaskMap.isEmpty()) {
+                for (Integer key : subTaskMap.keySet()) {
+                    if (subTaskMap.get(key) != null) {
+                        writer.write(subTaskMap.get(key).toString() + "\n");
+                    }
+                }
             }
         } catch (NullPointerException exp) {
-            throw new ManagerSaveException("Произошла ошибка записи в файл"+exp.toString());
+            throw new ManagerSaveException("Произошла ошибка записи в файл: " + exp.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -120,6 +139,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     isFirstLine = false;
                     continue;
                 }
+                if (line.isEmpty() || line.isBlank()) {
+                    continue;
+                }
+
                 String[] parts = line.split(",");
                 int id = Integer.parseInt(parts[0]);
                 String type = parts[1];
