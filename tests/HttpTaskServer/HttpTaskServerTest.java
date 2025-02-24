@@ -3,6 +3,7 @@ package HttpTaskServer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import enumeration.Status;
+import httptaskserver.HttpTaskServer;
 import manager.Managers;
 import manager.Task.TaskManager;
 import org.junit.jupiter.api.AfterEach;
@@ -689,11 +690,11 @@ public class HttpTaskServerTest {
         taskManager.createTask(task1);
         taskManager.createTask(task2);
         taskManager.createTask(task3);
-        taskManager.getTaskById(1);
         taskManager.getTaskById(2);
+        taskManager.getTaskById(1);
         taskManager.getTaskById(3);
 
-        URI url = URI.create("http://localhost:8080/history");
+        URI url = URI.create("http://localhost:8080/taskServer/history");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .header("Content-Type", "application/json")
@@ -707,8 +708,8 @@ public class HttpTaskServerTest {
         }.getType());
         assertNotNull(tasks);
         assertEquals(3, tasks.size());
-        assertEquals("Test 1", tasks.get(0).getName());
-        assertEquals("Test 2", tasks.get(1).getName());
-        assertEquals("Test 3", tasks.get(2).getName());
+        assertEquals(task2, tasks.get(0),"Задача под id2 не совпадает.");
+        assertEquals(task1, tasks.get(1),"Задача под id1 не совпадает.");
+        assertEquals(task3, tasks.get(2),"Задача под id3 не совпадает.");
     }
 }

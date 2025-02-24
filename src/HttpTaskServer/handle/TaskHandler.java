@@ -1,4 +1,4 @@
-package HttpTaskServer.handle;
+package httptaskserver.handle;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;

@@ -1,6 +1,6 @@
-package HttpTaskServer;
+package httptaskserver;
 
-import HttpTaskServer.handle.*;
+import httptaskserver.handle.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;

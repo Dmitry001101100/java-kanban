@@ -46,7 +46,7 @@ public class Epic extends Task {
                 getDescription() + "," +
                 toFormat(getStartTime()) + "," +
             //    getDuration() + "," +
-                toFormat( getEndTime());
+                toFormat(getEndTime());
     }
 
     @Override
