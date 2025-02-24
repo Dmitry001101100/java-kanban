@@ -58,6 +58,8 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
         assertEquals(manager.getTaskById(2).getDuration(), fileBackedTaskManager.getTaskById(2).getDuration(),
                 "duration не совпадает");
 
+        System.out.println(manager.getPrioritizedTasks());
+
         // сравниваем епик
         assertEquals(manager.getEpicById(3), fileBackedTaskManager.getEpicById(3), "Задачи не совпадают");
         // по переменным

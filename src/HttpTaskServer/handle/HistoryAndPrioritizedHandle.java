@@ -4,14 +4,16 @@ import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import enumeration.Endpoint;
+import manager.Managers;
 import manager.Task.TaskManager;
 import tasks.Task;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
+import java.util.List;
 
 public class HistoryAndPrioritizedHandle extends BaseHandle implements HttpHandler {
     private final TaskManager taskManager;
+    Gson gson = Managers.getGson();
 
     public HistoryAndPrioritizedHandle(TaskManager manager) {
         this.taskManager = manager;
@@ -37,16 +39,14 @@ public class HistoryAndPrioritizedHandle extends BaseHandle implements HttpHandl
     }
 
     private void handleGetHistory(HttpExchange exchange) throws IOException {
-        String response = taskManager.getHistory().stream()
-                .map(Task::toString)
-                .collect(Collectors.joining("\n"));
-        writeResponse(exchange, response, 200);
+        List<Task> tasks = taskManager.getHistory();
+        String jsonResponse = gson.toJson(tasks);
+        writeResponse(exchange, jsonResponse, 200);
     }
 
     private void handleGetPrioritizedTasks(HttpExchange exchange) throws IOException {
-        String response = taskManager.getPrioritizedTasks().stream()
-                .map(Task::toString)
-                .collect(Collectors.joining("\n"));
-        writeResponse(exchange, response, 200);
+        List<Task> tasks = taskManager.getPrioritizedTasks();
+        String jsonResponse = gson.toJson(tasks);
+        writeResponse(exchange, jsonResponse, 200);
     }
 }
