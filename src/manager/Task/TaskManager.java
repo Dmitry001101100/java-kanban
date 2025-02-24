@@ -13,7 +13,9 @@ public interface TaskManager {
     int getIdUp();
 
     boolean containsKeyTask(int id);
+
     boolean containsKeySubTask(int id);
+
     boolean containsKeyEpic(int id);
 
     boolean containsKeyTasks(int id);
@@ -22,6 +24,7 @@ public interface TaskManager {
     List<Task> getPrioritizedTasks();
 
     void createTask(Task savetheTask);
+
     void updateTask(Task newTask);
 
     void createEpic(Epic savetheEpic);
@@ -29,8 +32,8 @@ public interface TaskManager {
     void updateEpic(Epic epic);
 
     void createSubTask(SubTask saveSubTask);
-    void updateSubTask(SubTask subTask);
 
+    void updateSubTask(SubTask subTask);
 
     ArrayList<Epic> getEpics();
 
@@ -40,16 +43,13 @@ public interface TaskManager {
 
     ArrayList<SubTask> getSubTasks();
 
-
     Task getTaskById(int numberId);
 
     SubTask getSubTaskById(int numberId);
 
     Epic getEpicById(int numberId);
 
-
     void clearContent();
-
 
     void clearTasks();
 
