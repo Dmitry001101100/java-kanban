@@ -1,4 +1,4 @@
-package HttpTaskServer.adapters;
+package httptaskserver.adapters;
 
 import com.google.gson.*;
 

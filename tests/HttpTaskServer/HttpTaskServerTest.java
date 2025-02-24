@@ -3,7 +3,7 @@ package HttpTaskServer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import enumeration.Status;
-import httpTaskServer.HttpTaskServer;
+import httptaskserver.HttpTaskServer;
 import manager.Managers;
 import manager.Task.TaskManager;
 import org.junit.jupiter.api.AfterEach;
