@@ -10,7 +10,7 @@ import java.util.Optional;
 public class BaseHandle {
 
 
-    protected Optional<Integer> getOptionalId(HttpExchange exchange) { // проверка что id для вывода задачи является числом
+    protected Optional<Integer> getOptionalId(HttpExchange exchange) { // проверка, что id для вывода задачи является числом
         String path = exchange.getRequestURI().getPath();
         String[] pathParts = path.split("/");
 

@@ -399,17 +399,14 @@ public class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         // Проверяем статус ответа
         assertEquals(201, response.statusCode(), "Статус ответа не совпадает.");
-
         assertTrue(taskManager.containsKeyEpic(1), "эпик с Id1 не сохранен.");
         assertFalse(taskManager.containsKeyEpic(2), "эпик с Id2 не сохранен.");
         assertTrue(taskManager.containsKeyEpic(3), "эпик с Id3 не сохранен.");
-
         taskManager.clearContent();
     }
 
     @Test
     void getSubTaskBuEpicId() throws IOException, InterruptedException {  // проверка вывода всех подзадач одного эпика
-
         taskManager.clearContent(); // очищаем содержимое менеджера
         // Создаем задачу для тестирования
         Epic epic1 = new Epic("Епик", "описание", 1, Status.NEW,
@@ -418,14 +415,12 @@ public class HttpTaskServerTest {
                 LocalDateTime.of(2024, 8, 25, 16, 40), Duration.ofMinutes(12));
         SubTask sub6 = new SubTask(epic1.getId(), "Test titleSub2", "Test in Epic", 6, Status.DONE,
                 LocalDateTime.of(2024, 9, 25, 16, 40), Duration.ofMinutes(12));
-
         taskManager.createEpic(epic1); // 1
         // проверяем статус и изменение временных рамок после сохранения эпика.
         assertEquals(Status.NEW, taskManager.getEpicById(1).getStatus(), "Статус эпика не совпадает.");
         assertNull(taskManager.getEpicById(1).getStartTime(), "Время начала эпика не совпадает.");
         assertNull(taskManager.getEpicById(1).getEndTime(), "Время начала эпика не совпадает.");
         assertNull(taskManager.getEpicById(1).getDuration(), "Время начала эпика не совпадает.");
-
 
         taskManager.createSubTask(sub4); // 4
         taskManager.createSubTask(sub6); // 6
@@ -440,20 +435,16 @@ public class HttpTaskServerTest {
         assertEquals(taskManager.getSubTaskById(4).getEndTime(), taskManager.getEpicById(1).getEndTime(), "Время начала эпика не совпадает.");
         assertEquals(Duration.ofMinutes(24), taskManager.getEpicById(1).getDuration(), "Время начала эпика не совпадает.");
 
-
         // Формируем запрос к серверу для получения задачи по ID
         URI url = URI.create("http://localhost:8080/taskServer/epics/1/subtasks");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         // Отправляем запрос и получаем ответ
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
-
         List<SubTask> list = gson.fromJson(response.body(), new TypeToken<ArrayList<SubTask>>() {
         }.getType());
-
         assertEquals(sub4.getId(), list.getFirst().getId(), "Подзадача с id4 не совпадают после выгрузки.");
         assertEquals(sub6.getTitle(), list.getFirst().getTitle(), "Подзадача с id4 не совпадают после выгрузки.");
-
         taskManager.clearContent();
     }
     // --------------------------------------------------------------------------------------------------------------------------
@@ -476,7 +467,6 @@ public class HttpTaskServerTest {
         SubTask sub2 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", 2, Status.IN_PROGRESS,
                 LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
         taskManager.createEpic(epic1); // сохраняем эпик для теста
-
         // Преобразуем задачу в JSON строку
         String subTaskJson = gson.toJson(sub2);
         // Формируем POST-запрос к серверу для сохранения задачи
@@ -488,11 +478,9 @@ public class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         // Выводим тело ответа в строку
         String responseBody = response.body();
-
         assertEquals(201, response.statusCode(), "Статус ответа не совпадает."); // проверяем статус ответа
         assertEquals("Подзадача сохранена.", responseBody, "Тело ответа не совпадает.");
         assertEquals(sub2, taskManager.getSubTaskById(2), "Подзадачи не совпадают.");
-
         // проверяем статус и временные рамки после сохранения подзадач.
         assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика не совпадает.");
         assertEquals(taskManager.getSubTaskById(2).getStartTime(), taskManager.getEpicById(1).getStartTime(), "Время начала эпика не совпадает.");
@@ -510,7 +498,6 @@ public class HttpTaskServerTest {
                 LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
         taskManager.createEpic(epic1); // сохраняем для теста
         taskManager.createSubTask(sub2);
-
         SubTask sub3 = new SubTask(epic1.getId(), "Test субтаска", "описание 2", 2, Status.IN_PROGRESS,
                 LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
         // Преобразуем задачу в JSON строку
@@ -524,11 +511,9 @@ public class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         // Выводим тело ответа в строку
         String responseBody = response.body();
-
         assertEquals(201, response.statusCode(), "Статус ответа не совпадает."); // проверяем статус ответа
         assertEquals("Подзадача обновлена.", responseBody, "Тело ответа не совпадает.");
         assertEquals(sub3, taskManager.getSubTaskById(2), "Подзадачи не совпадают.");
-
         // проверяем статус и временные рамки после сохранения подзадач.
         assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика не совпадает.");
         assertEquals(taskManager.getSubTaskById(2).getStartTime(), taskManager.getEpicById(1).getStartTime(), "Время начала эпика не совпадает.");
@@ -539,7 +524,6 @@ public class HttpTaskServerTest {
 
     @Test
     void getSubTasks() throws IOException, InterruptedException {  // проверка вывода всех подзадач
-
         taskManager.clearContent(); // очищаем содержимое менеджера
         // Создаем задачу для тестирования
         Epic epic1 = new Epic("Епик", "описание", 1, Status.NEW,
@@ -550,12 +534,10 @@ public class HttpTaskServerTest {
                 LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
         SubTask sub4 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", 4, Status.IN_PROGRESS,
                 LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
-
         taskManager.createEpic(epic1); // сохраняем для теста
         taskManager.createSubTask(sub2);
         taskManager.createSubTask(sub3);
         taskManager.createSubTask(sub4);
-
         // Формируем запрос к серверу для получения задачи по ID
         URI url = URI.create("http://localhost:8080/taskServer/subtasks");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
@@ -563,7 +545,6 @@ public class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         // Проверяем статус ответа
         assertEquals(200, response.statusCode());
-
         List<SubTask> list = gson.fromJson(response.body(), new TypeToken<ArrayList<SubTask>>() {
         }.getType());
         System.out.println("Тело ответа: " + list);
@@ -576,7 +557,6 @@ public class HttpTaskServerTest {
 
     @Test
     void getSubTask() throws IOException, InterruptedException {  // проверка вывода подзадачи по id
-
         taskManager.clearContent(); // очищаем содержимое менеджера
         // Создаем задачу для тестирования
         Epic epic1 = new Epic("Епик", "описание", 1, Status.NEW,
@@ -587,12 +567,10 @@ public class HttpTaskServerTest {
                 LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
         SubTask sub4 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", 4, Status.IN_PROGRESS,
                 LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
-
         taskManager.createEpic(epic1); // сохраняем для теста
         taskManager.createSubTask(sub2);
         taskManager.createSubTask(sub3);
         taskManager.createSubTask(sub4);
-
         // Формируем запрос к серверу для получения задачи по ID
         URI url = URI.create("http://localhost:8080/taskServer/subtasks/3");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
@@ -600,7 +578,6 @@ public class HttpTaskServerTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         // Проверяем статус ответа
         assertEquals(200, response.statusCode());
-
         SubTask subTasksResp = gson.fromJson(response.body(), SubTask.class);
         System.out.println("Тело ответа: " + subTasksResp);
         // Проверяем, что полученная задача совпадает с отправленной
@@ -610,18 +587,14 @@ public class HttpTaskServerTest {
 
     @Test
     void deleieteSubTaskById() throws IOException, InterruptedException {  // проверка проверка удаления подзадачи по id
-
         taskManager.clearContent(); // очищаем содержимое менеджера
         // Создаем задачу для тестирования
         Epic epic1 = new Epic("Епик", "описание", 1, Status.NEW,
                 LocalDateTime.now(), Duration.ofMinutes(20));
         SubTask sub2 = new SubTask(epic1.getId(), "Test titleSub1", "Test in Epic", 2, Status.IN_PROGRESS,
                 LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24));
-
-
         taskManager.createEpic(epic1); // сохраняем для теста
         taskManager.createSubTask(sub2);
-
         // Формируем запрос к серверу для получения задачи по ID
         URI url = URI.create("http://localhost:8080/taskServer/subtasks/2");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
@@ -666,5 +639,76 @@ public class HttpTaskServerTest {
         taskManager.clearContent();
     }
 
+    //-----------------------------------------------------------------------------------------------------------------------
+    @Test
+    void getPrioritized() throws IOException, InterruptedException {
+        taskManager.clearContent(); // очищаем содержимое менеджера
+        // Создаем задачу для тестирования
+        Task task1 = new Task("ДЛя теста", "Test description", taskManager.getIdUp(), Status.NEW,
+                LocalDateTime.of(2024, 2, 14, 14, 42), Duration.ofMinutes(14)); // 1
+        Task task2 = new Task("ДЛя теста 2", "Test description", taskManager.getIdUp(), Status.NEW,
+                LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(11)); // 2
+        Epic epic3 = new Epic("Епик", "описание", taskManager.getIdUp(), Status.NEW,
+                LocalDateTime.now(), Duration.ofMinutes(20));                                       // 3
+        SubTask sub4 = new SubTask(epic3.getId(), "Test titleSub1", "Test in Epic", taskManager.getIdUp(), Status.IN_PROGRESS,
+                LocalDateTime.of(2024, 12, 4, 10, 17), Duration.ofMinutes(24)); // 4
+        SubTask sub5 = new SubTask(epic3.getId(), "Test titleSub2", "Test in Epic", 8, Status.NEW,
+                LocalDateTime.of(2024, 8, 25, 16, 40), Duration.ofMinutes(12)); // 5
 
+        taskManager.createTask(task1);
+        taskManager.createTask(task2);
+        taskManager.createEpic(epic3);
+        taskManager.createSubTask(sub4);
+        taskManager.createSubTask(sub5);
+        List<Task> tasks = taskManager.getPrioritizedTasks();
+        String jsonResponse = gson.toJson(tasks); // преобразуем приоритетный список в json строку для сравнения с ответом сервера.
+        // Формируем запрос к серверу для получения задачи по ID
+        URI url = URI.create("http://localhost:8080/taskServer/prioritized");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+        // Отправляем запрос и получаем ответ
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        // Проверяем статус ответа
+        assertEquals(200, response.statusCode());
+
+        String listGson = response.body();
+
+        assertNotNull(listGson, "Список пустой.");
+        assertEquals(jsonResponse, listGson, "Приоритетные списки не совпадают.");
+        taskManager.clearContent();
+    }
+
+    @Test
+    void getHistory() throws IOException, InterruptedException {
+        taskManager.clearContent();
+        Task task1 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
+                LocalDateTime.of(2024, 12, 14, 14, 42), Duration.ofMinutes(140));
+        Task task2 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
+                LocalDateTime.of(2024, 12, 23, 14, 42), Duration.ofMinutes(12));
+        Task task3 = new Task("Test titleTask", "Test description", taskManager.getIdUp(), Status.NEW,
+                LocalDateTime.of(2024, 12, 23, 14, 42), Duration.ofMinutes(12));
+        taskManager.createTask(task1);
+        taskManager.createTask(task2);
+        taskManager.createTask(task3);
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(3);
+
+        URI url = URI.create("http://localhost:8080/history");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(url)
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, response.statusCode());
+
+        List<Task> tasks = gson.fromJson(response.body(), new TypeToken<ArrayList<Task>>() {
+        }.getType());
+        assertNotNull(tasks);
+        assertEquals(3, tasks.size());
+        assertEquals("Test 1", tasks.get(0).getName());
+        assertEquals("Test 2", tasks.get(1).getName());
+        assertEquals("Test 3", tasks.get(2).getName());
+    }
 }
