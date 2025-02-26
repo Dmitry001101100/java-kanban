@@ -1,4 +1,4 @@
-package httpTaskServer.handle;
+package httpTaskServer.Handle;
 
 import com.sun.net.httpserver.HttpExchange;
 import enumeration.Endpoint;
