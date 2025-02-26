@@ -1,4 +1,4 @@
-package httpTaskServer.adapters;
+package HttpTaskServer.adapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

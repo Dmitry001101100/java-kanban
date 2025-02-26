@@ -1,7 +1,7 @@
 package manager;
 
-import httptaskserver.adapters.DurationAdapter;
-import httptaskserver.adapters.LocalDateTimeAdapter;
+import HttpTaskServer.adapters.DurationAdapter;
+import HttpTaskServer.adapters.LocalDateTimeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import manager.History.HistoryManager;

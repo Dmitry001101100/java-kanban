@@ -1,4 +1,4 @@
-package httptaskserver.handle;
+package HttpTaskServer.handle;
 
 import com.sun.net.httpserver.HttpExchange;
 import enumeration.Endpoint;
@@ -33,79 +33,51 @@ public class BaseHandle {
         exchange.close();
     }
 
-    protected Endpoint getEndpoint(String path, String requestMethod) { // создание эндпоинта
+    protected Endpoint getEndpoint(String path, String requestMethod) {
         String[] pathParts = path.split("/");
+        String resource = pathParts[2];
+        int pathLength = pathParts.length;
 
-        switch (requestMethod) {
-            case "GET" -> {
-                switch (pathParts[2]) {
-                    case "tasks" -> {
-                        if (pathParts.length == 3) {
-                            return Endpoint.GET_TASKS;
-                        } else {
-                            return Endpoint.GET_TASK;
-                        }
-                    }
-                    case "subtasks" -> {
-                        if (pathParts.length == 3) {
-                            return Endpoint.GET_SUBTASKS;
-                        } else {
-                            return Endpoint.GET_SUBTASK;
-                        }
-                    }
-                    case "epics" -> {
-                        if (pathParts.length == 5 && pathParts[4].equals("subtasks")) {
-                            return Endpoint.GET_SUBTASK_BY_EPIC; // длина 5
-                        } else if (pathParts.length == 3) {
-                            return Endpoint.GET_EPICS; // длинна 3
-                        } else if (pathParts.length == 4) {
-                            return Endpoint.GET_EPIC; // длинна 4
-                        }
-                    }
-                    case "history" -> {
-                        return Endpoint.GET_HISTORY;
-                    }
-                    case "prioritized" -> {
-                        return Endpoint.GET_PRIORITIZED;
-                    }
-                }
-            }
-            case "POST" -> {
-                switch (pathParts[2]) {
-                    case "tasks" -> {
-                        return Endpoint.POST_TASK;
-                    }
-                    case "subtasks" -> {
-                        return Endpoint.POST_SUBTASK;
-                    }
-                    case "epics" -> {
-                        return Endpoint.POST_EPIC;
-                    }
-                }
-            }
-            case "DELETE" -> {
+        // Определяем константы для типов ресурсов
+        final String TASKS = "tasks";
+        final String SUBTASKS = "subtasks";
+        final String EPICS = "epics";
+        final String HISTORY = "history";
+        final String PRIORITIZED = "prioritized";
 
-                switch (pathParts[2]) {
-                    case "tasks" -> {
-
-                        if (pathParts.length == 4) {
-                            return Endpoint.DELETE_TASK;
+        switch (resource) {
+            case TASKS:
+                return switch (requestMethod) {
+                    case "GET" -> pathLength == 3 ? Endpoint.GET_TASKS : Endpoint.GET_TASK;
+                    case "POST" -> Endpoint.POST_TASK;
+                    case "DELETE" -> pathLength == 4 ? Endpoint.DELETE_TASK : Endpoint.DEFAULT;
+                    default -> Endpoint.DEFAULT;
+                };
+            case SUBTASKS:
+                return switch (requestMethod) {
+                    case "GET" -> pathLength == 3 ? Endpoint.GET_SUBTASKS : Endpoint.GET_SUBTASK;
+                    case "POST" -> Endpoint.POST_SUBTASK;
+                    case "DELETE" -> pathLength == 4 ? Endpoint.DELETE_SUBTASK : Endpoint.DEFAULT;
+                    default -> Endpoint.DEFAULT;
+                };
+            case EPICS:
+                return switch (requestMethod) {
+                    case "GET" -> {
+                        if (pathLength == 5 && pathParts[4].equals(SUBTASKS)) {
+                            yield Endpoint.GET_SUBTASK_BY_EPIC;
                         }
+                        yield pathLength == 3 ? Endpoint.GET_EPICS : Endpoint.GET_EPIC;
                     }
-                    case "epics" -> {
-                        if (pathParts.length == 4) {
-                            return Endpoint.DELETE_EPIC;
-                        }
-                    }
-                    case "subtasks" -> {
-
-                        if (pathParts.length == 4) {
-                            return Endpoint.DELETE_SUBTASK;
-                        }
-                    }
-                }
-            }
+                    case "POST" -> Endpoint.POST_EPIC;
+                    case "DELETE" -> pathLength == 4 ? Endpoint.DELETE_EPIC : Endpoint.DEFAULT;
+                    default -> Endpoint.DEFAULT;
+                };
+            case HISTORY:
+                return requestMethod.equals("GET") ? Endpoint.GET_HISTORY : Endpoint.DEFAULT;
+            case PRIORITIZED:
+                return requestMethod.equals("GET") ? Endpoint.GET_PRIORITIZED : Endpoint.DEFAULT;
+            default:
+                return Endpoint.DEFAULT;
         }
-        return Endpoint.DEFAULT;
     }
 }

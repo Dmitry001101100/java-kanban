@@ -3,7 +3,6 @@ package HttpTaskServer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import enumeration.Status;
-import httptaskserver.HttpTaskServer;
 import manager.Managers;
 import manager.Task.TaskManager;
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +12,6 @@ import tasks.Epic;
 import tasks.SubTask;
 import tasks.Task;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -27,7 +25,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpTaskServerTest {
-    final File file = new File("taskToList.csv");
     private static final int PORT = 8080;
     TaskManager taskManager = Managers.getDefault();
     HttpTaskServer httpTaskServer = new HttpTaskServer();

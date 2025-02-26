@@ -1,6 +1,6 @@
-package httptaskserver;
+package HttpTaskServer;
 
-import httptaskserver.handle.*;
+import HttpTaskServer.handle.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -17,7 +17,7 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
     private HttpServer httpServer; // добавляем поле для хранения экземпляра сервера
 
     public void startServer(int port, TaskManager taskManager1) throws IOException {
-        taskManager = taskManager1;
+        this.taskManager = taskManager1;
         httpServer = HttpServer.create(new InetSocketAddress(port), 0);
         httpServer.createContext("/taskServer", this);
         httpServer.start();
@@ -34,8 +34,8 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
-
-        switch (pathParts[2]) {
+        String command = pathParts[2];
+        switch (command) {
             case "tasks": // вывод всех задач
                 new TaskHandler(taskManager).handle(exchange);
                 break;
@@ -56,16 +56,3 @@ public class HttpTaskServer extends BaseHandle implements HttpHandler {
     }
 }
 
-class MainHttpTaskServer {
-    private static final int PORT = 8080;
-
-    public static void main(String[] qw) throws IOException {
-        final File file = new File("taskToList.csv"); // используется для проверки
-        final TaskManager taskManager = Managers.getDefaultFileBackedTaskManager(file);
-
-        HttpTaskServer httpTaskServer = new HttpTaskServer();
-        httpTaskServer.startServer(PORT, taskManager); // запускаем сервер
-
-    }
-
-}
