@@ -1,13 +1,11 @@
-package HttpTaskServer;
+package httpTaskServer;
 
-import HttpTaskServer.handle.*;
+import httpTaskServer.handle.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import manager.Managers;
 import manager.Task.TaskManager;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
