@@ -25,6 +25,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpTaskServerTest {
+    /*
+    Николай, Доброго времени суток. Замечания оставленные к местам исправления в коде я поправил.
+    По поводу самих коммитов я постарался их объеденить с squash, но это вылилось в полную кашу.
+    На будущее учел ваше замечание и даю вам слово что впредь мои коммит-ы будут как можно более плотными!👌
+     */
     private static final int PORT = 8080;
     TaskManager taskManager = Managers.getDefault();
     HttpTaskServer httpTaskServer = new HttpTaskServer();
