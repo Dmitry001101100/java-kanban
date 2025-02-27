@@ -38,15 +38,15 @@ public class Epic extends Task {
     }
 
     @Override
-    public String toString() {
-        return String.format("%s,%s,%s,%s,%s,%s,%s",
-                getId(),
-                getType(),
-                getName(),
-                getStatus(),
-                getDescription(),
-                toFormat(getStartTime()),
-                toFormat(endTime));
+    public String toString() { // изменение вывода эпика
+        return getId() +
+                ",EPIC," +
+                getName() + "," +
+                getStatus() + "," +
+                getDescription() + "," +
+                toFormat(getStartTime()) + "," +
+                //    getDuration() + "," +
+                toFormat(getEndTime());
     }
 
     @Override
@@ -68,11 +68,13 @@ public class Epic extends Task {
         return Objects.hash(super.hashCode(), subtaskIds);
     }
 
-    public void setSubtaskIds(ArrayList<Integer> subtaskIds) {
-        this.subtaskIds = subtaskIds;
-    }
+
 
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
+    }
+
+    public void setSubtaskIds(ArrayList<Integer> subtaskIds) {
+        this.subtaskIds = subtaskIds;
     }
 }
