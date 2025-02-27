@@ -11,12 +11,12 @@ public class SubTask extends Task {
     private int epicId;
 
     public SubTask(int epicSubTask, String title, String description, Integer id, enumeration.Status status, LocalDateTime startTime, Duration duration) {
-        super(title, description, id, status,startTime,duration);
+        super(title, description, id, status, startTime, duration);
         this.epicId = epicSubTask;
     }
 
     public SubTask(int epicSubTask, String title, String description, enumeration.Status status, LocalDateTime startTime, Duration duration) {
-        super(title, description, status,startTime,duration);
+        super(title, description, status, startTime, duration);
         this.epicId = epicSubTask;
     }
 
@@ -28,7 +28,7 @@ public class SubTask extends Task {
     @Override
     public String toString() {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s", getId(), getType(), getName(), getStatus(), getDescription(),
-                toFormat(getStartTime()),toFormat(getEndTime()),epicId);
+                toFormat(getStartTime()), toFormat(getEndTime()), epicId);
     }
 
     public int getEpicId() {
