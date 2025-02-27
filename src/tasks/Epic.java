@@ -1,6 +1,7 @@
 package tasks;
 
 import enumeration.TypeTask;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,7 +46,6 @@ public class Epic extends Task {
                 getStatus() + "," +
                 getDescription() + "," +
                 toFormat(getStartTime()) + "," +
-                //    getDuration() + "," +
                 toFormat(getEndTime());
     }
 
@@ -67,7 +67,6 @@ public class Epic extends Task {
     public int hashCode() {
         return Objects.hash(super.hashCode(), subtaskIds);
     }
-
 
 
     public void setEndTime(LocalDateTime endTime) {
