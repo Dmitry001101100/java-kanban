@@ -1,9 +1,6 @@
 package manager.Task;
 
-import manager.Managers;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 public class InMemoryTaskManagerTest extends AbstractTaskManagerTest {
 
@@ -36,64 +33,69 @@ public class InMemoryTaskManagerTest extends AbstractTaskManagerTest {
     public void shouldReturnInMemoryTaskManagerByDefault1() {
         shouldReturnInMemoryTaskManagerByDefault();
     }
+
     @Test
-    void shouldReturnInMemoryHistoryManagerByDefault1(){
+    void shouldReturnInMemoryHistoryManagerByDefault1() {
         shouldReturnInMemoryHistoryManagerByDefault();
     }
+
     @Test
-    void removeTask(){
+    void removeTask() {
         removeTask(taskManager);
     }
+
     @Test
-    void changeContentTask1(){
+    void changeContentTask1() {
         changeContentTask(taskManager);
     }
 
     @Test
-    void deleteTask1(){
+    void deleteTask1() {
         deleteTask(taskManager);
     }
+
     @Test
-    void deleteEpic(){
+    void deleteEpic() {
         deleteEpic(taskManager);
     }
 
     @Test
-    void removeEpic1(){
+    void removeEpic1() {
         removeEpic(taskManager);
     }
 
     @Test
-    void removeSubtask1(){
+    void removeSubtask1() {
         removeSubtask(taskManager);
     }
 
     @Test
-    void clerSubTaskofEpic1(){
+    void clerSubTaskofEpic1() {
         clerSubTaskofEpic(taskManager);
     }
 
     @Test
-    void clearTasks1(){
+    void clearTasks1() {
         clearTasks(taskManager);
     }
 
     @Test
-    void getHistory1(){
+    void getHistory1() {
         getHistory(taskManager);
     }
 
     @Test
-    void removeTaskHis1(){
+    void removeTaskHis1() {
         removeTaskHis(taskManager);
     }
+
     @Test
-    void getUniqueHistory1(){
+    void getUniqueHistory1() {
         getUniqueHistory(taskManager);
     }
 
     @Test
-    void historyIsEmpty1(){
+    void historyIsEmpty1() {
         historyIsEmpty(taskManager);
     }
 

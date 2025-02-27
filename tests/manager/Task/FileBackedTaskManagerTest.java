@@ -2,9 +2,13 @@ package manager.Task;
 
 import manager.Managers;
 import org.junit.jupiter.api.Test;
+import tasks.Epic;
 import tasks.SubTask;
+import tasks.Task;
+
 import java.io.*;
 import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -17,14 +21,14 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
     @Test
     void checkingTheUnloadingOfAllTypesOfTasksFromAFile() {
         manager.clearContent();
-        saveTask1(); // сохраняем все выды задач
+        saveTask1(); // сохраняем все виды задач
         manager.deleteTaskId(1);// удаляем некоторые чтобы проверить что они удалились из списка приоритетных
         manager.deleteSubTaskId(4);
 
         assertEquals(2, manager.getPrioritizedTasks().size(), "Длинна приоритетных задач отличается от ожидаемой");
         // создаем новый менеждер
         FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
-        // проверяем все хранилища по длинне задач
+        // проверяем все хранилища по длине задач
         assertEquals(fileBackedTaskManager.getPrioritizedTasks().size(), manager.getPrioritizedTasks().size(),
                 "Длинна приоритетных задач отличается от ожидаемой");
         assertEquals(fileBackedTaskManager.getTasks().size(), manager.getTasks().size(),
@@ -35,69 +39,161 @@ public class FileBackedTaskManagerTest extends AbstractTaskManagerTest {
                 "Неверное количество эпиков");
 
         // сравниваем taskMap
-        assertEquals(manager.outIdTask(2), fileBackedTaskManager.outIdTask(2), "Задачи не совпадают");
+        assertEquals(manager.getTaskById(2), fileBackedTaskManager.getTaskById(2), "Задачи не совпадают");
         // по переменным
-        assertEquals(manager.outIdTask(2).getId(), fileBackedTaskManager.outIdTask(2).getId(),
+        assertEquals(manager.getTaskById(2).getId(), fileBackedTaskManager.getTaskById(2).getId(),
                 "id не совпадает");
-        assertEquals(manager.outIdTask(2).getType(), fileBackedTaskManager.outIdTask(2).getType(),
+        assertEquals(manager.getTaskById(2).getType(), fileBackedTaskManager.getTaskById(2).getType(),
                 "Тип не совпадает");
-        assertEquals(manager.outIdTask(2).getTitle(), fileBackedTaskManager.outIdTask(2).getTitle(),
+        assertEquals(manager.getTaskById(2).getTitle(), fileBackedTaskManager.getTaskById(2).getTitle(),
                 "title не совпадают");
-        assertEquals(manager.outIdTask(2).getStatus(), fileBackedTaskManager.outIdTask(2).getStatus(),
+        assertEquals(manager.getTaskById(2).getStatus(), fileBackedTaskManager.getTaskById(2).getStatus(),
                 "status не совпадает");
-        assertEquals(manager.outIdTask(2).getDescription(), fileBackedTaskManager.outIdTask(2).getDescription(),
+        assertEquals(manager.getTaskById(2).getDescription(), fileBackedTaskManager.getTaskById(2).getDescription(),
                 "description не совпадает");
-        assertEquals(manager.outIdTask(2).getStartTime(), fileBackedTaskManager.outIdTask(2).getStartTime(),
+        assertEquals(manager.getTaskById(2).getStartTime(), fileBackedTaskManager.getTaskById(2).getStartTime(),
                 "StartTime не совпадают");
-        assertEquals(manager.outIdTask(2).getEndTime(), fileBackedTaskManager.outIdTask(2).getEndTime(),
+        assertEquals(manager.getTaskById(2).getEndTime(), fileBackedTaskManager.getTaskById(2).getEndTime(),
                 "endTime не совпадает");
-        assertEquals(manager.outIdTask(2).getDuration(), fileBackedTaskManager.outIdTask(2).getDuration(),
+        assertEquals(manager.getTaskById(2).getDuration(), fileBackedTaskManager.getTaskById(2).getDuration(),
                 "duration не совпадает");
 
         // сравниваем епик
-        assertEquals(manager.outIdEpic(3), fileBackedTaskManager.outIdEpic(3), "Задачи не совпадают");
+        assertEquals(manager.getEpicById(3), fileBackedTaskManager.getEpicById(3), "Задачи не совпадают");
         // по переменным
-        assertEquals(manager.outIdEpic(3).getId(), fileBackedTaskManager.outIdEpic(3).getId(),
+        assertEquals(manager.getEpicById(3).getId(), fileBackedTaskManager.getEpicById(3).getId(),
                 "id не совпадает");
-        assertEquals(manager.outIdEpic(3).getType(), fileBackedTaskManager.outIdEpic(3).getType(),
+        assertEquals(manager.getEpicById(3).getType(), fileBackedTaskManager.getEpicById(3).getType(),
                 "Тип не совпадает");
-        assertEquals(manager.outIdEpic(3).getTitle(), fileBackedTaskManager.outIdEpic(3).getTitle(),
+        assertEquals(manager.getEpicById(3).getTitle(), fileBackedTaskManager.getEpicById(3).getTitle(),
                 "title не совпадают");
-        assertEquals(manager.outIdEpic(3).getStatus(), fileBackedTaskManager.outIdEpic(3).getStatus(),
+        assertEquals(manager.getEpicById(3).getStatus(), fileBackedTaskManager.getEpicById(3).getStatus(),
                 "status не совпадает");
-        assertEquals(manager.outIdEpic(3).getDescription(), fileBackedTaskManager.outIdEpic(3).getDescription(),
+        assertEquals(manager.getEpicById(3).getDescription(), fileBackedTaskManager.getEpicById(3).getDescription(),
                 "description не совпадает");
-        assertEquals(manager.outIdEpic(3).getStartTime(), fileBackedTaskManager.outIdEpic(3).getStartTime(),
-              "StartTime не совпадают");
-        assertEquals(manager.outIdEpic(3).getEndTime(), fileBackedTaskManager.outIdEpic(3).getEndTime(),
+        assertEquals(manager.getEpicById(3).getStartTime(), fileBackedTaskManager.getEpicById(3).getStartTime(),
+                "StartTime не совпадают");
+        assertEquals(manager.getEpicById(3).getEndTime(), fileBackedTaskManager.getEpicById(3).getEndTime(),
                 "endTime не совпадает");
-        assertEquals(manager.outIdEpic(3).getDuration(), fileBackedTaskManager.outIdEpic(3).getDuration(),
+        assertEquals(manager.getEpicById(3).getDuration(), fileBackedTaskManager.getEpicById(3).getDuration(),
                 "duration не совпадает");
-        assertEquals(manager.outIdEpic(3).getSubtaskIds(),fileBackedTaskManager.outIdEpic(3).getSubtaskIds(),
+        assertEquals(manager.getEpicById(3).getSubtaskIds(), fileBackedTaskManager.getEpicById(3).getSubtaskIds(),
                 "id подзадач в эпике не совпадают");
 
         // сравниваем подзадачи
-          assertEquals(manager.outIdSubTask(5), fileBackedTaskManager.outIdSubTask(5), "подзадачи не совпадают");
+        assertEquals(manager.getSubTaskById(5), fileBackedTaskManager.getSubTaskById(5), "подзадачи не совпадают");
         // по переменным
-        assertEquals(manager.outIdSubTask(5).getId(), fileBackedTaskManager.outIdSubTask(5).getId(),
+        assertEquals(manager.getSubTaskById(5).getId(), fileBackedTaskManager.getSubTaskById(5).getId(),
                 "id не совпадает");
-        assertEquals(manager.outIdSubTask(5).getType(), fileBackedTaskManager.outIdSubTask(5).getType(),
+        assertEquals(manager.getSubTaskById(5).getType(), fileBackedTaskManager.getSubTaskById(5).getType(),
                 "Тип не совпадает");
-        assertEquals(manager.outIdSubTask(5).getTitle(), fileBackedTaskManager.outIdSubTask(5).getTitle(),
+        assertEquals(manager.getSubTaskById(5).getTitle(), fileBackedTaskManager.getSubTaskById(5).getTitle(),
                 "title не совпадают");
-        assertEquals(manager.outIdSubTask(5).getStatus(), fileBackedTaskManager.outIdSubTask(5).getStatus(),
+        assertEquals(manager.getSubTaskById(5).getStatus(), fileBackedTaskManager.getSubTaskById(5).getStatus(),
                 "status не совпадает");
-        assertEquals(manager.outIdSubTask(5).getDescription(), fileBackedTaskManager.outIdSubTask(5).getDescription(),
+        assertEquals(manager.getSubTaskById(5).getDescription(), fileBackedTaskManager.getSubTaskById(5).getDescription(),
                 "description не совпадает");
-        assertEquals(manager.outIdSubTask(5).getStartTime(), fileBackedTaskManager.outIdSubTask(5).getStartTime(),
+        assertEquals(manager.getSubTaskById(5).getStartTime(), fileBackedTaskManager.getSubTaskById(5).getStartTime(),
                 "StartTime не совпадают");
-        assertEquals(manager.outIdSubTask(5).getEndTime(), fileBackedTaskManager.outIdSubTask(5).getEndTime(),
+        assertEquals(manager.getSubTaskById(5).getEndTime(), fileBackedTaskManager.getSubTaskById(5).getEndTime(),
                 "endTime не совпадает");
-        assertEquals(manager.outIdSubTask(5).getDuration(), fileBackedTaskManager.outIdSubTask(5).getDuration(),
+        assertEquals(manager.getSubTaskById(5).getDuration(), fileBackedTaskManager.getSubTaskById(5).getDuration(),
                 "duration не совпадает");
-        assertEquals(manager.outIdSubTask(5).getEpicId(),fileBackedTaskManager.outIdSubTask(5).getEpicId(),
+        assertEquals(manager.getSubTaskById(5).getEpicId(), fileBackedTaskManager.getSubTaskById(5).getEpicId(),
                 "id эпиков не совпадает");
+
+        // сравниваем задачи до и после выгрузки из приоритетного списка по всем параметрам
+
+        Task task1 = manager.getPrioritizedTasks().get(1); // первоначальная задача
+        Task task2 = fileBackedTaskManager.getPrioritizedTasks().get(1); // после выгрузки из файла
+
+        assertEquals(task1, task2, "Задачи не совпадают");
+        // по переменным
+        assertEquals(task1.getId(), task2.getId(), "id не совпадает");
+        assertEquals(task1.getType(), task2.getType(), "Тип не совпадает");
+        assertEquals(task1.getTitle(), task2.getTitle(), "title не совпадают");
+        assertEquals(task1.getStatus(), task2.getStatus(), "status не совпадает");
+        assertEquals(task1.getDescription(), task2.getDescription(), "description не совпадает");
+        assertEquals(task1.getStartTime(), task2.getStartTime(), "StartTime не совпадают");
+        assertEquals(task1.getEndTime(), task2.getEndTime(), "endTime не совпадает");
+        assertEquals(task1.getDuration(), task2.getDuration(), "duration не совпадает");
+
+        // проверка подзадачи
+        SubTask subTask1 = (SubTask) manager.getPrioritizedTasks().getFirst(); // первоначальная подзадача
+        SubTask subTask2 = (SubTask) fileBackedTaskManager.getPrioritizedTasks().getFirst(); // после выгрузки из файла
+
+        assertEquals(subTask1, subTask2, "подзадачи не совпадают");
+        // по переменным
+        assertEquals(subTask1.getId(), subTask2.getId(), "id не совпадает");
+        assertEquals(subTask1.getType(), subTask2.getType(), "Тип не совпадает");
+        assertEquals(subTask1.getTitle(), subTask2.getTitle(), "title не совпадают");
+        assertEquals(subTask1.getStatus(), subTask2.getStatus(), "status не совпадает");
+        assertEquals(subTask1.getDescription(), subTask2.getDescription(), "description не совпадает");
+        assertEquals(subTask1.getStartTime(), subTask2.getStartTime(), "StartTime не совпадают");
+        assertEquals(subTask1.getEndTime(), subTask2.getEndTime(), "endTime не совпадает");
+        assertEquals(subTask1.getDuration(), subTask2.getDuration(), "duration не совпадает");
+        assertEquals(subTask1.getEpicId(), subTask2.getEpicId(), "id эпиков не совпадает");
+
+        fileBackedTaskManager.clearContent();
+        manager.clearContent();
     }
+
+    @Test
+    void comparisonHistoryFromFile() { // тест выгрузки из списка истории из файла
+        manager.clearContent();
+        saveTask1(); // сохраняем все виды задач
+        // выводим несколько видов задач в разном порядке id для попадания этих задач в историю просмотра
+        manager.getTaskById(2);
+        manager.getTaskById(1);
+        manager.getSubTaskById(4);
+        manager.getEpicById(3);
+        // удаляем одну задачу чтобы убедиться что это действие несет изменения сохранения файла истории
+        manager.deleteTaskId(1);
+        // создаем новый менеждер
+        FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
+
+        // проверка порядка списка истории до и после выгрузки
+        assertEquals(manager.getHistory().toString(), fileBackedTaskManager.getHistory().toString(), "списки истории не совпадают");
+        // проверка всех видов задач из ссписка истории
+        Task task1 = manager.getHistory().getFirst();
+        Task task2 = fileBackedTaskManager.getHistory().getFirst();
+        assertEquals(task1, task2, "задачи из истории не совпадают");
+        assertEquals(task1.getId(), task2.getId(), "id не совпадает");
+
+        fileBackedTaskManager.getHistory().forEach(System.out::println);
+        Epic epi1 = (Epic) manager.getHistory().get(2);
+        Epic epic2 = (Epic) fileBackedTaskManager.getHistory().get(2);
+        assertEquals(epi1, epic2, "списки истории не совпадают");
+        assertEquals(epi1.getId(), epic2.getId(), "id не совпадает");
+
+        SubTask subTask1 = (SubTask) manager.getHistory().get(1);
+        SubTask subTask2 = (SubTask) fileBackedTaskManager.getHistory().get(1);
+        assertEquals(subTask1, subTask2, "списки истории не совпадают");
+        assertEquals(subTask1.getId(), subTask2.getId(), "id не совпадает");
+
+    }
+
+    @Test
+    public void testSaveHistoryToFile() { // тест сохранения файлов в историю
+        manager.clearContent();
+        saveTask1(); // сохраняем все виды задач
+        // выводим несколько видов задач в разном порядке id для попадания этих задач в историю просмотра
+        manager.getTaskById(2);
+        manager.getSubTaskById(4);
+        manager.getTaskById(1);
+        // manager.outIdSubTask(4);
+        manager.getEpicById(3);
+        // удаляем одну задачу чтобы убедиться что это действие несет изменения сохранения файла истории
+        manager.deleteTaskId(1);
+
+        manager.getHistory().forEach(System.out::println);
+
+        FileBackedTaskManager fileBackedTaskManager = Managers.getDefaultFileBackedTaskManager(taskToList);
+
+        assertEquals(manager.getHistory().toString(), fileBackedTaskManager.getHistory().toString(), "списки истории не совпадают");
+        manager.clearContent();
+    }
+
 
     // -----------------------------совместимые тесты ------------------------------------------------------------------
     @Test
