@@ -5,35 +5,51 @@ import tasks.SubTask;
 import tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
+
+
     int getIdUp();
 
-    void saveTask(Task savetheTask);
+    boolean containsKeyTask(int id);
 
-    void saveEpic(Epic savetheEpic);
+    boolean containsKeySubTask(int id);
 
-    void saveSubTask(SubTask saveSubTask);
+    boolean containsKeyEpic(int id);
 
+    boolean containsKeyTasks(int id);
+
+    // -------------------------------------- prioritizedTasks ---------------------------------------------------------
+    List<Task> getPrioritizedTasks();
+
+    void createTask(Task savetheTask);
+
+    void updateTask(Task newTask);
+
+    void createEpic(Epic savetheEpic);
+
+    void updateEpic(Epic epic);
+
+    void createSubTask(SubTask saveSubTask);
+
+    void updateSubTask(SubTask subTask);
 
     ArrayList<Epic> getEpics();
 
     ArrayList<Task> getTasks();
 
-    ArrayList<SubTask> getSubTasksId(int epicId);
+    ArrayList<SubTask> getSubTasksByEpicId(int epicId);
 
     ArrayList<SubTask> getSubTasks();
 
+    Task getTaskById(int numberId);
 
-    Task outIdTask(int numberId);
+    SubTask getSubTaskById(int numberId);
 
-    SubTask outIdSubTask(int numberId);
-
-    Epic outIdEpic(int numberId);
-
+    Epic getEpicById(int numberId);
 
     void clearContent();
-
 
     void clearTasks();
 

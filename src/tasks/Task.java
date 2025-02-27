@@ -29,6 +29,25 @@ public class Task {
 
     }
 
+    // добавление конструктора для проверки в insomnia
+    public Task(String title, String description, Status status, LocalDateTime startTime, Duration duration) {
+        this.name = title;
+        this.description = description;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
+
+    }
+
+    public Task(String title, String description, Status status, LocalDateTime startTime) {
+        this.name = title;
+        this.description = description;
+        this.status = status;
+        this.startTime = startTime;
+
+    }
+
+
     //------------------------------------ время -----------------------------------------------------------------------
     public LocalDateTime getStartTime() {
         return startTime;
