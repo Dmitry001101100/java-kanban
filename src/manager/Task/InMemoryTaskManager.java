@@ -60,6 +60,7 @@ public class InMemoryTaskManager implements TaskManager {
         else if (doneStatus == subtaskList.size()) epic.setStatus(Status.DONE);
         else epic.setStatus(Status.IN_PROGRESS);
     }
+
     // методы для проверки наличия id будут использоваться для backed history
     @Override
     public boolean containsKeyTask(int id) {

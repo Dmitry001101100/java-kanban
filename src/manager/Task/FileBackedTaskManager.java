@@ -17,45 +17,122 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
+    private final File historyList = new File("historyList.csv"); // файл для сохранения истории
+
     private final File file;
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
 
     public FileBackedTaskManager(File file) {
-
+        this.file = file;
         if (!isFileEmpty(file) && file.length() >= 2) {
             downloadingFromAFile(file);
         }
-        this.file = file;
+        if (!isFileEmpty(historyList) && historyList.length() >= 2) {
+            downloadingHistoryFromAFile();
+        }
+
     }
 
-    public boolean isFileEmpty(File file) {
+    private boolean isFileEmpty(File file) {
         return file.length() == 0;
     }
 
+    //----------------------------------------------------------------------------------------------------------------------
+    // сохранение истории в файла
+    private void saveHistoryList() {
+        try (Writer writer = new FileWriter(historyList)) { // сохранение истории в файл
 
-//----------------------------------------------------------------------------------------------------------------------
-    // метод для сохранения всех видов задач в файл;
-
-    public void save() {
-
-        try (Writer writer = new FileWriter(file)) {
-
-            writer.write("id,type,name,status,description,startTime,duration,epic\n");
-            for (Integer key : taskMap.keySet()) {
-                writer.write(taskMap.get(key).toString() + "\n");
-            }
-            for (Integer key : epicMap.keySet()) {
-                writer.write(epicMap.get(key).toString() + "\n");
-            }
-            for (Integer key : subTaskMap.keySet()) {
-                writer.write(subTaskMap.get(key).toString() + "\n");
+            writer.write("id,type\n"); // type сохраняется для удобства просмотра в файле истории
+            for (Task task : getHistory()) {
+                writer.write(task.getId().toString() + "," + task.getType() + "\n");
             }
         } catch (IOException exp) {
             throw new ManagerSaveException("Произошла ошибка записи в файл", exp);
         }
     }
 
-    public void downloadingFromAFile(File file) {
+    // загрузка списка истории
+    private void downloadingHistoryFromAFile() {
+        /*
+        метод выгружает id из файла и если они присутствуют в мапе то ищет в какой для записи в историю
+         */
+        try (BufferedReader br = new BufferedReader(new FileReader(historyList))) {
+            String line;
+            boolean isFirstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+                String[] parts = line.split(",");
+
+                int id = Integer.parseInt(parts[0]);
+                // выводим id задач согласно списку по их типу
+                if (containsKeyTask(id)) {
+                    super.getTaskById(id);
+                    System.out.println("задача сохранена в историю");
+                }
+                if (containsKeyEpic(id)) {
+                    super.getEpicById(id);
+                    System.out.println("эпик сохранена в историю");
+                }
+                if (containsKeySubTask(id)) {
+                    super.getSubTaskById(id);
+                    System.out.println("подзадача сохранена в историю");
+                }
+
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка записи!");
+        }
+
+    }
+
+
+//----------------------------------------------------------------------------------------------------------------------
+    // метод для сохранения всех видов задач в файл;
+
+    private void save() {
+        // Проверка на null для файла
+        if (file == null) {
+            throw new IllegalArgumentException("Файл не может быть null");
+        }
+
+        try (Writer writer = new FileWriter(file)) {
+            writer.write("id,type,name,status,description,startTime,duration,epic\n");
+
+            // Проверка на null для карт
+            if (!taskMap.isEmpty()) {
+                for (Integer key : taskMap.keySet()) {
+                    if (taskMap.get(key) != null) {
+                        writer.write(taskMap.get(key).toString() + "\n");
+                    }
+                }
+            }
+
+            if (!epicMap.isEmpty()) {
+                for (Integer key : epicMap.keySet()) {
+                    if (epicMap.get(key) != null) {
+                        writer.write(epicMap.get(key).toString() + "\n");
+                    }
+                }
+            }
+
+            if (!subTaskMap.isEmpty()) {
+                for (Integer key : subTaskMap.keySet()) {
+                    if (subTaskMap.get(key) != null) {
+                        writer.write(subTaskMap.get(key).toString() + "\n");
+                    }
+                }
+            }
+        } catch (NullPointerException exp) {
+            throw new ManagerSaveException("Произошла ошибка записи в файл: " + exp.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void downloadingFromAFile(File file) {
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -65,6 +142,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     isFirstLine = false;
                     continue;
                 }
+                if (line.isEmpty() || line.isBlank()) {
+                    continue;
+                }
+
                 String[] parts = line.split(",");
                 int id = Integer.parseInt(parts[0]);
                 String type = parts[1];
@@ -105,15 +186,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 switch (TypeTask.valueOf(type)) {
                     case SUBTASK -> {
                         SubTask subtask = new SubTask(idOfEpic, name, description, id, Status.valueOf(status), startTime, duration);
-                        super.saveSubTask(subtask);
+                        super.createSubTask(subtask);
                     }
                     case TASK -> {
                         Task task = new Task(name, description, id, Status.valueOf(status), startTime, duration);// аналогично
-                        super.saveTask(task);
+                        super.createTask(task);
                     }
                     case EPIC -> {
                         Epic epic = new Epic(name, description, id, Status.valueOf(status), startTime, duration);// исправить сохраняемую дату из списка
-                        super.saveEpic(epic);
+                        super.createEpic(epic);
                     }
                 }
             }
@@ -125,8 +206,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     // -----------------------------------------------------------------------------------------------------------------
 
     @Override
-    public int getIdUp() { // герерирует id
-        return super.getIdUp();
+    public boolean containsKeyTask(int id) {
+        return super.containsKeyTask(id);
+    }
+
+    @Override
+    public boolean containsKeySubTask(int id) {
+        return super.containsKeySubTask(id);
+    }
+
+    @Override
+    public boolean containsKeyEpic(int id) {
+        return super.containsKeyEpic(id);
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -142,20 +233,38 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     // -------------------------------Сохранение -----------------------------------------------------------------------
 
     @Override
-    public void saveTask(Task savetheTask) {
-        super.saveTask(savetheTask);
+    public void createTask(Task savetheTask) {
+        super.createTask(savetheTask);
         save();
     }
 
     @Override
-    public void saveEpic(Epic savetheEpic) {
-        super.saveEpic(savetheEpic);
+    public void updateTask(Task updateTask) {
+        super.updateTask(updateTask);
         save();
     }
 
     @Override
-    public void saveSubTask(SubTask saveSubTask) {
-        super.saveSubTask(saveSubTask);
+    public void createEpic(Epic savetheEpic) {
+        super.createEpic(savetheEpic);
+        save();
+    }
+
+    @Override
+    public void updateEpic(Epic epic) {
+        super.updateEpic(epic);
+        save();
+    }
+
+    @Override
+    public void createSubTask(SubTask saveSubTask) {
+        super.createSubTask(saveSubTask);
+        save();
+    }
+
+    @Override
+    public void updateSubTask(SubTask subTask) {
+        super.updateSubTask(subTask);
         save();
     }
     // -------------------------------- полное удаление ----------------------------------------------------------------
@@ -164,30 +273,35 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void clearContent() {
         super.clearContent();
         save();
+        saveHistoryList(); // сохранение состояния истории реализованно при удалении всех видов задач
     }
 
     @Override
     public void clearTasks() {
         super.clearTasks();
         save();
+        saveHistoryList();
     }
 
     @Override
     public void clearSubTasksOfEpic(int epicId) {
         super.clearSubTasksOfEpic(epicId);
         save();
+        saveHistoryList();
     }
 
     @Override
     public void clearEpics() {
         super.clearEpics();
         save();
+        saveHistoryList();
     }
 
     @Override
     public void clearSubtasks() {
         super.clearSubtasks();
         save();
+        saveHistoryList();
     }
 
     // ------------------------------ удаление по id -------------------------------------------------------------------
@@ -195,18 +309,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void deleteTaskId(int numberId) {
         super.deleteTaskId(numberId);
         save();
+        saveHistoryList();
     }
 
     @Override
     public void deleteSubTaskId(int numberId) {
         super.deleteSubTaskId(numberId);
         save();
+        saveHistoryList();
     }
 
     @Override
     public void deleteEpicId(int numberId) {
         super.deleteEpicId(numberId);
         save();
+        saveHistoryList();
     }
 
 //------------------------------------------- 2 - Вывод полный ---------------------------------------------------------
@@ -223,8 +340,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public ArrayList<SubTask> getSubTasksId(int epicId) {
-        return super.getSubTasksId(epicId);
+    public ArrayList<SubTask> getSubTasksByEpicId(int epicId) {
+        return super.getSubTasksByEpicId(epicId);
     }
 
     @Override
@@ -234,28 +351,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     //-------------------------------------- 3 - Вывод по id -----------------------------------------------------------
     @Override
-    public Task outIdTask(int numberId) {
+    public Task getTaskById(int numberId) {
+        Task task = super.getTaskById(numberId); // добавляем сохранение в файл после выгрузки
+        saveHistoryList();
+        return task;
 
-        return super.outIdTask(numberId);
     }
 
     @Override
-    public SubTask outIdSubTask(int numberId) {
-
-        return super.outIdSubTask(numberId);
+    public SubTask getSubTaskById(int numberId) {
+        SubTask subTask = super.getSubTaskById(numberId);
+        saveHistoryList();
+        return subTask;
     }
 
     @Override
-    public Epic outIdEpic(int numberId) {
-
-        return super.outIdEpic(numberId);
+    public Epic getEpicById(int numberId) {
+        Epic epic = super.getEpicById(numberId);
+        saveHistoryList();
+        return epic;
     }
-
     // ---------------------------------------------------------------------------------------------------------------------
     @Override
     public ArrayList<Task> getHistory() {
         return super.getHistory();
     }
-
-
 }
